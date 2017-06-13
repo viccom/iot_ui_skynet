@@ -5,7 +5,11 @@ from __future__ import unicode_literals
 import frappe
 import json
 from frappe import _
-from tieta.tieta.doctype.cell_station.cell_station import search_station
+
+from iot.iot.doctype.iot_device.iot_device import IOTDevice
+from cloud.cloud.doctype.cloud_company_group.cloud_company_group import list_user_groups as _list_user_groups
+from cloud.cloud.doctype.cloud_company.cloud_company import list_user_companies
+from iot.hdb_api import list_iot_devices
 
 
 def get_context(context):
@@ -15,6 +19,26 @@ def get_context(context):
 	context.no_cache = 1
 	context.show_sidebar = True
 	context.no_cache = 1
+
+	ent_devices = []
+	curuser = frappe.session.user
+	groups = _list_user_groups(curuser)
+	print(groups)
+	companies = list_user_companies(curuser)
+	print(companies)
+	for g in groups:
+		bunch_codes = [d[0] for d in frappe.db.get_values("IOT Device Bunch", {
+			"owner_id": g.name,
+			"owner_type": "Cloud Company Group"
+		}, "code")]
+		print(bunch_codes)
+		sn_list = []
+		for c in bunch_codes:
+			sn_list.append({"bunch": c, "sn": IOTDevice.list_device_sn_by_bunch(c)})
+		ent_devices.append({"group": g.name, "devices": sn_list, "role": g.role})
+	print("ent_devices:", ent_devices)
+	userdevices = list_iot_devices(curuser)
+	print(userdevices)
 	menulist = frappe.get_all("Iot Menu")
 	n_list = []
 	for m in menulist:
