@@ -20,25 +20,36 @@ def get_context(context):
 	context.show_sidebar = True
 	context.no_cache = 1
 
-	ent_devices = []
+	# ent_devices = []
 	curuser = frappe.session.user
-	groups = _list_user_groups(curuser)
-	print(groups)
-	companies = list_user_companies(curuser)
-	print(companies)
-	for g in groups:
-		bunch_codes = [d[0] for d in frappe.db.get_values("IOT Device Bunch", {
-			"owner_id": g.name,
-			"owner_type": "Cloud Company Group"
-		}, "code")]
-		print(bunch_codes)
-		sn_list = []
-		for c in bunch_codes:
-			sn_list.append({"bunch": c, "sn": IOTDevice.list_device_sn_by_bunch(c)})
-		ent_devices.append({"group": g.name, "devices": sn_list, "role": g.role})
-	print("ent_devices:", ent_devices)
+	# groups = _list_user_groups(curuser)
+	# print(groups)
+	# companies = list_user_companies(curuser)
+	# print(companies)
+	# for g in groups:
+	# 	bunch_codes = [d[0] for d in frappe.db.get_values("IOT Device Bunch", {
+	# 		"owner_id": g.name,
+	# 		"owner_type": "Cloud Company Group"
+	# 	}, "code")]
+	# 	print(bunch_codes)
+	# 	sn_list = []
+	# 	for c in bunch_codes:
+	# 		sn_list.append({"bunch": c, "sn": IOTDevice.list_device_sn_by_bunch(c)})
+	# 	ent_devices.append({"group": g.name, "devices": sn_list, "role": g.role})
+	# print("ent_devices:", ent_devices)
 	userdevices = list_iot_devices(curuser)
 	print(userdevices)
+	if userdevices["company_devices"]:
+		for devs in userdevices["company_devices"]:
+			for d in devs["devices"]:
+				dsn = d["sn"][0]
+				#print(dsn)
+				devinfo = IOTDevice.get_device_doc(dsn)
+				#print(dir(devinfo))
+				print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
+				pass
+			pass
+		pass
 	menulist = frappe.get_all("Iot Menu")
 	n_list = []
 	for m in menulist:

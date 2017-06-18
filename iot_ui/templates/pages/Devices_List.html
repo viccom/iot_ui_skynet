@@ -3,6 +3,12 @@
 {% block mystyle %}
 <link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/jquery.dataTables.min.css">
 <link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
+<style>
+    .tips {
+      position: absolute;
+
+    }
+</style>
 {% endblock %}
 
 
@@ -30,10 +36,11 @@
             <table id="example"  class="display responsive nowrap" cellspacing="0" width="100%">
                 <thead>
                     <tr>
-                        <th>{{_('code')}}</th>
-                        <th>{{_('station_name')}}</th>
-                        <th>{{_('station_type')}}</th>
-                        <th>{{_('address_text')}}</th>
+                        <th>{{_('device_name')}}</th>
+                        <th>{{_('device_desc')}}</th>
+                        <th>{{_('device_status')}}</th>
+                        <th>{{_('device_sn')}}</th>
+                        <th>{{_('device_ascription')}}</th>
                     </tr>
                 </thead>
 
@@ -41,12 +48,18 @@
         </div>
         </div>
 
-    </div><!-- /.span -->
+    </div>
+<!-- /.span -->
 
 
 		<script src="/assets/iot_ui/assets/js/jquery.dataTables.min.js"></script>
 		<script src="/assets/iot_ui/assets/js/jquery.dataTables.bootstrap.min.js"></script>
         <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
-{% include "templates/pages/iot_list.js" %}
+         <script type="text/javascript">
+
+        {% include "templates/pages/Devices_List.js" %}
+
+         </script>
+
 {% endblock %}
 

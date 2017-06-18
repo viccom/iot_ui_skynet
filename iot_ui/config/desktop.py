@@ -7,7 +7,7 @@ def get_data():
 		{
 			"module_name": "Iot Ui",
 			"color": "olive",
-			"icon": "oction octicon-versions",
+			"icon": "octicon octicon-versions",
 			"type": "module",
 			"label": _("Iot Ui")
 		}

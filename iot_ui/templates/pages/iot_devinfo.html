@@ -1,0 +1,154 @@
+{% extends "templates/iot_ui_base.html" %}
+
+{% block mystyle %}
+<link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/jquery.dataTables.min.css">
+<link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
+{% endblock %}
+
+{% block myscript %}
+
+{% endblock %}
+
+
+
+
+{% block content %}
+{% include "templates/iot_ui_breadcrumbs.html" %}
+<div class="page-header visible-sm visible-md visible-lg">
+    <h1>
+        网关{{ doc.dev_name }}
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+            共{{ vsn|length }}个设备
+        </small>
+    </h1>
+</div>
+
+<div class="col-sm-12 left">
+
+    <div class="btn btn-app btn-sm btn-light btn-yellow no-hover" devname="{{ doc.dev_name }}" devid="{{ doc.name }}">
+
+
+        <span class="line-height-1 bigger-170 blue"> 网关 </span>
+
+        <br>
+        <span class="line-height-1 smaller-90"> {{ doc.dev_name }} </span>
+
+    </div>
+    {% for dev in devices %}
+    <div class="btn btn-app btn-sm btn-grey no-hover" devname="{{ dev.name }}" devid="{{ dev.sn }}">
+
+        <span class="line-height-1 bigger-170"> 设备 </span>
+
+        <br>
+        <span class="line-height-1 smaller-90"> {{ dev.name }} </span>
+
+
+    </div>
+    {% endfor %}
+
+</div>
+
+<div class="col-sm-12">
+    <div class="widget-box transparent" id="recent-box">
+        <div class="widget-header">
+            <div class="col-sm-5 visible-sm visible-md visible-lg">
+            <h4 class="widget-title lighter smaller" id="cur_devname">
+                设备名称:{{ doc.dev_name }}
+            </h4>
+            </div>
+            <span class="btn btn-default">查询</span>
+            <div class="widget-toolbar no-border">
+
+                <ul class="nav nav-tabs" id="recent-tab">
+                    <li class="active">
+                        <a data-toggle="tab" href="#cloud-data-tab">平台数据</a>
+                    </li>
+
+                    <li>
+                        <a data-toggle="tab" href="#locale-data-tab">现场数据</a>
+                    </li>
+
+                    <li class="hide" id="dev-message">
+                        <a data-toggle="tab" href="#message-tab">设备报文</a>
+                    </li>
+
+                    <li id="symlink-log">
+                        <a data-toggle="tab" href="#log-tab">网关日志</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="widget-body">
+            <div class="widget-main padding-4">
+                <div class="tab-content padding-8">
+                    <div id="cloud-data-tab" class="tab-pane active">
+                        <div class="col-xs-12 col-sm-12 widget-container-col" id="widget-container-col-2">
+                            <div class="widget-box widget-color-grey" id="widget-box-2">
+                                <div class="widget-header">
+                                    <h5 class="widget-title bigger lighter">
+                                        <i class="ace-icon fa fa-table"></i>
+                                        数据列表
+                                    </h5>
+
+                                </div>
+
+                                <div>
+                                <table id="example"  class="display responsive nowrap tooltip-options" data-toggle="tooltip" cellspacing="0" width="100%" title="<h3>双击查看历史数据</h3>">
+                                    <thead>
+                                        <tr>
+                                            <th>{{_('Name')}}</th>
+                                            <th>{{_('Description')}}</th>
+                                            <th>{{_('TimeStamp')}}</th>
+                                            <th>{{_('Value')}}</th>
+                                            <th>{{_('Quality')}}</th>
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- /.#cloud-data-tab -->
+
+                    <div id="locale-data-tab" class="tab-pane">
+
+                    </div>
+                    <!-- /.#locale-data-tab -->
+
+                    <div id="message-tab" class="tab-pane">
+
+                    </div>
+                    <!-- /.#message-tab -->
+
+                    <div id="log-tab" class="tab-pane hide">
+
+                    </div>
+                    <!-- /.#log-tab -->
+
+                </div>
+            </div><!-- /.widget-main -->
+        </div><!-- /.widget-body -->
+    </div><!-- /.widget-box -->
+</div><!-- /.col -->
+
+
+<!-- /.span -->
+
+
+		<script src="/assets/iot_ui/assets/js/jquery.dataTables.min.js"></script>
+		<script src="/assets/iot_ui/assets/js/jquery.dataTables.bootstrap.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+         <script type="text/javascript">
+
+        {% include "templates/pages/iot_devinfo.js" %}
+
+         </script>
+
+{% endblock %}
+

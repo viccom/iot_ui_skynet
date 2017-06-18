@@ -121,6 +121,7 @@
 					  $("ul.nav-list li").each(function(){
 					      	var crurl = window.location.pathname;
 							var crhref = $(this).find("a").attr("href");
+							console.log(crurl, crhref)
 						if(crurl==crhref){
 						    $("ul.nav-list li .active").removeClass('active');
 						    $(this).addClass('active');

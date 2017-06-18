@@ -6,7 +6,7 @@ app_name = "iot_ui"
 app_title = "Iot Ui"
 app_publisher = "viccom"
 app_description = "Iot Ui"
-app_icon = "oction octicon-screen-full"
+app_icon = "octicon octicon-versions"
 app_color = "olive"
 app_email = "viccom.dong@symid.com"
 app_license = "MIT"
@@ -118,4 +118,6 @@ app_license = "MIT"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "iot_ui.event.get_events"
 # }
-
+website_route_rules = [
+	{"from_route": "/iot_devinfo/<path:name>", "to_route": "iot_devinfo"}
+]
