@@ -57,15 +57,16 @@
                 设备名称:{{ doc.dev_name }}
             </h4>
             </div>
-            <span class="btn btn-default">查询</span>
+            <span class="btn btn-default" id="auto_refresh">已自动刷新</span>
+            <span class="btn btn-default hide" id="manual_query">手动查询</span>
             <div class="widget-toolbar no-border">
 
                 <ul class="nav nav-tabs" id="recent-tab">
-                    <li class="active">
+                    <li class="active" id="cloud-data">
                         <a data-toggle="tab" href="#cloud-data-tab">平台数据</a>
                     </li>
 
-                    <li>
+                    <li id="locale-data">
                         <a data-toggle="tab" href="#locale-data-tab">现场数据</a>
                     </li>
 
@@ -96,7 +97,7 @@
                                 </div>
 
                                 <div>
-                                <table id="example"  class="display responsive nowrap tooltip-options" data-toggle="tooltip" cellspacing="0" width="100%" title="<h3>双击查看历史数据</h3>">
+                                <table id="RTValue-Table"  class="display responsive nowrap tooltip-options" data-toggle="tooltip" cellspacing="0" width="100%" title="<h3>双击查看历史数据</h3>">
                                     <thead>
                                         <tr>
                                             <th>{{_('Name')}}</th>

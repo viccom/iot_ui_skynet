@@ -2,6 +2,7 @@ var refflag = 0;
 var symlinksn = '{{ doc.sn }}';
 var devices = {{ vsn }};
 var id = '';
+var lastid = '';
 var isvsn = false;
 var current_vsn = '';
 var rtvalueurl = '';
@@ -56,7 +57,7 @@ $(document).ready(function() {
     //判断当前URL设置页面中的哪一个菜单被激活
 
     var rtvalueurl = "/api/method/iot.hdb.iot_device_data_array?sn=" + symlinksn;
-    var table = jQuery('#example').DataTable({
+    var table = jQuery('#RTValue-Table').DataTable({
         "dom": 'lfrtp',
         //"bInfo" : false,
         //"pagingType": "full_numbers" ,
@@ -95,25 +96,102 @@ $(document).ready(function() {
 
       refflag = setInterval( function () {table.ajax.reload( null, false ); }, 3000 );
 
+
+      $("#auto_refresh").click(function(){
+          console.log($(this).html());
+          if($(this).html()=="已自动刷新"){
+            refflag = window.clearInterval(refflag);
+            $(this).html("已停止刷新")
+          }
+          else{
+              refflag = setInterval( function () {table.ajax.reload( null, false ); }, 3000 );
+              $(this).html("已自动刷新")
+          }
+      });
+
+        $("#cloud-data").click(function(){
+              $('#manual_query').addClass('hide');
+              $('#auto_refresh').removeClass('hide');
+      });
+
+        $("#locale-data").click(function(){
+              $('#manual_query').removeClass('hide');
+              $('#auto_refresh').addClass('hide');
+      });
+        $("#symlink-log").click(function(){
+              $('#manual_query').removeClass('hide');
+              $('#auto_refresh').addClass('hide');
+      });
+        $("#dev-message").click(function(){
+              $('#manual_query').removeClass('hide');
+              $('#auto_refresh').addClass('hide');
+      });
     //点击按钮
           $("div .btn-app").each(function(){
               $(this).click(function(){
-                  name = $(this).attr("devname");
+                  var name = $(this).attr("devname");
                   id = $(this).attr("devid");
                   console.log(name, id);
                   if(id==symlinksn){
                       var rtvalueurl = "/api/method/iot.hdb.iot_device_data_array?sn=" + symlinksn;
                       isvsn = false;
                       current_vsn = '';
-                      $('#symlink-log').removeClass('hide');
+                      if(lastid!=symlinksn){
+                      $('#cloud-data').addClass('active');
+                      $('#cloud-data-tab').addClass('active');
+
+                      $('#locale-data').removeClass('active');
+
+                      $('#symlink-log').removeClass('active hide');
+                      $('#log-tab').removeClass('active hide');
+
+
                       $('#dev-message').addClass('hide');
+                      $('#message-tab').addClass('hide');
+                      }
+                      lastid = id;
+                      $('#manual_query').addClass('hide');
+                      $('#auto_refresh').removeClass('hide');
+
+                  }
+                  else if(lastid==symlinksn){
+                      var rtvalueurl = "/api/method/iot.hdb.iot_device_data_array?sn=" + symlinksn + "&vsn=" + id;
+                      isvsn = true;
+                      current_vsn = id;
+                      lastid = id;
+
+                      $('#cloud-data').addClass('active');
+                      $('#cloud-data-tab').addClass('active');
+
+                      $('#locale-data').removeClass('active');
+                      $('#locale-data-tab').removeClass('active');
+
+                      $('#dev-message').removeClass('hide');
+                      $('#message-tab').removeClass('hide');
+
+                      $('#symlink-log').removeClass('active');
+                      $('#symlink-log').addClass('hide');
+                      $('#log-tab').removeClass('active');
+                      $('#log-tab').addClass('hide');
+
+                      $('#manual_query').addClass('hide');
+                      $('#auto_refresh').removeClass('hide');
+
+
                   }
                   else{
                       var rtvalueurl = "/api/method/iot.hdb.iot_device_data_array?sn=" + symlinksn + "&vsn=" + id;
                       isvsn = true;
                       current_vsn = id;
+                      lastid = id;
                       $('#dev-message').removeClass('hide');
+                      $('#message-tab').removeClass('hide');
+
+                      $('#symlink-log').removeClass('active');
                       $('#symlink-log').addClass('hide');
+                      $('#log-tab').removeClass('active');
+                      $('#log-tab').addClass('hide');
+
                   }
 
                   console.log(rtvalueurl);
@@ -128,7 +206,7 @@ $(document).ready(function() {
     //点击按钮
 
     //双击表格行
-      $('#example tbody').on('dblclick', 'tr', function () {
+      $('#RTValue-Table tbody').on('dblclick', 'tr', function () {
         var data = table.row( this ).data();
         tnm = data['NAME'].toLowerCase();
         console.log(isvsn);
