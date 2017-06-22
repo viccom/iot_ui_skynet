@@ -19,6 +19,7 @@ from iot.hdb import iot_device_tree
 def devices_list_array():
 	curuser = frappe.session.user
 	devices = list_iot_devices(curuser)
+	print(devices)
 	userdevices = []
 	if devices["company_devices"]:
 		for devs in devices["company_devices"]:
