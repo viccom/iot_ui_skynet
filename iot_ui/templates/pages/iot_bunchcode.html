@@ -1,0 +1,174 @@
+{% extends "templates/iot_ui_base.html" %}
+
+{% block mystyle %}
+		<link rel="stylesheet" href="/assets/iot_ui/assets/css/jquery-ui.custom.min.css" />
+		<link rel="stylesheet" href="/assets/iot_ui/assets/css/jquery.gritter.min.css" />
+{% endblock %}
+
+
+{% block myscript %}
+<script src="http://cdn.bootcss.com/vue/2.2.6/vue.js"></script>
+<script src="/assets/iot_ui/assets/js/jquery.gritter.min.js"></script>
+
+{% endblock %}
+
+
+
+
+{% block content %}
+{% include "templates/iot_ui_breadcrumbs.html" %}
+<div id="vm">
+
+</div>
+
+
+<div class="col-sm-12">
+    <div class="widget-box transparent" id="recent-box">
+        <div class="widget-header">
+<!--            <h4 class="widget-title lighter smaller">
+                绑定码
+            </h4>-->
+
+            <div class="widget-toolbar no-border">
+
+                <ul class="nav nav-tabs" id="recent-tab">
+                    <li class="active" id="group-bunchcode-data">
+                        <a data-toggle="tab" href="#group-bunchcode-tab">组绑定码</a>
+                    </li>
+
+                    <li id="private-bunchcode-data">
+                        <a data-toggle="tab" href="#private-bunchcode-tab">私有绑定码</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="widget-body">
+            <div class="widget-main padding-4">
+                <div class="tab-content padding-8">
+
+                    <div id="group-bunchcode-tab" class="tab-pane active">
+                    {% if isgroupadmin %}
+                        {% for gg in group_bunch_codes %}
+                        <!-- /.#transparent box -->
+                        <div class="widget-box transparent" data-groupid="{{gg.name}}">
+                            <div class="widget-header">
+                                <h4 class="widget-title lighter">{{gg.desc}}</h4>
+
+                                <div class="widget-toolbar no-border add_group-bunch_code">
+                                    <a href="#" data-action="settings">
+                                        <i class="ace-icon fa fa-plus-square"></i>
+                                        新增绑定码
+                                    </a>
+
+                                </div>
+                            </div>
+
+                            <div class="widget-body">
+                                <div class="widget-main padding-6 no-padding-left no-padding-right" id="{{gg.name}}">
+                                    {% for g in gg.code %}
+                                        <div class="col-xs-6 col-sm-6 profile-info-value">
+                                            {{g.name}}
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 profile-info-value">
+                                            <div class="btn btn-white btn-warning btn-bold bunchcode" data-bunchcode="{{g.name}}">
+                                                <i class="ace-icon fa fa-trash-o"></i>
+                                                Delete
+                                            </div>
+
+                                        </div>
+                                    <div class="hr dotted"></div>
+                                    {% endfor %}
+                                </div>
+                                &#12288;
+                            </div>
+                        </div>
+                        <!-- /.#transparent box -->
+                        <br />
+                        {% endfor %}
+                    {% else %}
+                        {% for gg in group_bunch_codes %}
+                        <!-- /.#transparent box -->
+                        <div class="widget-box transparent" data-groupid="{{gg.name}}">
+                                    <div class="widget-header">
+                                        <h4 class="widget-title lighter">{{gg.desc}}</h4>
+
+                                        <div class="widget-toolbar no-border">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="widget-body">
+                                        <div class="widget-main padding-6 no-padding-left no-padding-right">
+                                            {% for g in gg.code %}
+                                                <div class="col-xs-12 col-sm-12 profile-info-value">
+                                                    {{g.name}}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                        <!-- /.#transparent box -->
+                        {% endfor %}
+                    {% endif %}
+
+                    </div>
+                    <!-- /.#group-bunchcode-tab -->
+
+                    <div id="private-bunchcode-tab" class="tab-pane">
+
+                        <!-- /.#transparent box -->
+                             <div class="widget-box transparent" id="widget-box-12">
+                                    <div class="widget-header">
+                                        <h4 class="widget-title lighter">{{ _("private_bunch_codes") }}</h4>
+
+                                        <div class="widget-toolbar no-border">
+                                            <a href="#" data-action="settings" id="add_bunch_code">
+                                                <i class="ace-icon fa fa-plus-square"></i>
+                                                新增绑定码
+                                            </a>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="widget-body">
+                                        <div class="widget-main padding-6 no-padding-left no-padding-right">
+                                            <div class="col-sm-12" id="own-bunchcode">
+                                                {% for p in private_bunch_codes %}
+                                                    <div class="col-xs-6 col-sm-6 profile-info-value">
+                                                        {{p.name}}
+                                                    </div>
+                                                    <div class="col-xs-6 col-sm-6 profile-info-value">
+                                                        <div class="btn btn-white btn-warning btn-bold bunchcode"  data-bunchcode="{{p.name}}">
+                                                            <i class="ace-icon fa fa-trash-o"></i>
+                                                            Delete
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        <!-- /.#transparent box -->
+
+
+                    </div>
+                    <!-- /.#private-bunchcode-tab -->
+
+
+                </div>
+            </div><!-- /.widget-main -->
+        </div><!-- /.widget-body -->
+    </div><!-- /.widget-box -->
+</div><!-- /.col -->
+
+ <script type="text/javascript">
+
+    {% include "templates/pages/iot_bunchcode.js" %}
+
+ </script>
+
+{% endblock %}
+

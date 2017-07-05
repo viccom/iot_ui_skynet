@@ -37,19 +37,7 @@ def get_context(context):
 	# 		sn_list.append({"bunch": c, "sn": IOTDevice.list_device_sn_by_bunch(c)})
 	# 	ent_devices.append({"group": g.name, "devices": sn_list, "role": g.role})
 	# print("ent_devices:", ent_devices)
-	userdevices = list_iot_devices(curuser)
-	print(userdevices)
-	if userdevices["company_devices"]:
-		for devs in userdevices["company_devices"]:
-			for d in devs["devices"]:
-				dsn = d["sn"][0]
-				#print(dsn)
-				devinfo = IOTDevice.get_device_doc(dsn)
-				#print(dir(devinfo))
-				print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
-				pass
-			pass
-		pass
+
 	menulist = frappe.get_all("Iot Menu")
 	n_list = []
 	for m in menulist:
@@ -62,4 +50,4 @@ def get_context(context):
 
 	n_list.sort(key=lambda k: (k.get('id', 0)))
 	context.leftnavlist = n_list
-	context.title = _('Devices_List')
+	context.title = _('gateways_list')
