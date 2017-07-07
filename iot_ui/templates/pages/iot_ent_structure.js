@@ -448,12 +448,12 @@ container1.find('.btn').addClass('btn-white btn-info btn-bold');
                 success: function(data) {
                     if(data.message.result == "sucessful" ){
                         console.log("提交成功！");
-                        if(data.message.remained){
+                        if(data.message.remained.length){
                             $.gritter.add({
                             title: '删除成员失败',
                             text: data.message.remained,
                             class_name: 'gritter-error gritter-light'
-					});
+					        });
                         }
                         $('#add-group').addClass("hide");
                         $('#structure-list').removeClass("hide");
