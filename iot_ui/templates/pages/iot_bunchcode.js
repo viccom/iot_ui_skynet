@@ -37,7 +37,7 @@ $(document).ready(function() {
 
         $("body").on("click", "div .add_group-bunch_code", function(){
 
-            groupid = $(this).parent().parent().attr("data-groupid");
+            var groupid = $(this).parent().parent().attr("data-groupid");
 
         $.post("/api/method/iot_ui.ui_api.add_group_bunch_code?groupid="+groupid, {}, function(data) {
           console.log(data);

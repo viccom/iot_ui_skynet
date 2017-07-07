@@ -20,6 +20,9 @@ def get_context(context):
 	context.show_sidebar = True
 	context.no_cache = 1
 
+	if 'Company Admin' in frappe.get_roles(frappe.session.user):
+		context.isCompanyAdmin = True
+
 	# ent_devices = []
 	curuser = frappe.session.user
 	# groups = _list_user_groups(curuser)

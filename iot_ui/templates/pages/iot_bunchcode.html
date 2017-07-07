@@ -49,7 +49,7 @@
                 <div class="tab-content padding-8">
 
                     <div id="group-bunchcode-tab" class="tab-pane active">
-                    {% if isgroupadmin %}
+                    {% if isCompanyAdmin %}
                         {% for gg in group_bunch_codes %}
                         <!-- /.#transparent box -->
                         <div class="widget-box transparent" data-groupid="{{gg.name}}">
@@ -107,6 +107,7 @@
                                                 </div>
                                             {% endfor %}
                                         </div>
+                                         &#12288;
                                     </div>
                                 </div>
 

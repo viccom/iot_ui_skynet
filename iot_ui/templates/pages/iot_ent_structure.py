@@ -38,15 +38,21 @@ def get_context(context):
 	context.no_cache = 1
 	context.show_sidebar = True
 	context.no_cache = 1
-
-	curuser = frappe.session.user
-
+	nameobj = frappe.get_value("Cloud Employee", frappe.session.user, "company")
+	if not nameobj:
+		frappe.local.flags.redirect_location = "/me"
+		raise frappe.Redirect
+	company = frappe.get_doc('Cloud Company', nameobj)
+	company.has_permission('read')
+	context.company = company.name
+	#print(dir(company))
 	groups = list_curuser_groups()
 	print("groups", groups)
+	context.groups = groups
 
 
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
-		context.isgroupadmin = True
+		context.isCompanyAdmin = True
 	menulist = frappe.get_all("Iot Menu")
 	n_list = []
 	for m in menulist:

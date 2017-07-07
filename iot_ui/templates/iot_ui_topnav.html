@@ -26,6 +26,8 @@
 
 					<ul class="nav ace-nav">
 
+>
+
 						<!--消息通知-->
 						<li class="purple dropdown-modal">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -77,6 +79,15 @@
 						</li>
 						<!--消息通知-->
 
+						<!--顶部菜单-->
+						{% if isCompanyAdmin %}
+						<li class="grey">
+							<a href="/iot_ent_structure">
+								<span>成员管理</span>
+							</a>
+						</li>
+						{% endif %}
+						<!--顶部菜单-->
 
 						<!--右上角用户信息-->
 						<li class="light-blue dropdown-modal">
@@ -98,8 +109,8 @@
 								</li>
 
 								<li>
-									<a href="/desk">
-										<i class="ace-icon fa fa-delicious"></i>{{_('Switch to Desktop')}}</a>
+									<a href="/iot_bunchcode">
+										<i class="ace-icon fa fa-delicious"></i>{{_('My BunchCode')}}</a>
 								</li>
 
 								<li class="divider"></li>

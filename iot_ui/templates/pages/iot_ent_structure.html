@@ -89,7 +89,7 @@
                 <span class="btn btn-info pull-right">
                     <i class="ace-icon fa fa-backward"></i>
                 </span>
-                <span class="btn pull-right">
+                <span class="btn pull-right" id="structure-refresh">
                     <i class="ace-icon fa fa-refresh"></i>
                 </span>
             </div>
@@ -104,64 +104,35 @@
 
                         <i class="drag-icon ace-icon fa fa-arrows bigger-125"></i>
                     </div>
-                    <div class="dd2-content btn-info no-hover">旋思科技
+                    <div class="dd2-content btn-info"><span id="companyheadquarters">{{company}}</span>
                         <span class="pull-right btn-sm" data-rel="tooltip" data-placement="top" title="添加新组" id="headquarters">
                         <i class="ace-icon fa fa-plus-square"></i>
                         </span>
                     </div>
 
-                    <ol class="dd-list">
-                        <li class="dd-item dd2-item" data-id="16">
+                    <ol class="dd-list" id="group-list">
+                        {% for g in groups %}
+
+                        <li class="dd-item dd2-item" data-id="{{g.name}}">
                             <div class="dd-handle dd2-handle">
                                 <i class="normal-icon ace-icon fa  fa-joomla bigger-130"></i>
 
                                 <i class="drag-icon ace-icon fa fa-arrows bigger-125"></i>
                             </div>
-                            <div class="dd2-content">
-                                <div class="col-xs-6 branch-desc" data-id="branch-g1">北京分部</div>
-                                <div class="btn-sm pull-right branch-del" data-id="branch-g1">
+                            <div class="dd2-content group_name">
+                                <div class="col-xs-6 branch-desc" data-id="{{g.name}}" id="gp_{{g.name}}">{{g.group_name}}</div>
+                                <div class="btn-sm pull-right branch-del" data-id="{{g.name}}">
                                     <i class="ace-icon fa fa-trash-o"></i>
                                 </div>
-                                <div class="btn-sm pull-right branch-edit" data-id="branch-g1">
+                                <div class="btn-sm pull-right branch-edit" data-id="{{g.name}}">
                                     <i class="ace-icon fa fa-edit"></i>
                                 </div>
                             </div>
 
                         </li>
 
-                        <li class="dd-item dd2-item dd-colored" data-id="17">
-                            <div class="dd-handle dd2-handle">
-                                <i class="normal-icon ace-icon fa fa-joomla bigger-130"></i>
+                        {% endfor %}
 
-                                <i class="drag-icon ace-icon fa fa-arrows bigger-125"></i>
-                            </div>
-                            <div class="dd2-content ">
-                                <div class="col-xs-6 branch-desc" data-id="branch-g2">上海分部</div>
-                                <div class="btn-sm pull-right branch-del" data-id="branch-g2">
-                                    <i class="ace-icon fa fa-trash-o"></i>
-                                </div>
-                                 <div class="btn-sm pull-right branch-edit" data-id="branch-g2">
-                                    <i class="ace-icon fa fa-edit"></i>
-                                </div>
-                            </div>
-                        </li>
-
-                        <li class="dd-item dd2-item" data-id="18">
-                            <div class="dd-handle dd2-handle">
-                                <i class="normal-icon ace-icon fa  fa-joomla bigger-130"></i>
-
-                                <i class="drag-icon ace-icon fa fa-arrows bigger-125"></i>
-                            </div>
-                            <div class="dd2-content">
-                                <div class="col-xs-6 branch-desc" data-id="branch-g3">加州分部</div>
-                                <div class="btn-sm pull-right branch-del" data-id="branch-g3">
-                                    <i class="ace-icon fa fa-trash-o"></i>
-                                </div>
-                                 <div class="btn-sm pull-right branch-edit" data-id="branch-g3">
-                                    <i class="ace-icon fa fa-edit"></i>
-                                </div>
-                            </div>
-                        </li>
                     </ol>
                 </li>
 
@@ -189,7 +160,7 @@
                 <div class="btn btn-info pull-right" data-rel="tooltip" data-placement="top" title="添加成员到当前节点" id="add-members-to-company">
                     <i class="ace-icon fa fa-plus-square"></i>
                 </div>
-                <span class="btn btn-default pull-right">
+                <span class="btn btn-default pull-right" id="table-refresh">
                     <i class="ace-icon fa fa-refresh"></i>
                 </span>
             </div>
@@ -200,8 +171,6 @@
                     <tr>
                         <th>{{_('member_name')}}</th>
                         <th>{{_('member_id')}}</th>
-                        <th>{{_('member_status')}}</th>
-                        <th>{{_('member_role')}}</th>
                         <th>{{_('operation')}}</th>
                     </tr>
                 </thead>
@@ -239,8 +208,8 @@
                             <fieldset>
                                 <label>组名</label>
 
-                                <input type="text" placeholder="组名" id="new-group-name" />
-                                <span class="help-block">在文本框中输入你的组名.</span>
+                                <input type="text" placeholder="组名" data-options="fgfg" id="new-group-name" />
+                                <div class="help-block" id="newname-temp" data-id="idid">在文本框中输入你的组名.</div>
 
                             </fieldset>
 
@@ -302,13 +271,7 @@
                                 <option value="option1">Option 1</option>
                                 <option value="option2">Option 2</option>
                                 <option value="option3" selected="selected">Option 3</option>
-                                <option value="option4">Option 4</option>
-                                <option value="option5">Option 5</option>
-                                <option value="option6" selected="selected">Option 6</option>
-                                <option value="option7">Option 7</option>
-                                <option value="option8">Option 8</option>
-                                <option value="option9">Option 9</option>
-                                <option value="option0">Option 10</option>
+
                             </select>
 
 

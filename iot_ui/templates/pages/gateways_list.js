@@ -51,20 +51,20 @@ $(document).ready(function() {
     });
 
     $('#example tbody').on('click', 'tr', function (e) {
-        var pageX = e.pageX,
-        pageY = e.pageY;
-
-      $tips.css({
-        top: pageY,
-        left: pageX
-      });
-      $tips.removeClass("hide");
+        var pageX = e.pageX, pageY = e.pageY;
         var data = table.row( this ).data();
-        console.log(data['device_sn']);
-        $curdevsn = data['device_sn']
-        //window.location.href="/S_Station_infox/"+data['name'];
-        //alert( 'You clicked on '+data[0]+'\'s row' );
+        console.log(data);
+        if(data){
+          $tips.css({
+            top: pageY,
+            left: pageX
+          });
+          $tips.removeClass("hide");
 
+            $curdevsn = data['device_sn']
+            //window.location.href="/S_Station_infox/"+data['name'];
+            //alert( 'You clicked on '+data[0]+'\'s row' );
+        }
     } );
 
     $('#ui-id-1').click(function(){

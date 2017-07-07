@@ -26,6 +26,8 @@ def get_context(context):
 		raise frappe.PermissionError
 	context.no_cache = 1
 	context.show_sidebar = True
+	if 'Company Admin' in frappe.get_roles(frappe.session.user):
+		context.isCompanyAdmin = True
 
 	menulist = frappe.get_all("Iot Menu")
 	n_list = []

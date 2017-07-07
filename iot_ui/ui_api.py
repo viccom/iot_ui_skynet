@@ -19,6 +19,7 @@ from cloud.cloud.doctype.cloud_company.cloud_company import list_user_companies
 from cloud.cloud.doctype.cloud_company.cloud_company import list_admin_companies
 from cloud.cloud.doctype.cloud_company.cloud_company import list_users, get_domain
 from cloud.cloud.doctype.cloud_employee.cloud_employee import add_employee
+from frappe.utils.user import get_user_fullname
 
 
 def get_bunch_codes(group, start=0, search=None):
@@ -32,11 +33,21 @@ def get_bunch_codes(group, start=0, search=None):
 		limit_start=start, limit_page_length=10)
 	return bunch_codes
 
+def get_post_json_data():
+	if frappe.request.method != "POST":
+		throw(_("Request Method Must be POST!"))
+	ctype = frappe.get_request_header("Content-Type")
+	if "json" not in ctype.lower():
+		throw(_("Incorrect HTTP Content-Type found {0}").format(ctype))
+	if not frappe.form_dict.data:
+		throw(_("JSON Data not found!"))
+	return frappe._dict(json.loads(frappe.form_dict.data))
+
 @frappe.whitelist()
 def devices_list_array():
 	curuser = frappe.session.user
 	devices = list_iot_devices(curuser)
-	print(devices)
+	#print(devices)
 	userdevices = []
 	if devices["company_devices"]:
 		for devs in devices["company_devices"]:
@@ -70,7 +81,10 @@ def devices_list_array():
 			pass
 		pass
 
-	return userdevices
+	if userdevices:
+		return userdevices
+	else:
+		return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "", "device_company": ""}
 
 @frappe.whitelist()
 def iot_devices_array(sn=None):
@@ -188,10 +202,10 @@ def list_possible_users(company):
 	domain = get_domain(company)
 	users = list_users_by_domain(domain)
 	employees = list_users(company)
-	return [user for user in users if user.name not in employees]
+	return [user.name for user in users if user.name not in employees]
 
 @frappe.whitelist()
-def list_company_member(company):
+def list_company_user(company):
 	if 'Company Admin' not in frappe.get_roles(frappe.session.user):
 		return False
 	if frappe.db.get_value("Cloud Company", company, "enabled") != 1:
@@ -199,56 +213,143 @@ def list_company_member(company):
 	return [d[0] for d in frappe.db.get_values("Cloud Employee", {"company": company})]
 
 @frappe.whitelist()
-def add_company_member(company, memberid):
-	if 'Company Admin' in frappe.get_roles(frappe.session.user):
-		comp = frappe.get_value("Cloud Employee", {"user": memberid}, "company")
-		if comp:
-			if comp != company:
-				throw(_("User in in another company {0}").format(comp))
-			return True
+def list_group_user(groupid):
+	if 'Company Admin' not in frappe.get_roles(frappe.session.user):
+		pass
+	users = []
+	for d in frappe.db.get_values("Cloud Company GroupUser", {"parent": groupid}, ["user", "role", "modified", "creation"]):
+		users.append(d[0])
+	return users
 
-		if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
-			throw(_("You not the admin of company {0}").format(company))
-
-		doc = frappe.get_doc({"doctype": "Cloud Employee", "user": memberid, "company": company})
-		doc.insert(ignore_permissions=True)
-		frappe.db.commit()
-
-		return _("Employee has ben added")
 
 @frappe.whitelist()
-def del_company_member(company, memberid):
+def list_company_member(company):
+	if 'Company Admin' not in frappe.get_roles(frappe.session.user):
+		return False
+	if frappe.db.get_value("Cloud Company", company, "enabled") != 1:
+		return False
+	return [{"member_id": d[0], "member_name": get_user_fullname(d[0])} for d in frappe.db.get_values("Cloud Employee", {"company": company})]
+
+
+@frappe.whitelist()
+def add_company_member():
+	postdata = get_post_json_data()
+	print(postdata)
+	company = postdata.company
+	members = postdata.members
+	if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
+		throw(_("You not the admin of company {0}").format(company))
+	if 'Company Admin' in frappe.get_roles(frappe.session.user):
+		added_user = []
+		remained_users = []
+		for m in members:
+			comp = frappe.get_value("Cloud Employee", {"user": m}, "company")
+			if comp:
+				if comp != company:
+					remained_users.append(m)
+					#throw(_("User is in another company {0}").format(comp))
+			else:
+				doc = frappe.get_doc({"doctype": "Cloud Employee", "user": m, "company": company})
+				doc.insert(ignore_permissions=True)
+				frappe.db.commit()
+				added_user.append(m)
+		return {"added": added_user, "remained": remained_users, "result": 'sucessful'}
+
+@frappe.whitelist()
+def del_company_member():
+	postdata = get_post_json_data()
+	print(postdata)
+	company = postdata.company
+	members = postdata.members
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
-			throw(_("You not the admin of company {0}").format(company))
+			return "You not the admin of company"
+		else:
+			deleted_user = []
+			remained_users = []
+			for m in members:
+				try:
+					frappe.delete_doc("Cloud Employee", m, ignore_permissions=True)
+					deleted_user.append(m)
+				except Exception as ex:
+					remained_users.append(m)
+			return {"deleted": deleted_user, "remained": remained_users, "result": 'sucessful'}
 
-		frappe.delete_doc("Cloud Employee", memberid, ignore_permissions=True)
-		return _("Employee has been deleted")
+@frappe.whitelist()
+def del_company_single_member():
+	postdata = get_post_json_data()
+	print(postdata)
+	company = postdata.company
+	member = postdata.member
+	if 'Company Admin' in frappe.get_roles(frappe.session.user):
+		if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
+			return "You not the admin of company"
+		else:
+			try:
+				frappe.delete_doc("Cloud Employee", member, ignore_permissions=True)
+				return {"deleted": member, "result": 'sucessful'}
+			except Exception as ex:
+				return {"reason": ex, "result": 'failed'}
 
 @frappe.whitelist()
 def list_company_group(company):
 	if 'Company Admin' not in frappe.get_roles(frappe.session.user):
 		return False
-	return [d[0] for d in frappe.db.get_values("Cloud Company Group", {"company": company})]
+	groupnames = [d[0] for d in frappe.db.get_values("Cloud Company Group", {"company": company})]
+	groups = []
+	for g in groupnames:
+		gg = frappe.get_doc("Cloud Company Group", g)
+		#print(gg.group_name.encode('utf-8'))
+		groups.append({"group_name": gg.group_name, "name": gg.name})
+	return groups
 
 @frappe.whitelist()
-def add_company_group(company):
-	if 'Company Admin' in frappe.get_roles(frappe.session.user):
-		pass
+def add_company_group():
+	group = get_post_json_data()
+	group.update({"doctype": "Cloud Company Group"})
+	g = frappe.get_doc(group).insert()
+	# gg = frappe.get_doc("Cloud Company Group", group)
+	# print("newgroup", gg)
+	nameobj = frappe.get_value("Cloud Employee", frappe.session.user, "company")
+	company = frappe.get_doc('Cloud Company', nameobj).name
+	groupnames = [d[0] for d in frappe.db.get_values("Cloud Company Group", {"company": company})]
+	groups = []
+	for g in groupnames:
+		gg = frappe.get_doc("Cloud Company Group", g)
+		#print(gg.group_name.encode('utf-8'))
+		groups.append({"group_name": gg.group_name, "name": gg.name})
+	return {"result": "sucessful", "groups": groups}
 
 @frappe.whitelist()
-def del_company_group(company, groupsid):
-	if 'Company Admin' in frappe.get_roles(frappe.session.user):
-		pass
+def mod_company_group():
+	group = get_post_json_data()
+	g = frappe.get_doc("Cloud Company Group", group.name)
+	g.set("group_name", group.group_name)
+	g.save()
+	return True
+
+@frappe.whitelist()
+def del_company_group(groupid):
+	try:
+		frappe.delete_doc("Cloud Company Group", groupid)
+		return True
+	except Exception as ex:
+		return {"result": False, "reason": ex.message}
+
 
 @frappe.whitelist()
 def list_group_member(groupid):
 	if 'Company Admin' not in frappe.get_roles(frappe.session.user):
 		pass
 	users = []
+	# for d in frappe.db.get_values("Cloud Company GroupUser", {"parent": groupid}, ["user", "role", "modified", "creation"]):
+	# 	users.append(_dict({"name": d[0], "role": d[1], "modified": d[2], "creation": d[3], "group": groupid}))
 	for d in frappe.db.get_values("Cloud Company GroupUser", {"parent": groupid}, ["user", "role", "modified", "creation"]):
-		users.append(_dict({"name": d[0], "role": d[1], "modified": d[2], "creation": d[3], "group": groupid}))
-	return users
+		users.append(_dict({"member_id": d[0], "member_name": get_user_fullname(d[0])}))
+	if users:
+		return users
+	else:
+		return {"member_id": "", "member_name": ""}
 
 @frappe.whitelist()
 def list_member_group(user):
@@ -265,14 +366,24 @@ def list_member_group(user):
 	return groups
 
 @frappe.whitelist()
-def bind_member_group(company, membersid, groupsid):
-	if 'Company Admin' in frappe.get_roles(frappe.session.user):
-		pass
+def add_group_members():
+	postdata = get_post_json_data()
+	print(postdata)
+	group = postdata.group
+	users = postdata.members
+	g = frappe.get_doc("Cloud Company Group", group)
+	g.add_users("User", *users)
+	return {"result": 'sucessful'}
 
 @frappe.whitelist()
-def unbind_member_group(company, membersid, groupsid):
-	if 'Company Admin' in frappe.get_roles(frappe.session.user):
-		pass
+def delete_group_members():
+	postdata = get_post_json_data()
+	print(postdata)
+	group = postdata.group
+	users = postdata.members
+	g = frappe.get_doc("Cloud Company Group", group)
+	g.remove_users(*users)
+	return {"result": 'sucessful'}
 
 @frappe.whitelist(allow_guest=True)
 def ping():

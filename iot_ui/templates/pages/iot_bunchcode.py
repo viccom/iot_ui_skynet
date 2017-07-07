@@ -51,7 +51,8 @@ def get_context(context):
 			groupdesc = frappe.get_value("Cloud Company Group", g.name, "group_name")
 			bunch_codes.append({"name": g["name"], "desc": groupdesc, "code": bunch_code})
 		else:
-			bunch_codes.append({"name": g["name"], "code": ""})
+			groupdesc = frappe.get_value("Cloud Company Group", g.name, "group_name")
+			bunch_codes.append({"name": g["name"], "desc": groupdesc, "code": ""})
 		pass
 	print("sadasd", bunch_codes)
 	context.group_bunch_codes = bunch_codes
@@ -64,7 +65,7 @@ def get_context(context):
 		context.private_bunch_codes = private_bunch_codes
 
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
-		context.isgroupadmin = True
+		context.isCompanyAdmin = True
 	menulist = frappe.get_all("Iot Menu")
 	n_list = []
 	for m in menulist:
