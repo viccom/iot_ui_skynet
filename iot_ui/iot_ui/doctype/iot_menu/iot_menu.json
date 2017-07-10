@@ -162,7 +162,7 @@
    "reqd": 1, 
    "search_index": 1, 
    "set_only_once": 0, 
-   "unique": 1
+   "unique": 0
   }
  ], 
  "has_web_view": 0, 
