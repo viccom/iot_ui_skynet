@@ -25,11 +25,27 @@
     <div class="col-xs-12 col-sm-12 widget-container-col" id="widget-container-col-2">
         <div class="widget-box widget-color-grey" id="widget-box-2">
             <div class="widget-header">
+
                 <h5 class="widget-title bigger lighter">
                     <i class="ace-icon fa fa-table"></i>
                     {{title}}
                 </h5>
 
+                <span class="btn btn-default pull-right" id="table-refresh">
+                    <i class="ace-icon fa fa-refresh"></i>
+                </span>
+                <span class="btn btn-primary pull-right" id="table-offline_7d">
+                    {{_('offline_7d')}}
+                </span>
+                <span class="btn btn-pink pull-right" id="table-offline">
+                    {{_('offline')}}
+                </span>
+                <span class="btn btn-purple pull-right" id="table-online">
+                    {{_('online')}}
+                </span>
+                <span class="btn btn-success pull-right" id="table-all">
+                    {{_('all')}}
+                </span>
             </div>
 
             <div>

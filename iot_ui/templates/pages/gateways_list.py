@@ -16,6 +16,11 @@ def get_context(context):
 	if frappe.session.user == 'Guest':
 		frappe.local.flags.redirect_location = "/login"
 		raise frappe.Redirect
+	filter = frappe.form_dict.filter
+	print(filter)
+	if not filter:
+		filter = "all"
+	context.filter = filter
 	context.no_cache = 1
 	context.show_sidebar = True
 	context.no_cache = 1

@@ -20,7 +20,7 @@ from cloud.cloud.doctype.cloud_company.cloud_company import list_admin_companies
 from cloud.cloud.doctype.cloud_company.cloud_company import list_users, get_domain
 from cloud.cloud.doctype.cloud_employee.cloud_employee import add_employee
 from frappe.utils.user import get_user_fullname
-
+from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
 
 def get_bunch_codes(group, start=0, search=None):
 	filters = {
@@ -44,11 +44,14 @@ def get_post_json_data():
 	return frappe._dict(json.loads(frappe.form_dict.data))
 
 @frappe.whitelist()
-def devices_list_array():
+def devices_list_array(filter):
 	curuser = frappe.session.user
 	devices = list_iot_devices(curuser)
 	print(devices)
 	userdevices = []
+	userdevices_online = []
+	userdevices_offline = []
+	userdevices_offline_7d = []
 	if devices["company_devices"]:
 		for devs in devices["company_devices"]:
 			for d in devs["devices"]:
@@ -56,7 +59,30 @@ def devices_list_array():
 					devinfo = IOTDevice.get_device_doc(dsn)
 					#print(dir(devinfo))
 					#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
+					lasttime = get_datetime(devinfo.last_updated)
+					nowtime = now_datetime()
 					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+					if devinfo.device_status == "ONLINE":
+						userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+						                           "device_desc": devinfo.description,
+						                           "device_status": devinfo.device_status,
+						                           "last_updated": devinfo.last_updated,
+						                           "device_company": devinfo.company, "longitude": devinfo.longitude,
+						                           "latitude": devinfo.latitude})
+					elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
+						userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+						                               "device_desc": devinfo.description,
+						                               "device_status": devinfo.device_status,
+						                               "last_updated": devinfo.last_updated,
+						                               "device_company": devinfo.company,
+						                               "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+					else:
+						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+						                            "device_desc": devinfo.description,
+						                            "device_status": devinfo.device_status,
+						                            "last_updated": devinfo.last_updated,
+						                            "device_company": devinfo.company, "longitude": devinfo.longitude,
+						                            "latitude": devinfo.latitude})
 				pass
 			pass
 		pass
@@ -68,7 +94,31 @@ def devices_list_array():
 					devinfo = IOTDevice.get_device_doc(dsn)
 					#print(dir(devinfo))
 					#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
+					lasttime = get_datetime(devinfo.last_updated)
+					nowtime = now_datetime()
 					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+					if devinfo.device_status == "ONLINE":
+						userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+						                           "device_desc": devinfo.description,
+						                           "device_status": devinfo.device_status,
+						                           "last_updated": devinfo.last_updated,
+						                           "device_company": devinfo.company, "longitude": devinfo.longitude,
+						                           "latitude": devinfo.latitude})
+					elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
+						userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+						                               "device_desc": devinfo.description,
+						                               "device_status": devinfo.device_status,
+						                               "last_updated": devinfo.last_updated,
+						                               "device_company": devinfo.company,
+						                               "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+					else:
+						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+						                            "device_desc": devinfo.description,
+						                            "device_status": devinfo.device_status,
+						                            "last_updated": devinfo.last_updated,
+						                            "device_company": devinfo.company, "longitude": devinfo.longitude,
+						                            "latitude": devinfo.latitude})
+
 				pass
 			pass
 		pass
@@ -79,14 +129,54 @@ def devices_list_array():
 				devinfo = IOTDevice.get_device_doc(dsn)
 				#print(dir(devinfo))
 				#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
+				lasttime = get_datetime(devinfo.last_updated)
+				nowtime = now_datetime()
 				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+				if devinfo.device_status == "ONLINE":
+					userdevices_online.append(
+						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+						 "device_company": curuser, "longitude": devinfo.longitude,
+						 "latitude": devinfo.latitude})
+				elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
+					userdevices_offline_7d.append(
+						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+						 "device_company": curuser, "longitude": devinfo.longitude,
+						 "latitude": devinfo.latitude})
+				else:
+					userdevices_offline.append(
+						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+						 "device_company": curuser, "longitude": devinfo.longitude,
+						 "latitude": devinfo.latitude})
+
 			pass
 		pass
 
-	if userdevices:
-		return userdevices
+	if filter=="online":
+		if userdevices_online:
+			return userdevices_online
+		else:
+			return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
+	elif filter=="offline":
+		if userdevices_offline:
+			return userdevices_offline
+		else:
+			return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
+	elif filter=="offline_7d":
+		if userdevices_offline_7d:
+			return userdevices_offline_7d
+		else:
+			return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
 	else:
-		return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
+		if userdevices:
+			return userdevices
+		else:
+			return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
+
+
+
 
 @frappe.whitelist()
 def iot_devices_array(sn=None):

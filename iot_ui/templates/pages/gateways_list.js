@@ -1,5 +1,7 @@
 $(document).ready(function() {
-    var $curdevsn = ""
+    var $curdevsn = "";
+    var filter = '{{ filter }}';
+    console.log(filter);
     var $doc = $(document);
     var $tips = $('#J_tips');
     if (!$tips.length) {
@@ -8,7 +10,7 @@ $(document).ready(function() {
     }
 
 
-    var rtvalueurl = "/api/method/iot_ui.ui_api.devices_list_array";
+    var rtvalueurl = "/api/method/iot_ui.ui_api.devices_list_array?filter="+filter;
     var table = jQuery('#example').DataTable({
         "dom": 'lfrtp',
         //"bInfo" : false,
@@ -68,6 +70,26 @@ $(document).ready(function() {
         }
     } );
 
+    $('#table-refresh').click(function() {
+        table.ajax.url(rtvalueurl).load();
+    });
+    $('#table-all').click(function() {
+        rtvalueurl = "/api/method/iot_ui.ui_api.devices_list_array?filter=all";
+        table.ajax.url(rtvalueurl).load();
+    });
+    $('#table-online').click(function() {
+        rtvalueurl = "/api/method/iot_ui.ui_api.devices_list_array?filter=online";
+        table.ajax.url(rtvalueurl).load();
+    });
+    $('#table-offline').click(function() {
+        rtvalueurl = "/api/method/iot_ui.ui_api.devices_list_array?filter=offline";
+        table.ajax.url(rtvalueurl).load();
+    });
+    $('#table-offline_7d').click(function() {
+        rtvalueurl = "/api/method/iot_ui.ui_api.devices_list_array?filter=offline_7d";
+        table.ajax.url(rtvalueurl).load();
+    });
+
     $('#ui-id-1').click(function(){
         console.log(this, $curdevsn);
         var url = "/iot_devinfo/" + $curdevsn;
@@ -78,6 +100,7 @@ $(document).ready(function() {
         var url = "/iot_devinfo/" + $curdevsn;
         window.location.href=url;
     } );
+
 
 
     $("body").click(function(event){
