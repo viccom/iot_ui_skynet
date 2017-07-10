@@ -1,0 +1,29 @@
+{% extends "templates/iot_ui_base.html" %}
+
+{% block mystyle %}
+
+{% endblock %}
+
+
+{% block myscript %}
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=Uunwqg1begLNmZT29X128vIcnh0badER"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+{% endblock %}
+
+
+
+
+{% block content %}
+{% include "templates/iot_ui_breadcrumbs.html" %}
+
+<div id="l-map" style="width:100%; height: 100%; background-color:#666; z-index:1"></div>
+
+
+ <script type="text/javascript">
+
+{% include "templates/pages/gateways_map.js" %}
+
+ </script>
+{% endblock %}
+

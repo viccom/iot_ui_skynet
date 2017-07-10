@@ -122,14 +122,16 @@
 					  $("ul.nav-list li").each(function(){
 					      	var crurl = window.location.pathname;
 							var crhref = $(this).find("a").attr("href");
-							console.log(crurl, crhref)
+							//console.log(crurl, crhref)
 						if(crurl==crhref){
-						    $("ul.nav-list li .active").removeClass('active');
+						    $("ul.nav-list li").removeClass('active');
 						    $(this).addClass('active');
 						}
-						else{
-						    $("ul.nav-list li").addClass('active');
-						}
+//						else{
+//							console.log($("ul.nav-list").children("li").first());
+//							$("ul.nav-list").children("li").first().addClass("active");
+//								//.addClass("active");
+//						}
 					  });
 				</script>
 				<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

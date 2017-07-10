@@ -47,15 +47,16 @@ def get_post_json_data():
 def devices_list_array():
 	curuser = frappe.session.user
 	devices = list_iot_devices(curuser)
-	#print(devices)
+	print(devices)
 	userdevices = []
 	if devices["company_devices"]:
 		for devs in devices["company_devices"]:
 			for d in devs["devices"]:
 				for dsn in d["sn"]:
 					devinfo = IOTDevice.get_device_doc(dsn)
+					#print(dir(devinfo))
 					#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
-					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "device_company": devinfo.company})
+					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
 				pass
 			pass
 		pass
@@ -67,7 +68,7 @@ def devices_list_array():
 					devinfo = IOTDevice.get_device_doc(dsn)
 					#print(dir(devinfo))
 					#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
-					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "device_company": devinfo.company})
+					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
 				pass
 			pass
 		pass
@@ -76,15 +77,16 @@ def devices_list_array():
 		for d in devices["private_devices"]:
 			for dsn in d["sn"]:
 				devinfo = IOTDevice.get_device_doc(dsn)
+				#print(dir(devinfo))
 				#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
-				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "device_company": curuser})
+				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
 			pass
 		pass
 
 	if userdevices:
 		return userdevices
 	else:
-		return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "", "device_company": ""}
+		return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
 
 @frappe.whitelist()
 def iot_devices_array(sn=None):

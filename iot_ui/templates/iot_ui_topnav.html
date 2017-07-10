@@ -83,10 +83,16 @@
 						{% if isCompanyAdmin %}
 						<li class="grey">
 							<a href="/iot_ent_structure">
-								<span>成员管理</span>
+								<span>{{_('Membership')}}</span>
 							</a>
 						</li>
 						{% endif %}
+
+						<li class="grey">
+							<a href="/iot_bunchcode">
+								<span>{{_('My BunchCode')}}</span>
+							</a>
+						</li>
 						<!--顶部菜单-->
 
 						<!--右上角用户信息-->
@@ -108,10 +114,7 @@
 										<i class="ace-icon fa fa-user"></i>{{_('My Account')}}</a>
 								</li>
 
-								<li>
-									<a href="/iot_bunchcode">
-										<i class="ace-icon fa fa-delicious"></i>{{_('My BunchCode')}}</a>
-								</li>
+
 
 								<li class="divider"></li>
 

@@ -39,6 +39,7 @@ $(document).ready(function() {
             {"data": "device_name"},
             {"data": "device_desc"},
             {"data": "device_status"},
+            {"data": "last_updated"},
             {"data": "device_sn"},
             {"data": "device_company"},
 
