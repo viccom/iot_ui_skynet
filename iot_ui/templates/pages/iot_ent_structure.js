@@ -226,7 +226,7 @@ var demo1 = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox({
 var container1 = demo1.bootstrapDualListbox('getContainer');
 container1.find('.btn').addClass('btn-white btn-info btn-bold');
 
-    $('#add-members-to-company').click(function(){
+    $('#add-node-members').click(function(){
         $('#structure-list').addClass("hide");
         $('#add-group').addClass("hide");
         $('#member-list').addClass("hide");
@@ -276,7 +276,7 @@ container1.find('.btn').addClass('btn-white btn-info btn-bold');
 
     } );
 
-    $('#del-members-to-company').click(function(){
+    $('#del-node-members').click(function(){
         $('#structure-list').addClass("hide");
         $('#add-group').addClass("hide");
         $('#member-list').addClass("hide");

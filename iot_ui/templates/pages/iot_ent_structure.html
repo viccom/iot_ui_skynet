@@ -84,7 +84,7 @@
             <div class="widget-header">
                 <h5 class="widget-title bigger lighter">
                     <i class="ace-icon fa fa-table"></i>
-                    组织架构
+                    {{_('Structure')}}
                 </h5>
                 <span class="btn btn-info pull-right">
                     <i class="ace-icon fa fa-backward"></i>
@@ -105,7 +105,7 @@
                         <i class="drag-icon ace-icon fa fa-arrows bigger-125"></i>
                     </div>
                     <div class="dd2-content btn-info"><span id="companyheadquarters">{{company}}</span>
-                        <span class="pull-right btn-sm" data-rel="tooltip" data-placement="top" title="添加新组" id="headquarters">
+                        <span class="pull-right btn-sm" data-rel="tooltip" data-placement="top" title="{{_('Add new group')}}" id="headquarters">
                         <i class="ace-icon fa fa-plus-square"></i>
                         </span>
                     </div>
@@ -152,12 +152,12 @@
             <div class="widget-header">
                 <h5 class="widget-title bigger lighter">
                     <i class="ace-icon fa fa-table"></i>
-                    成员列表
+                    {{_('Member List')}}
                 </h5>
-                 <div class="btn btn-warning pull-right" data-rel="tooltip" data-placement="top" title="从当前节点中删除成员"  id="del-members-to-company">
+                 <div class="btn btn-warning pull-right" data-rel="tooltip" data-placement="top" title="从当前节点中删除成员"  id="del-node-members">
                     <i class="ace-icon fa fa-trash-o"></i>
                 </div>
-                <div class="btn btn-info pull-right" data-rel="tooltip" data-placement="top" title="添加成员到当前节点" id="add-members-to-company">
+                <div class="btn btn-info pull-right" data-rel="tooltip" data-placement="top" title="添加成员到当前节点" id="add-node-members">
                     <i class="ace-icon fa fa-plus-square"></i>
                 </div>
                 <span class="btn btn-default pull-right" id="table-refresh">
@@ -188,7 +188,7 @@
             <div class="widget-header">
                 <h5 class="widget-title bigger lighter" id="add-group-head">
                     <i class="ace-icon fa fa-table"></i>
-                    新增组
+                    {{_('New Group')}}
                 </h5>
                 <div class="btn btn-info pull-right" id="add-group-close">
                     <i class="ace-icon fa fa-close"></i>
@@ -197,7 +197,7 @@
 
             <div class="widget-box no-border">
                 <div class="widget-header">
-                    <h4 class="widget-title" id="add-group-title">定义组名</h4>
+                    <h4 class="widget-title" id="add-group-title">{{_('Define Group Name')}}</h4>
                 </div>
 
                 <div class="widget-body">
@@ -206,28 +206,28 @@
                             <!-- <legend>Form</legend> -->
                             <div class="col-xs-4 col-sm-4"></div>
                             <fieldset>
-                                <label>组名</label>
+                                <label>{{_('Group Name')}}</label>
 
-                                <input type="text" placeholder="组名" data-options="fgfg" id="new-group-name" />
-                                <div class="help-block" id="newname-temp" data-id="idid">在文本框中输入你的组名.</div>
+                                <input type="text" placeholder="{{_('Group Name')}}" data-options="fgfg" id="new-group-name" />
+                                <div class="help-block" id="newname-temp" data-id="idid">在文本框中输入你的组名.{{_('Input your group name in the text area')}}</div>
 
                             </fieldset>
 
                             <div class="form-actions center">
                                 <button class="btn btn-info" type="button" id="btn-modify">
                                     <i class="ace-icon fa fa-check-square bigger-110"></i>
-                                    修改
+                                    {{_('Modify')}}
                                 </button>
 
                                 <button class="btn btn-info" type="button" id="btn-confirm">
                                     <i class="ace-icon fa fa-check bigger-110"></i>
-                                    确定
+                                    {{_('Confirm')}}
                                 </button>
 
                                 &nbsp; &nbsp; &nbsp;
                                 <button class="btn" type="reset" id="btn-reset">
                                     <i class="ace-icon fa fa-undo bigger-110"></i>
-                                    重置
+                                    {{_('Reset')}}
                                 </button>
                             </div>
                         </form>
@@ -247,7 +247,7 @@
             <div class="widget-header">
                 <h5 class="widget-title bigger lighter" id="add-member-head">
                     <i class="ace-icon fa fa-table"></i>
-                    新增成员
+                    {{_('Add New Member')}}
                 </h5>
                 <div class="btn btn-info pull-right" id="add-member-close">
                     <i class="ace-icon fa fa-close"></i>
@@ -256,7 +256,7 @@
 
             <div class="widget-box no-border">
                 <div class="widget-header">
-                    <h4 class="widget-title">旋思科技</h4>
+                    <h4 class="widget-title">{{company}}</h4>
                 </div>
                 <!-- form CONTENT BEGINS -->
                 <form class="form-horizontal" role="form">
@@ -264,7 +264,7 @@
                     <div class="hr hr-16 hr-dotted"></div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-top" for="duallist"> 可能用户列表 </label>
+                        <label class="col-sm-3 control-label no-padding-top" for="duallist"> {{_('Possible members list')}}</label>
 
                         <div class="col-sm-8">
                             <select multiple="multiple" size="10" name="duallistbox_demo1[]" id="duallist">
@@ -282,13 +282,13 @@
                     <div class="form-actions center">
                         <button class="btn btn-info" type="button" id="btn-add-members">
                             <i class="ace-icon fa fa-check bigger-110"></i>
-                            确定
+                            {{_('Confirm')}}
                         </button>
 
                         &nbsp; &nbsp; &nbsp;
                         <button class="btn" type="reset" id="btn-cancel">
                             <i class="ace-icon fa fa-ban bigger-110"></i>
-                            取消
+                            {{_('Cancel')}}
                         </button>
                     </div>
                 </form>
@@ -308,14 +308,14 @@
 
     <div id="dialog-confirm" class="hide">
         <div class="alert alert-info bigger-110">
-            The item will be permanently deleted and the members of the Group will be removed.
+            {{_('The item will be permanently deleted and the members of the Group will be removed.')}}
         </div>
 
         <div class="space-6"></div>
 
         <p class="bigger-110 bolder center grey">
             <i class="ace-icon fa fa-hand-o-right blue bigger-120"></i>
-            Are you sure?
+            {{_('Are you sure?')}}
         </p>
     </div>
 

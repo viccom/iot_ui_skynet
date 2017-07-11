@@ -24,7 +24,7 @@
         <div class="col-sm-12 widget-container-col" id="q1">
             <div class="widget-box transparent" id="widget-box-1">
                 <div class="widget-header">
-                    <h4 class="widget-title lighter">网关概览</h4>
+                    <h4 class="widget-title lighter">{{_('gateway overview')}}</h4>
 
                     <div class="widget-toolbar no-border">
 
@@ -53,7 +53,7 @@
 
                             <div class="infobox-data" data-id="all">
                                 <span class="infobox-data-number">{{userdevices.total|length}}</span>
-                                <div class="infobox-content">网关总数</div>
+                                <div class="infobox-content">{{_('total gateways')}}</div>
                             </div>
 
                             <!--<div class="stat stat-success">8%</div>-->
@@ -66,7 +66,7 @@
 
                             <div class="infobox-data"  data-id="online">
                                 <span class="infobox-data-number">{{userdevices.online|length}}</span>
-                                <div class="infobox-content">在线网关</div>
+                                <div class="infobox-content">{{_('online gateways')}}</div>
                             </div>
 
                             <!--<div class="badge badge-success">-->
@@ -83,7 +83,7 @@
 
                             <div class="infobox-data"  data-id="offline">
                                 <span class="infobox-data-number">{{userdevices.offline|length}}</span>
-                                <div class="infobox-content">离线网关</div>
+                                <div class="infobox-content">{{_('offline gateways')}}</div>
                             </div>
 
 
@@ -96,7 +96,7 @@
 
                             <div class="infobox-data"  data-id="offline_7d">
                                 <span class="infobox-data-number">{{userdevices.offline_7d|length}}</span>
-                                <div class="infobox-content">离线超过一周网关</div>
+                                <div class="infobox-content">{{_('offline gateways exceeds 7days')}}</div>
                             </div>
 
                         </div>

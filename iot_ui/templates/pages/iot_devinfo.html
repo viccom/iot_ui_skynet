@@ -16,10 +16,10 @@
 {% include "templates/iot_ui_breadcrumbs.html" %}
 <div class="page-header visible-sm visible-md visible-lg">
     <h1>
-        网关{{ doc.dev_name }}
+        {{_('gateway')}} {{ doc.dev_name }}
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            共{{ vsn|length }}个设备
+            {{_('Total  devices')}}:{{ vsn|length }}
         </small>
     </h1>
 </div>
@@ -29,7 +29,7 @@
     <div class="btn btn-app btn-sm btn-light btn-yellow no-hover" devname="{{ doc.dev_name }}" devid="{{ doc.name }}">
 
 
-        <span class="line-height-1 bigger-170 blue"> 网关 </span>
+        <span class="line-height-1 bigger-150 blue"> {{_('gateway')}} </span>
 
         <br>
         <span class="line-height-1 smaller-90"> {{ doc.dev_name }} </span>
@@ -38,7 +38,7 @@
     {% for dev in devices %}
     <div class="btn btn-app btn-sm btn-grey no-hover" devname="{{ dev.name }}" devid="{{ dev.sn }}">
 
-        <span class="line-height-1 bigger-170"> 设备 </span>
+        <span class="line-height-1 bigger-150"> {{_('device')}} </span>
 
         <br>
         <span class="line-height-1 smaller-90"> {{ dev.name }} </span>
@@ -54,7 +54,7 @@
         <div class="widget-header">
             <div class="col-sm-5 visible-sm visible-md visible-lg">
             <h4 class="widget-title lighter smaller" id="cur_devname">
-                设备名称:{{ doc.dev_name }}
+                {{_('device name')}}:{{ doc.dev_name }}
             </h4>
             </div>
             <span class="btn btn-default" id="auto_refresh">已自动刷新</span>
@@ -63,19 +63,19 @@
 
                 <ul class="nav nav-tabs" id="recent-tab">
                     <li class="active" id="cloud-data">
-                        <a data-toggle="tab" href="#cloud-data-tab">平台数据</a>
+                        <a data-toggle="tab" href="#cloud-data-tab">{{_('Platform Data')}}</a>
                     </li>
 
                     <li id="locale-data">
-                        <a data-toggle="tab" href="#locale-data-tab">现场数据</a>
+                        <a data-toggle="tab" href="#locale-data-tab">{{_('Spot Data')}}</a>
                     </li>
 
                     <li class="hide" id="dev-message">
-                        <a data-toggle="tab" href="#message-tab">设备报文</a>
+                        <a data-toggle="tab" href="#message-tab">{{_('Device Message')}}</a>
                     </li>
 
                     <li id="symlink-log">
-                        <a data-toggle="tab" href="#log-tab">网关日志</a>
+                        <a data-toggle="tab" href="#log-tab">{{_('Gateway Log')}}</a>
                     </li>
 
                 </ul>
@@ -91,7 +91,7 @@
                                 <div class="widget-header">
                                     <h5 class="widget-title bigger lighter">
                                         <i class="ace-icon fa fa-table"></i>
-                                        数据列表
+                                        {{_('Data List')}}
                                     </h5>
 
                                 </div>

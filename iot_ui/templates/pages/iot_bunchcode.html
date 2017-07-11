@@ -33,11 +33,11 @@
 
                 <ul class="nav nav-tabs" id="recent-tab">
                     <li class="active" id="group-bunchcode-data">
-                        <a data-toggle="tab" href="#group-bunchcode-tab">组绑定码</a>
+                        <a data-toggle="tab" href="#group-bunchcode-tab">{{_('group bunchcode')}}</a>
                     </li>
 
                     <li id="private-bunchcode-data">
-                        <a data-toggle="tab" href="#private-bunchcode-tab">私有绑定码</a>
+                        <a data-toggle="tab" href="#private-bunchcode-tab">{{_('private bunchcode')}}</a>
                     </li>
 
                 </ul>
@@ -59,7 +59,7 @@
                                 <div class="widget-toolbar no-border add_group-bunch_code">
                                     <a href="#" data-action="settings">
                                         <i class="ace-icon fa fa-plus-square"></i>
-                                        新增绑定码
+                                        {{_('new bunchcode')}}
                                     </a>
 
                                 </div>
@@ -74,7 +74,7 @@
                                         <div class="col-xs-6 col-sm-6 profile-info-value">
                                             <div class="btn btn-white btn-warning btn-bold bunchcode" data-bunchcode="{{g.name}}">
                                                 <i class="ace-icon fa fa-trash-o"></i>
-                                                Delete
+                                                {{_('Delete')}}
                                             </div>
 
                                         </div>
@@ -128,7 +128,7 @@
                                         <div class="widget-toolbar no-border">
                                             <a href="#" data-action="settings" id="add_bunch_code">
                                                 <i class="ace-icon fa fa-plus-square"></i>
-                                                新增绑定码
+                                                {{_('new bunchcode')}}
                                             </a>
 
                                         </div>
@@ -144,7 +144,7 @@
                                                     <div class="col-xs-6 col-sm-6 profile-info-value">
                                                         <div class="btn btn-white btn-warning btn-bold bunchcode"  data-bunchcode="{{p.name}}">
                                                             <i class="ace-icon fa fa-trash-o"></i>
-                                                            Delete
+                                                            {{_('Delete')}}
                                                         </div>
                                                     </div>
                                                 {% endfor %}

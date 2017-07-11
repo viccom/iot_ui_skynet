@@ -23,7 +23,7 @@ $(document).ready(function() {
                 + '</div>'
                 + '<div class="col-xs-6 col-sm-6 profile-info-value">'
                     + '<div class="btn btn-white btn-warning btn-bold bunchcode"  data-bunchcode="'+ data.message.code +'">'
-                        + '<i class="ace-icon fa fa-trash-o smaller-90"></i>Delete'
+                        + '<i class="ace-icon fa fa-trash-o smaller-90"></i>{{_("Delete")}}'
                     + '</div>'
                 + '</div>');
           }
@@ -47,7 +47,7 @@ $(document).ready(function() {
                 + '</div>'
                 + '<div class="col-xs-6 col-sm-6 profile-info-value">'
                     + '<div class="btn btn-white btn-warning btn-bold bunchcode"  data-bunchcode="'+ data.message.code +'">'
-                        + '<i class="ace-icon fa fa-trash-o smaller-90"></i>Delete'
+                        + '<i class="ace-icon fa fa-trash-o smaller-90"></i>{{_("Delete")}}'
                     + '</div>'
                 + '</div>');
           }
@@ -87,7 +87,7 @@ $(document).ready(function() {
               }
               else{
                   $.gritter.add({
-						title: '删除绑定码错误',
+						title: '{{_("Error deleting bunchcode")}}',
 						text: r.message.reason,
 						class_name: 'gritter-error gritter-light'
 					});

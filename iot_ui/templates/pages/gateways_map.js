@@ -31,7 +31,7 @@ $(function(){
 	  $('#l-map').height(parseInt($(window).height())-86);
 	});
     $("#footerandfooter").remove();
-    var dataurl = "/api/method/iot_ui.ui_api.devices_list_array";
+    var dataurl = "/api/method/iot_ui.ui_api.devices_list_array?filter=all";
     $.ajax({url:dataurl,async:true,success:function(r){
         console.log(r);
 
