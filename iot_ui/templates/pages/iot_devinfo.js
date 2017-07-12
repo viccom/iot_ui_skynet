@@ -94,37 +94,38 @@ $(document).ready(function() {
         ]
     });
 
-      refflag = setInterval( function () {table.ajax.reload( null, false ); }, 3000 );
+      if($('#gritter-light').get(0).checked){
+          refflag = setInterval( function () {table.ajax.reload( null, false ); }, 3000 );
+          console.log("开始自动刷新");
 
+      }
 
-      $("#auto_refresh").click(function(){
-          console.log($(this).html());
-          if($(this).html()=="已自动刷新"){
-            refflag = window.clearInterval(refflag);
-            $(this).html("已停止刷新")
+      $("#auto_refresh").change(function(){
+          if($('#gritter-light').get(0).checked){
+              refflag = setInterval( function () {table.ajax.reload( null, false ); }, 3000 );
+              console.log("开始自动刷新");
+
           }
           else{
-              refflag = setInterval( function () {table.ajax.reload( null, false ); }, 3000 );
-              $(this).html("已自动刷新")
+            refflag = window.clearInterval(refflag);
+            console.log("停止刷新");
+
           }
+
       });
 
         $("#cloud-data").click(function(){
               $('#manual_query').addClass('hide');
-              $('#auto_refresh').removeClass('hide');
       });
 
         $("#locale-data").click(function(){
               $('#manual_query').removeClass('hide');
-              $('#auto_refresh').addClass('hide');
       });
         $("#symlink-log").click(function(){
               $('#manual_query').removeClass('hide');
-              $('#auto_refresh').addClass('hide');
       });
         $("#dev-message").click(function(){
               $('#manual_query').removeClass('hide');
-              $('#auto_refresh').addClass('hide');
       });
     //点击按钮
           $("div .btn-app").each(function(){
@@ -151,7 +152,7 @@ $(document).ready(function() {
                       }
                       lastid = id;
                       $('#manual_query').addClass('hide');
-                      $('#auto_refresh').removeClass('hide');
+
 
                   }
                   else if(lastid==symlinksn){
@@ -175,7 +176,6 @@ $(document).ready(function() {
                       $('#log-tab').addClass('hide');
 
                       $('#manual_query').addClass('hide');
-                      $('#auto_refresh').removeClass('hide');
 
 
                   }
