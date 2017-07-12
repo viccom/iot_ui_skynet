@@ -93,6 +93,8 @@
 								<span>{{_('My BunchCode')}}</span>
 							</a>
 						</li>
+
+
 						<!--顶部菜单-->
 
 						<!--右上角用户信息-->
@@ -101,7 +103,7 @@
 								<img class="nav-user-photo" src="/assets/iot_ui/assets/images/avatars/user.jpg" alt="Jason's Photo" />
 								<span class="user-info">
 									<small>{{_('Welcome')}}</small>
-									{{ user }}
+									{{fullname}}
 								</span>
 
 								<i class="ace-icon fa fa-caret-down"></i>
@@ -128,10 +130,83 @@
 						</li>
 						<!--右上角用户信息-->
 
+
+						<!--语言切换-->
+						<li class="light-blue dropdown-modal">
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<span id="current_Language">
+									{% if language=="zh" %}
+										简体中文
+									{% else %}
+										English
+									{% endif %}
+								</span>
+
+								<i class="ace-icon fa fa-caret-down"></i>
+							</a>
+
+							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+
+								<li id="switch_Language">
+									<a href="#">
+										<span>
+											{% if language=="zh" %}
+												English
+											{% else %}
+												简体中文
+											{% endif %}
+										</span>
+									</a>
+								</li>
+
+							</ul>
+						</li>
+						<!--语言切换-->
 					</ul>
 				</div>
 				<!--顶部导航-->
 
 			
 		</div>
+		<script type="text/javascript">
+		$.ajaxSetup( {
+
+			headers: { // 默认添加请求头
+				"X-Frappe-CSRF-Token": "{{csrf_token}}",
+				"Powered-By": "CodePlayer"
+			}
+		} );
+		$('#switch_Language').click(function() {
+			//console.log("switch_Language");
+			//var userinfo = '{"first_name":"viccom","middle_name":"","last_name":"dong","user_image":{"__no_attachment":1},"phone":"","language":"en-US","doctype":"User","name":"viccom.dong@symid.com"}';
+			{% if language=="zh" %}
+				var curlang = "en-US";
+			{% else %}
+				var curlang = "zh";
+			{% endif %}
+			var userinfo = '{"language":"'+curlang+'","doctype":"User","name":"viccom.dong@symid.com"}';
+
+			var postdata = {
+			    "data":userinfo,
+				"web_form":"edit-profile",
+				"cmd":"frappe.website.doctype.web_form.web_form.accept"
+			};
+			//console.log(postdata);
+			$.ajax({
+                type: 'POST',
+                url: "/",
+                contentType: "application/x-www-form-urlencoded", //必须有
+                data: postdata,
+                dataType: "json",
+                success: function(r) {
+                        if(r.message){
+							window.location.reload();
+						}
+                  },
+                 error: function() {
+                      console.log("异常!");
+                  }
+            });
+		});
+		</script>
 		<!-- /.navbar-container -->

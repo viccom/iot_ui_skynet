@@ -10,7 +10,7 @@ $.ajaxSetup( {
     }
 } );
 
-
+$(document.body).css({"overflow-y":"scroll" });
 $(document).ready(function() {
 
     $('#add_bunch_code').click(function(){

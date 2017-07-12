@@ -23,7 +23,9 @@ def get_context(context):
 	context.filter = filter
 	context.no_cache = 1
 	context.show_sidebar = True
-	context.no_cache = 1
+
+	context.language = frappe.db.get_value("User", frappe.session.user, ["language"])
+	context.csrf_token = frappe.local.session.data.csrf_token
 
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		context.isCompanyAdmin = True

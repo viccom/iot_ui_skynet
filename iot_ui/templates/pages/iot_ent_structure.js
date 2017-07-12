@@ -7,6 +7,7 @@ $.ajaxSetup( {
         "Powered-By": "CodePlayer"
     }
 } );
+$(document.body).css({"overflow-y":"scroll" });
     var selectnode = "root";
     var memberopflag = 1;
 $(document).ready(function() {

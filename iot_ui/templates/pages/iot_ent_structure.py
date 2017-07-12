@@ -38,6 +38,7 @@ def get_context(context):
 	context.no_cache = 1
 	context.show_sidebar = True
 	context.no_cache = 1
+	context.language = frappe.db.get_value("User", frappe.session.user, ["language"])
 	nameobj = frappe.get_value("Cloud Employee", frappe.session.user, "company")
 	if not nameobj:
 		frappe.local.flags.redirect_location = "/me"

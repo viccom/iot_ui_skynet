@@ -12,6 +12,10 @@ from frappe.utils.user import get_fullname_and_avatar
 from iot.hdb_api import list_iot_devices
 from iot.iot.doctype.iot_device.iot_device import IOTDevice
 from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
+from frappe import _dict
+import frappe.share
+
+
 
 UTC_FORMAT1 = "%Y-%m-%dT%H:%M:%S.%fZ"
 UTC_FORMAT2 = "%Y-%m-%dT%H:%M:%SZ"
@@ -25,15 +29,16 @@ def utc2local(utc_st):
 	local_st = utc_st + offset
 	return local_st
 
-
 def get_context(context):
 	if frappe.session.user == 'Guest':
 		frappe.local.flags.redirect_location = "/login"
 		raise frappe.Redirect
 	context.no_cache = 1
 	context.show_sidebar = True
+	context.csrf_token = frappe.local.session.data.csrf_token
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		context.isCompanyAdmin = True
+	context.language = frappe.db.get_value("User",frappe.session.user, ["language"])
 	curuser = frappe.session.user
 	devices = list_iot_devices(curuser)
 	userdevices_total = []

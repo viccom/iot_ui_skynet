@@ -40,7 +40,7 @@ def get_context(context):
 	context.no_cache = 1
 
 	curuser = frappe.session.user
-
+	context.language = frappe.db.get_value("User", frappe.session.user, ["language"])
 	bunch_codes = []
 	groups = list_curuser_groups()
 	print("groups", groups)

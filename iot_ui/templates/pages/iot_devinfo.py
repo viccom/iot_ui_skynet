@@ -22,6 +22,7 @@ def get_context(context):
 		raise frappe.Redirect
 
 	user_roles = frappe.get_roles(frappe.session.user)
+	context.language = frappe.db.get_value("User", frappe.session.user, ["language"])
 	if 'IOT User' not in user_roles or frappe.session.user == 'Guest':
 		raise frappe.PermissionError
 	context.no_cache = 1
@@ -42,6 +43,7 @@ def get_context(context):
 	n_list.sort(key=lambda k: (k.get('id', 0)))
 	context.leftnavlist = n_list
 	context.title = _('Devices_List')
+	context.csrf_token = frappe.local.session.data.csrf_token
 
 	device = frappe.get_doc('IOT Device', name)
 	device.has_permission('read')
