@@ -38,7 +38,7 @@ def get_context(context):
 	context.csrf_token = frappe.local.session.data.csrf_token
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		context.isCompanyAdmin = True
-	context.language = frappe.db.get_value("User",frappe.session.user, ["language"])
+	context.language = frappe.local.lang #frappe.db.get_value("User",frappe.session.user, ["language"])
 	curuser = frappe.session.user
 	devices = list_iot_devices(curuser)
 	userdevices_total = []

@@ -22,6 +22,19 @@ from cloud.cloud.doctype.cloud_employee.cloud_employee import add_employee
 from frappe.utils.user import get_user_fullname
 from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
 
+class UseProfile:
+	def get_fullname_and_avatar(user):
+		first_name, last_name, avatar, name, language = frappe.db.get_value("User",
+			user, ["first_name", "last_name", "user_image", "name"])
+		return _dict({
+			"fullname": " ".join(filter(None, [first_name, last_name])),
+			"avatar": avatar,
+			"name": name
+		})
+
+
+
+
 def get_bunch_codes(group, start=0, search=None):
 	filters = {
 		"owner_type": "Cloud Company Group",

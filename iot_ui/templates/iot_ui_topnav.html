@@ -184,7 +184,7 @@
 			{% else %}
 				var curlang = "zh";
 			{% endif %}
-			var userinfo = '{"language":"'+curlang+'","doctype":"User","name":"viccom.dong@symid.com"}';
+			var userinfo = '{"language":"'+curlang+'","doctype":"User","name":"{{user}}"}';
 
 			var postdata = {
 			    "data":userinfo,
