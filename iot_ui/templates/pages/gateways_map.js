@@ -1,4 +1,4 @@
-	var map = new BMap.Map("l-map");
+	var map = new BMap.Map("l-map",{enableMapClick: false});
 	map.centerAndZoom("北京市", 10);
 	map.enableScrollWheelZoom();
 

@@ -1,0 +1,153 @@
+{% extends "templates/iot_ui_base.html" %}
+
+{% block mystyle %}
+<style>
+.infobox-data-number{font-size:44px}
+
+</style>
+
+{% endblock %}
+
+
+{% block myscript %}
+
+{% endblock %}
+
+
+
+
+{% block content %}
+{% include "templates/iot_ui_breadcrumbs.html" %}
+<div class="page-content">
+
+    <div class="">
+    <div id="user-profile-2" class="user-profile">
+        <div class="tabbable">
+            <ul class="nav nav-tabs padding-18">
+                <li class="active">
+                    <a data-toggle="tab" href="#home">
+                        <i class="green ace-icon fa fa-user bigger-120"></i>
+                        Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a data-toggle="tab" href="#feed">
+                        <i class="orange ace-icon fa fa-rss bigger-120"></i>
+                        Activity Feed
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content no-border padding-24">
+                <div id="home" class="tab-pane in active">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-3 center">
+                            <span class="profile-picture">
+                                <img class="editable img-responsive" alt="Alex's Avatar" id="avatar2" src="assets/images/avatars/profile-pic.jpg" />
+                            </span>
+
+                            <div class="space space-4"></div>
+
+                            <a href="#" class="btn btn-sm btn-block btn-success">
+                                <i class="ace-icon fa fa-plus-circle bigger-120"></i>
+                                <span class="bigger-110">编辑个人资料</span>
+                            </a>
+
+                            <a href="#" class="btn btn-sm btn-block btn-primary">
+                                <i class="ace-icon fa fa-envelope-o bigger-110"></i>
+                                <span class="bigger-110">修改密码</span>
+                            </a>
+                        </div><!-- /.col -->
+
+                        <div class="col-xs-12 col-sm-9">
+                            <h4 class="blue">
+                                <span class="middle">{{userprofile.fullname}}</span>
+
+                                <span class="label label-purple arrowed-in-right">
+                                    <i class="ace-icon fa fa-circle smaller-80 align-middle"></i>
+                                    online
+                                </span>
+                            </h4>
+
+                            <div class="profile-user-info">
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name">Name  </div>
+
+                                    <div class="profile-info-value">
+                                        <span>{{userprofile.fullname}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Location </div>
+
+                                    <div class="profile-info-value">
+                                        <i class="fa fa-map-marker light-orange bigger-110"></i>
+                                        <span>Netherlands</span>
+                                        <span>Amsterdam</span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Mobile </div>
+
+                                    <div class="profile-info-value">
+                                        <span>{{userprofile.mobile_no}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Joined </div>
+
+                                    <div class="profile-info-value">
+                                        <span>2010/06/20</span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Last Login </div>
+
+                                    <div class="profile-info-value">
+                                        <span>{{userprofile.last_login}}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+
+                </div><!-- /#home -->
+
+                <div id="feed" class="tab-pane">
+                    <div class="profile-feed row">
+
+                    </div><!-- /.row -->
+
+                </div><!-- /#feed -->
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+
+	<!--<span>{{userprofile.fullname}}</span> <br />-->
+    <!--<span>{{userprofile.name}}</span> <br />-->
+    <!--<span>{{userprofile.language}}</span> <br />-->
+    <!--<span>{{userprofile.phone}}</span> <br />-->
+    <!--<span>{{userprofile.mobile_no}}</span> <br />-->
+    <!--<span>{{userprofile.last_login}}</span> <br />-->
+    <!--<span>{{userprofile.last_ip}}</span> <br />-->
+
+</div>
+
+ <script type="text/javascript">
+
+{% include "templates/pages/iot_profile.js" %}
+
+ </script>
+{% endblock %}
+

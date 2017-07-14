@@ -12,7 +12,7 @@ from frappe.utils.user import get_fullname_and_avatar
 from iot.hdb_api import list_iot_devices
 from iot.iot.doctype.iot_device.iot_device import IOTDevice
 from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
-from frappe import _dict
+from iot_ui.ui_api import get_all
 import frappe.share
 
 
@@ -40,6 +40,7 @@ def get_context(context):
 		context.isCompanyAdmin = True
 	context.language = frappe.local.lang #frappe.db.get_value("User",frappe.session.user, ["language"])
 	curuser = frappe.session.user
+	context.userprofile = get_all(curuser)
 	devices = list_iot_devices(curuser)
 	userdevices_total = []
 	userdevices_online = []
