@@ -1,0 +1,71 @@
+{% extends "templates/iot_ui_base.html" %}
+
+{% block mystyle %}
+<link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/jquery.dataTables.min.css">
+<link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/responsive.dataTables.min.css">
+<style>
+    .tips {
+      position: absolute;
+
+    }
+</style>
+{% endblock %}
+
+
+{% block myscript %}
+
+{% endblock %}
+
+
+
+
+{% block content %}
+{% include "templates/iot_ui_breadcrumbs.html" %}
+
+    <div class="col-xs-12 col-sm-12 widget-container-col" id="widget-container-col-2">
+        <div class="widget-box widget-color-grey" id="widget-box-2">
+            <div class="widget-header">
+
+                <h5 class="widget-title bigger lighter">
+                    <i class="ace-icon fa fa-table"></i>
+                    {{title}}
+                </h5>
+
+                <span class="btn btn-default pull-right" id="table-refresh">
+                    <i class="ace-icon fa fa-refresh"></i>
+                </span>
+
+            </div>
+
+            <div>
+            <table id="example"  class="display responsive nowrap" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>{{_('device_sn')}}</th>
+                        <th>{{_('error_type')}}</th>
+                        <th>{{_('error_key')}}</th>
+                        <th>{{_('error_level')}}</th>
+                        <th>{{_('brief')}}</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+        </div>
+
+    </div>
+<!-- /.span -->
+
+
+		<script src="/assets/iot_ui/assets/js/jquery.dataTables.min.js"></script>
+		<script src="/assets/iot_ui/assets/js/jquery.dataTables.bootstrap.min.js"></script>
+        <script src="/assets/iot_ui/assets/js/dataTables.responsive.min.js"></script>
+
+         <script type="text/javascript">
+
+        {% include "templates/pages/iot_event.js" %}
+
+         </script>
+
+{% endblock %}
+

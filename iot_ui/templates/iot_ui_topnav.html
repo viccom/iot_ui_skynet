@@ -32,25 +32,25 @@
 						<li class="purple dropdown-modal">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 								<i class="ace-icon fa fa-bell icon-animated-bell"></i>
-								<span class="badge badge-important"></span>
+								<span class="badge badge-important" id="unread_mes1"></span>
 							</a>
 
 							<ul class="dropdown-menu-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
 								<li class="dropdown-header">
 									<i class="ace-icon fa fa-exclamation-triangle"></i>
-									8 Notifications
+									<span id="unread_mes2"></span> {{_('Notifications')}}
 								</li>
 
 								<li class="dropdown-content">
 									<ul class="dropdown-menu dropdown-navbar navbar-pink">
 										<li>
-											<a href="#">
+											<a href="/iot_event">
 												<div class="clearfix">
 													<span class="pull-left">
 														<i class="btn btn-xs no-hover btn-pink fa fa-comment"></i>
-														New Comments
+														{{_('Fault message')}}
 													</span>
-													<span class="pull-right badge badge-info">+12</span>
+													<span class="pull-right badge badge-info" id="unread_mes3"></span>
 												</div>
 											</a>
 										</li>
@@ -60,9 +60,9 @@
 												<div class="clearfix">
 													<span class="pull-left">
 														<i class="btn btn-xs no-hover btn-info fa fa-twitter"></i>
-														Followers
+														{{_('Service message')}}
 													</span>
-													<span class="pull-right badge badge-info">+11</span>
+													<span class="pull-right badge badge-info">0</span>
 												</div>
 											</a>
 										</li>
@@ -70,8 +70,8 @@
 								</li>
 
 								<li class="dropdown-footer">
-									<a href="#">
-										See all notifications
+									<a href="/iot_event">
+										{{_('See all notifications')}}
 										<i class="ace-icon fa fa-arrow-right"></i>
 									</a>
 								</li>
@@ -101,10 +101,13 @@
 						<li class="light-blue dropdown-modal">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 								<img class="nav-user-photo" src="/assets/iot_ui/assets/images/avatars/user.jpg" alt="Jason's Photo" />
-								<span class="user-info">
-									<small>{{_('Welcome')}}</small>
+								<span>
 									{{fullname}}
 								</span>
+<!--								<span class="user-info">
+									<small>{{_('Welcome')}}</small>
+									{{fullname}}
+								</span>-->
 
 								<i class="ace-icon fa fa-caret-down"></i>
 							</a>
@@ -170,45 +173,11 @@
 
 			
 		</div>
+
 		<script type="text/javascript">
-		$.ajaxSetup( {
 
-			headers: { // 默认添加请求头
-				"X-Frappe-CSRF-Token": "{{csrf_token}}",
-				"Powered-By": "CodePlayer"
-			}
-		} );
-		$('#switch_Language').click(function() {
-			//console.log("switch_Language");
-			//var userinfo = '{"first_name":"viccom","middle_name":"","last_name":"dong","user_image":{"__no_attachment":1},"phone":"","language":"en-US","doctype":"User","name":"viccom.dong@symid.com"}';
-			{% if language=="zh" %}
-				var curlang = "en-US";
-			{% else %}
-				var curlang = "zh";
-			{% endif %}
-			var userinfo = '{"language":"'+curlang+'","doctype":"User","name":"{{user}}"}';
+        {% include "templates/iot_ui_base.js" %}
 
-			var postdata = {
-			    "data":userinfo,
-				"web_form":"edit-profile",
-				"cmd":"frappe.website.doctype.web_form.web_form.accept"
-			};
-			//console.log(postdata);
-			$.ajax({
-                type: 'POST',
-                url: "/",
-                contentType: "application/x-www-form-urlencoded", //必须有
-                data: postdata,
-                dataType: "json",
-                success: function(r) {
-                        if(r.message){
-							window.location.reload();
-						}
-                  },
-                 error: function() {
-                      console.log("异常!");
-                  }
-            });
-		});
-		</script>
+         </script>
+
 		<!-- /.navbar-container -->

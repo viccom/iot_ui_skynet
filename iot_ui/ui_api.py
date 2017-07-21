@@ -65,7 +65,7 @@ def get_post_json_data():
 def devices_list_array(filter):
 	curuser = frappe.session.user
 	devices = list_iot_devices(curuser)
-	print(devices)
+	#print(devices)
 	userdevices = []
 	userdevices_online = []
 	userdevices_offline = []
@@ -85,7 +85,7 @@ def devices_list_array(filter):
 						                           "device_desc": devinfo.description,
 						                           "device_status": devinfo.device_status,
 						                           "last_updated": devinfo.last_updated,
-						                           "device_company": devinfo.company, "longitude": devinfo.longitude,
+						                           "0": devinfo.company, "longitude": devinfo.longitude,
 						                           "latitude": devinfo.latitude})
 					elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 						userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
@@ -182,22 +182,22 @@ def devices_list_array(filter):
 		if userdevices_online:
 			return userdevices_online
 		else:
-			return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
+			return [{"device_name": None, "device_sn": None, "device_desc": None, "device_status": None,  "last_updated": None, "device_company": None,  "longitude": None, "latitude": None}]
 	elif filter=="offline":
 		if userdevices_offline:
 			return userdevices_offline
 		else:
-			return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
+			return [{"device_name": None, "device_sn": None, "device_desc": None, "device_status": None,  "last_updated": None, "device_company": None,  "longitude": None, "latitude": None}]
 	elif filter=="offline_7d":
 		if userdevices_offline_7d:
 			return userdevices_offline_7d
 		else:
-			return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
+			return [{"device_name": None, "device_sn": None, "device_desc": None, "device_status": None,  "last_updated": None, "device_company": None,  "longitude": None, "latitude": None}]
 	else:
 		if userdevices:
 			return userdevices
 		else:
-			return {"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}
+			return [{"device_name": None, "device_sn": None, "device_desc": None, "device_status": None,  "last_updated": None, "device_company": None,  "longitude": None, "latitude": None}]
 
 
 
@@ -500,6 +500,77 @@ def delete_group_members():
 	g = frappe.get_doc("Cloud Company Group", group)
 	g.remove_users(*users)
 	return {"result": 'sucessful'}
+
+@frappe.whitelist()
+def query_iot_event(filter):
+	gates = devices_list_array("all")
+	events = []
+	for g in gates:
+		#print(g)
+		if g["device_sn"]:
+			print(g["device_sn"])
+			rr = frappe.db.get_list("IOT Device Error", fields=["name", "device", "error_type", "error_key", "error_level", "error_info"], filters={"device": g["device_sn"],})
+			if rr:
+				for r in rr:
+					events.append(r)
+
+	ev_Visited = frappe.db.get_list("Error Visited", fields=["error_visited"], filters={"user": frappe.session.user, })
+	ev_hasread = []
+	ev_unread = []
+
+	if events:
+		if ev_Visited:
+			for d in ev_Visited:
+				f = d['error_visited']
+				for e in events:
+					if f in e.values():
+						e["hasRead"] = True
+						e["brief"] = e["error_info"][0:8]
+						ev_hasread.append(e)
+					else:
+						e["hasRead"] = False
+						e["brief"] = e["error_info"][0:8]
+						ev_unread.append(e)
+		else:
+			for e in events:
+				e["hasRead"] = False
+				e["brief"] = e["error_info"][0:8]
+				ev_unread.append(e)
+
+	events = ev_unread + ev_hasread
+	if filter == "all":
+		if events:
+			return events
+		else:
+			return None
+	elif filter == "unread":
+		return ev_unread
+	elif filter == "hasread":
+		return ev_hasread
+
+@frappe.whitelist()
+def get_iot_event(errid):
+	event = frappe.get_doc("IOT Device Error", errid)
+	return event
+
+@frappe.whitelist()
+def mark_iot_event_read():
+	postdata = get_post_json_data()
+	errid = postdata.errid
+	doc = frappe.get_doc({
+		"doctype": "Error Visited",
+		"error_visited": errid,
+		"user": frappe.session.user,
+	}).insert()
+	# doc.save()
+	# frappe.db.commit()
+
+@frappe.whitelist()
+def del_iot_event():
+	postdata = get_post_json_data()
+	print(postdata)
+	company = postdata.company
+	members = postdata.members
 
 @frappe.whitelist(allow_guest=True)
 def ping():
