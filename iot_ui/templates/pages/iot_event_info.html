@@ -1,0 +1,39 @@
+{% extends "templates/iot_ui_base.html" %}
+
+{% block mystyle %}
+<link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/jquery.dataTables.min.css">
+<link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/responsive.dataTables.min.css">
+<style>
+    .tips {
+      position: absolute;
+
+    }
+</style>
+{% endblock %}
+
+
+{% block myscript %}
+
+{% endblock %}
+
+
+
+
+{% block content %}
+{% include "templates/iot_ui_breadcrumbs.html" %}
+
+
+
+
+		<script src="/assets/iot_ui/assets/js/jquery.dataTables.min.js"></script>
+		<script src="/assets/iot_ui/assets/js/jquery.dataTables.bootstrap.min.js"></script>
+        <script src="/assets/iot_ui/assets/js/dataTables.responsive.min.js"></script>
+
+         <script type="text/javascript">
+
+        {% include "templates/pages/iot_event_info.js" %}
+
+         </script>
+
+{% endblock %}
+

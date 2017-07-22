@@ -517,20 +517,22 @@ def query_iot_event(filter):
 	ev_Visited = frappe.db.get_list("Error Visited", fields=["error_visited"], filters={"user": frappe.session.user, })
 	ev_hasread = []
 	ev_unread = []
+	ev_Visited_list = []
+	for d in ev_Visited:
+		ev_Visited_list.append(d["error_visited"])
 
 	if events:
-		if ev_Visited:
-			for d in ev_Visited:
-				f = d['error_visited']
-				for e in events:
-					if f in e.values():
-						e["hasRead"] = True
-						e["brief"] = e["error_info"][0:8]
-						ev_hasread.append(e)
-					else:
-						e["hasRead"] = False
-						e["brief"] = e["error_info"][0:8]
-						ev_unread.append(e)
+		if ev_Visited_list:
+			for e in events:
+				f = e['name']
+				if f in ev_Visited_list:
+					e["hasRead"] = True
+					e["brief"] = e["error_info"][0:8]
+					ev_hasread.append(e)
+				else:
+					e["hasRead"] = False
+					e["brief"] = e["error_info"][0:8]
+					ev_unread.append(e)
 		else:
 			for e in events:
 				e["hasRead"] = False
@@ -538,15 +540,24 @@ def query_iot_event(filter):
 				ev_unread.append(e)
 
 	events = ev_unread + ev_hasread
+
 	if filter == "all":
 		if events:
 			return events
 		else:
-			return None
+			return [{"name":None, "device":"Null", "error_type":None, "error_key":None, "error_level":None, "error_info":None, "brief":None, "hasRead":True}]
 	elif filter == "unread":
-		return ev_unread
+		if ev_unread:
+			return ev_unread
+		else:
+			return [{"name": None, "device": "Null", "error_type": None, "error_key": None, "error_level": None,
+			         "error_info": None, "brief":None, "hasRead": True}]
 	elif filter == "hasread":
-		return ev_hasread
+		if ev_hasread:
+			return ev_hasread
+		else:
+			return [{"name": None, "device":"Null", "error_type": None, "error_key": None, "error_level": None,
+			         "error_info": None, "brief":None, "hasRead": True}]
 
 @frappe.whitelist()
 def get_iot_event(errid):
@@ -557,13 +568,16 @@ def get_iot_event(errid):
 def mark_iot_event_read():
 	postdata = get_post_json_data()
 	errid = postdata.errid
-	doc = frappe.get_doc({
-		"doctype": "Error Visited",
-		"error_visited": errid,
-		"user": frappe.session.user,
-	}).insert()
+	print(errid)
+	for id in errid:
+		doc = frappe.get_doc({
+			"doctype": "Error Visited",
+			"error_visited": id,
+			"user": frappe.session.user,
+		}).insert()
 	# doc.save()
 	# frappe.db.commit()
+	return {"result": 'sucessful'}
 
 @frappe.whitelist()
 def del_iot_event():

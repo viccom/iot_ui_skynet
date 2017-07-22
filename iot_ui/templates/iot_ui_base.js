@@ -6,17 +6,31 @@ headers: { // 默认添加请求头
 }
 } );
 
-  $.get("/api/method/iot_ui.ui_api.query_iot_event?filter=unread", function(r){
-      console.log(r.message);
-      events = r.message;
-      if(events){
-          $("#unread_mes1").text(events.length);
-          $("#unread_mes2").text(events.length);
-          $("#unread_mes3").text("+"  + events.length);
-      }
+function evcount_ref() {
+    $.get("/api/method/iot_ui.ui_api.query_iot_event?filter=unread", function (r) {
+        //console.log(r.message[0].device);
+        events = r.message;
+        if (events) {
+            if (!(events[0].device == "Null")) {
+                $("#unread_mes1").text(events.length);
+                $("#unread_mes2").text(events.length);
+                $("#unread_mes3").text("+" + events.length);
+            }
+            else {
+                $("#unread_mes1").text("");
+                $("#unread_mes2").text("");
+                $("#unread_mes3").text("");
+            }
 
-
-  });
+        }
+        else{
+            $("#unread_mes1").text("");
+            $("#unread_mes2").text("");
+            $("#unread_mes3").text("");
+        }
+    });
+}
+setInterval( function () {evcount_ref(); }, 3000 );
 
 $('#switch_Language').click(function() {
 //console.log("switch_Language");

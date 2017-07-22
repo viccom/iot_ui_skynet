@@ -3,11 +3,21 @@
 {% block mystyle %}
 <link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/jquery.dataTables.min.css">
 <link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/responsive.dataTables.min.css">
+<link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/dataTables.checkboxes.css">
+<link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/buttons.dataTables.min.css">
+
 <style>
     .tips {
       position: absolute;
 
     }
+    div.dt-buttons {
+        clear: both;
+    }
+    table.dataTable.select tbody tr,
+table.dataTable thead th:first-child {
+  cursor: pointer;
+}
 </style>
 {% endblock %}
 
@@ -34,18 +44,29 @@
                 <span class="btn btn-default pull-right" id="table-refresh">
                     <i class="ace-icon fa fa-refresh"></i>
                 </span>
-
+                <span class="btn btn-pink pull-right" id="event-hasread">
+                    {{_('hasread')}}
+                </span>
+                <span class="btn btn-purple pull-right" id="event-all">
+                    {{_('all')}}
+                </span>
+                <span class="btn btn-success pull-right" id="event-unread">
+                    {{_('unread')}}
+                </span>
             </div>
 
             <div>
             <table id="example"  class="display responsive nowrap" cellspacing="0" width="100%">
                 <thead>
                     <tr>
+                        <th><input name="select_all" value="1" type="checkbox"></th>
                         <th>{{_('device_sn')}}</th>
                         <th>{{_('error_type')}}</th>
                         <th>{{_('error_key')}}</th>
+
                         <th>{{_('error_level')}}</th>
                         <th>{{_('brief')}}</th>
+
                     </tr>
                 </thead>
 
@@ -60,6 +81,8 @@
 		<script src="/assets/iot_ui/assets/js/jquery.dataTables.min.js"></script>
 		<script src="/assets/iot_ui/assets/js/jquery.dataTables.bootstrap.min.js"></script>
         <script src="/assets/iot_ui/assets/js/dataTables.responsive.min.js"></script>
+        <script src="/assets/iot_ui/assets/js/dataTables.checkboxes.min.js"></script>
+        <script src="/assets/iot_ui/assets/js/dataTables.buttons.js"></script>
 
          <script type="text/javascript">
 
