@@ -135,6 +135,12 @@ def devices_list_array(filter):
 						                               "last_updated": devinfo.last_updated,
 						                               "device_company": devinfo.company,
 						                               "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+						                            "device_desc": devinfo.description,
+						                            "device_status": devinfo.device_status,
+						                            "last_updated": devinfo.last_updated,
+						                            "device_company": devinfo.company, "longitude": devinfo.longitude,
+						                            "latitude": devinfo.latitude})
 					else:
 						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 						                            "device_desc": devinfo.description,
@@ -164,6 +170,11 @@ def devices_list_array(filter):
 						 "latitude": devinfo.latitude})
 				elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 					userdevices_offline_7d.append(
+						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+						 "device_company": curuser, "longitude": devinfo.longitude,
+						 "latitude": devinfo.latitude})
+					userdevices_offline.append(
 						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
 						 "device_company": curuser, "longitude": devinfo.longitude,

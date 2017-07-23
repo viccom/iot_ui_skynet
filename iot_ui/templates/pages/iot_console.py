@@ -66,6 +66,8 @@ def get_context(context):
 						                           "last_updated": devinfo.last_updated,
 						                           "device_company": devinfo.company, "longitude": devinfo.longitude,
 						                           "latitude": devinfo.latitude})
+						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+
 					else:
 						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
 				pass
@@ -88,6 +90,8 @@ def get_context(context):
 						                           "last_updated": devinfo.last_updated,
 						                           "device_company": devinfo.company, "longitude": devinfo.longitude,
 						                           "latitude": devinfo.latitude})
+						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+
 					else:
 						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
 
