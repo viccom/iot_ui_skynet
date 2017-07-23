@@ -85,7 +85,7 @@ def devices_list_array(filter):
 						                           "device_desc": devinfo.description,
 						                           "device_status": devinfo.device_status,
 						                           "last_updated": devinfo.last_updated,
-						                           "0": devinfo.company, "longitude": devinfo.longitude,
+						                           "device_company": devinfo.company, "longitude": devinfo.longitude,
 						                           "latitude": devinfo.latitude})
 					elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 						userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
