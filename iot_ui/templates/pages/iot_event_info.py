@@ -22,6 +22,13 @@ def get_context(context):
 		raise frappe.Redirect
 
 	context.eventid = eventid
+	event = frappe.get_doc("IOT Device Error", eventid)
+	# print(event.error_info)
+	context.device = event.device
+	context.error_type = event.error_type
+	context.error_key = event.error_key
+	context.error_level = event.error_level
+	context.error_info = event.error_info
 	context.no_cache = 1
 	context.show_sidebar = True
 

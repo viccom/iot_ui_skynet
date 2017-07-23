@@ -119,5 +119,5 @@ app_license = "MIT"
 # 	"frappe.desk.doctype.event.event.get_events": "iot_ui.event.get_events"
 # }
 website_route_rules = [
-	{"from_route": "/iot_devinfo/<path:name>", "to_route": "iot_devinfo"}
+	{"from_route": "/iot_devinfo/<path:name>", "to_route": "iot_devinfo"},
 ]

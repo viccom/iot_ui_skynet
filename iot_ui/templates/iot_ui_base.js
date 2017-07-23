@@ -30,6 +30,7 @@ function evcount_ref() {
         }
     });
 }
+evcount_ref();
 setInterval( function () {evcount_ref(); }, 3000 );
 
 $('#switch_Language').click(function() {

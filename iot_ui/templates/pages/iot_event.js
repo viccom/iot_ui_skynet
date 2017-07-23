@@ -210,8 +210,13 @@ $(document).ready(function() {
    });
 
    // Handle click on table cells with checkboxes
-   $('#example').on('click', 'tbody td, thead th:first-child', function(e){
-      $(this).parent().find('input[type="checkbox"]').trigger('click');
+   $('#example').on('click', 'tbody td', function(e){
+      //$(this).parent().find('input[type="checkbox"]').trigger('click');
+        var data = table.row( this ).data();
+        errid = data['name'];
+        console.log(errid);
+       var url = "/iot_event_info?eventid=" + errid;
+        window.location.href=url;
    });
 
    // Handle click on "Select all" control
@@ -229,7 +234,7 @@ $(document).ready(function() {
    // Handle table draw event
    table.on('draw', function(){
       // Update state of "Select all" control
-      updateDataTableSelectAllCtrl(table);
+      //updateDataTableSelectAllCtrl(table);
    });
 
     new $.fn.dataTable.Buttons( table, {
@@ -337,6 +342,7 @@ $(document).ready(function() {
         table.ajax.url(rtvalueurl).load();
     });
     $('#event-hasread').click(function() {
+        //$(this).removeClass("btn-pink");
         rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter=hasread";
         table.ajax.url(rtvalueurl).load();
     });
