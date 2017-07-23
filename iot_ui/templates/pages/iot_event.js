@@ -215,8 +215,11 @@ $(document).ready(function() {
         var data = table.row( this ).data();
         errid = data['name'];
         console.log(errid);
-       var url = "/iot_event_info?eventid=" + errid;
-        window.location.href=url;
+        if(errid!="null"){
+           var url = "/iot_event_info?eventid=" + errid;
+            window.location.href=url;
+        }
+
    });
 
    // Handle click on "Select all" control
