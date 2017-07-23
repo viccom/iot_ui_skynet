@@ -214,8 +214,8 @@ $(document).ready(function() {
       //$(this).parent().find('input[type="checkbox"]').trigger('click');
         var data = table.row( this ).data();
         errid = data['name'];
-        console.log(errid);
-        if(errid!="null"){
+        //console.log(errid);
+        if(errid){
            var url = "/iot_event_info?eventid=" + errid;
             window.location.href=url;
         }
