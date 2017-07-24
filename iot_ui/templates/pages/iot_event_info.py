@@ -29,6 +29,15 @@ def get_context(context):
 	context.error_key = event.error_key
 	context.error_level = event.error_level
 	context.error_info = event.error_info
+
+	query_ev = frappe.db.get_list("Error Visited", fields=["error_visited"], filters={"user": frappe.session.user, "error_visited": eventid})
+	print(query_ev)
+	if query_ev:
+		hasread = 1
+	else:
+		hasread = 0
+	context.hasread = hasread
+
 	context.no_cache = 1
 	context.show_sidebar = True
 

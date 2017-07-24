@@ -213,7 +213,8 @@ $(document).ready(function() {
    $('#example').on('click', 'tbody td', function(e){
       //$(this).parent().find('input[type="checkbox"]').trigger('click');
         var data = table.row( this ).data();
-        errid = data['name'];
+        var errid = data['name'];
+        var hasRead = data['hasRead'];
         //console.log(errid);
         if(errid){
            var url = "/iot_event_info?eventid=" + errid;
@@ -337,14 +338,23 @@ $(document).ready(function() {
         table.ajax.url(rtvalueurl).load();
     });
     $('#event-all').click(function() {
+        $('#event-all').addClass("btn-success");
+        $('#event-unread').removeClass("btn-success");
+        $('#event-hasread').removeClass("btn-success");
         rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter=all";
         table.ajax.url(rtvalueurl).load();
     });
     $('#event-unread').click(function() {
+        $('#event-all').removeClass("btn-success");
+        $('#event-unread').addClass("btn-success");
+        $('#event-hasread').removeClass("btn-success");
         rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter=unread";
         table.ajax.url(rtvalueurl).load();
     });
     $('#event-hasread').click(function() {
+        $('#event-all').removeClass("btn-success");
+        $('#event-unread').removeClass("btn-success");
+        $('#event-hasread').addClass("btn-success");
         //$(this).removeClass("btn-pink");
         rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter=hasread";
         table.ajax.url(rtvalueurl).load();
