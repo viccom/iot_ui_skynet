@@ -34,35 +34,39 @@
                 <span class="btn btn-default pull-right" id="table-refresh">
                     <i class="ace-icon fa fa-refresh"></i>
                 </span>
-                <span class="btn btn-primary pull-right" id="table-offline_7d">
+                <span class="btn btn-default pull-right" id="table-offline_7d">
                     {{_('offline_7d')}}
                 </span>
-                <span class="btn btn-pink pull-right" id="table-offline">
+                <span class="btn btn-default pull-right" id="table-offline">
                     {{_('offline')}}
                 </span>
-                <span class="btn btn-purple pull-right" id="table-online">
+                <span class="btn btn-default pull-right" id="table-online">
                     {{_('online')}}
                 </span>
-                <span class="btn btn-success pull-right" id="table-all">
+                <span class="btn btn-default pull-right" id="table-all">
                     {{_('all')}}
                 </span>
             </div>
 
-            <div>
-            <table id="example"  class="display responsive nowrap" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>{{_('device_name')}}</th>
-                        <th>{{_('device_desc')}}</th>
-                        <th>{{_('device_status')}}</th>
-                        <th>{{_('last_updated')}}</th>
-                        <th>{{_('device_sn')}}</th>
-                        <th>{{_('device_ascription')}}</th>
-                    </tr>
-                </thead>
+            <div class="col-xs-12 col-sm-12 well center" id="no_data">
+                <h4 class="blue large lighter">未找到任何数据！</h4>
+            </div>
 
-            </table>
-        </div>
+            <div class="hide" id="table_area">
+                <table id="example"  class="display responsive nowrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>{{_('device_name')}}</th>
+                            <th>{{_('device_desc')}}</th>
+                            <th>{{_('device_status')}}</th>
+                            <th>{{_('last_updated')}}</th>
+                            <th>{{_('device_sn')}}</th>
+                            <th>{{_('device_ascription')}}</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
         </div>
 
     </div>

@@ -11,7 +11,7 @@ function evcount_ref() {
         //console.log(r.message[0].device);
         events = r.message;
         if (events) {
-            if (!(events[0].device == "Null")) {
+            if (!(events[0].device == "No Data")) {
                 $("#unread_mes1").text(events.length);
                 $("#unread_mes2").text(events.length);
                 $("#unread_mes3").text("+" + events.length);
@@ -30,6 +30,8 @@ function evcount_ref() {
         }
     });
 }
+
+
 evcount_ref();
 setInterval( function () {evcount_ref(); }, 3000 );
 

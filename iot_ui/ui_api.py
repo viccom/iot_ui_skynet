@@ -193,22 +193,30 @@ def devices_list_array(filter):
 		if userdevices_online:
 			return userdevices_online
 		else:
-			return [{"device_name": None, "device_sn": None, "device_desc": None, "device_status": None,  "last_updated": None, "device_company": None,  "longitude": None, "latitude": None}]
+			return [{"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}]
 	elif filter=="offline":
 		if userdevices_offline:
 			return userdevices_offline
 		else:
-			return [{"device_name": None, "device_sn": None, "device_desc": None, "device_status": None,  "last_updated": None, "device_company": None,  "longitude": None, "latitude": None}]
+			return [{"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}]
 	elif filter=="offline_7d":
 		if userdevices_offline_7d:
 			return userdevices_offline_7d
 		else:
-			return [{"device_name": None, "device_sn": None, "device_desc": None, "device_status": None,  "last_updated": None, "device_company": None,  "longitude": None, "latitude": None}]
+			return [{"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}]
+	elif filter=="len_all":
+		return len(userdevices)
+	elif filter=="len_online":
+		return len(userdevices_online)
+	elif filter=="len_offline":
+		return len(userdevices_offline)
+	elif filter=="len_offline_7d":
+		return len(userdevices_offline_7d)
 	else:
 		if userdevices:
 			return userdevices
 		else:
-			return [{"device_name": None, "device_sn": None, "device_desc": None, "device_status": None,  "last_updated": None, "device_company": None,  "longitude": None, "latitude": None}]
+			return [{"device_name": "", "device_sn": "", "device_desc": "", "device_status": "",  "last_updated": "", "device_company": "",  "longitude": "", "latitude": ""}]
 
 
 
@@ -538,16 +546,16 @@ def query_iot_event(filter):
 				f = e['name']
 				if f in ev_Visited_list:
 					e["hasRead"] = True
-					e["brief"] = e["error_info"][0:8]
+					e["brief"] = e["error_info"][0:32]
 					ev_hasread.append(e)
 				else:
 					e["hasRead"] = False
-					e["brief"] = e["error_info"][0:8]
+					e["brief"] = e["error_info"][0:32]
 					ev_unread.append(e)
 		else:
 			for e in events:
 				e["hasRead"] = False
-				e["brief"] = e["error_info"][0:8]
+				e["brief"] = e["error_info"][0:32]
 				ev_unread.append(e)
 
 	events = ev_unread + ev_hasread
@@ -556,19 +564,25 @@ def query_iot_event(filter):
 		if events:
 			return events
 		else:
-			return [{"name":None, "device":"Null", "error_type":None, "error_key":None, "error_level":None, "error_info":None, "brief":None, "hasRead":True}]
+			return [{"name":None, "device":"No Data", "error_type":None, "error_key":None, "error_level":None, "error_info":None, "brief":None, "hasRead":True}]
 	elif filter == "unread":
 		if ev_unread:
 			return ev_unread
 		else:
-			return [{"name": None, "device": "Null", "error_type": None, "error_key": None, "error_level": None,
+			return [{"name": None, "device": "No Data", "error_type": None, "error_key": None, "error_level": None,
 			         "error_info": None, "brief":None, "hasRead": True}]
 	elif filter == "hasread":
 		if ev_hasread:
 			return ev_hasread
 		else:
-			return [{"name": None, "device":"Null", "error_type": None, "error_key": None, "error_level": None,
+			return [{"name": None, "device":"No Data", "error_type": None, "error_key": None, "error_level": None,
 			         "error_info": None, "brief":None, "hasRead": True}]
+	elif filter == "len_all":
+		return len(events)
+	elif filter == "len_unread":
+		return len(ev_unread)
+	elif filter == "len_hasread":
+		return len(ev_hasread)
 
 @frappe.whitelist()
 def get_iot_event(errid):

@@ -33,7 +33,7 @@ function mark_iot_event_read(id){
 
 
 if(!hasread){
-    var t=setTimeout("mark_iot_event_read(eventid)",5000);
+    var t=setTimeout("mark_iot_event_read(eventid)",2000);
 }
 
 

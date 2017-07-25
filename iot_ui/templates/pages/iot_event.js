@@ -1,45 +1,5 @@
-//
-// Updates "Select all" control in a data table
-//
-var rows_selected = [];
-var rows_selected_data = [];
-
-
-function updateDataTableSelectAllCtrl(table){
-   var $table             = table.table().node();
-   var $chkbox_all        = $('tbody input[type="checkbox"]', $table);
-   var $chkbox_checked    = $('tbody input[type="checkbox"]:checked', $table);
-   var chkbox_select_all  = $('thead input[name="select_all"]', $table).get(0);
-
-   // If none of the checkboxes are checked
-   if($chkbox_checked.length === 0){
-      chkbox_select_all.checked = false;
-      $(table.button()[0].node).addClass("disabled");
-      if('indeterminate' in chkbox_select_all){
-         chkbox_select_all.indeterminate = false;
-      }
-
-   // If all of the checkboxes are checked
-   } else if ($chkbox_checked.length === $chkbox_all.length){
-      chkbox_select_all.checked = true;
-      $(table.button()[0].node).removeClass("disabled");
-      if('indeterminate' in chkbox_select_all){
-         chkbox_select_all.indeterminate = false;
-      }
-
-   // If some of the checkboxes are checked
-   } else {
-      chkbox_select_all.checked = true;
-      $(table.button()[0].node).removeClass("disabled");
-      //console.log(table.button()[0].node);
-      if('indeterminate' in chkbox_select_all){
-         chkbox_select_all.indeterminate = true;
-      }
-   }
-}
-
-$(document).ready(function() {
-    var rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter=unread";
+    var filter="unread";
+    var rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter=" + filter;
     var table = $('#example').DataTable({
         "ajax": {
             "url": rtvalueurl,
@@ -68,7 +28,8 @@ $(document).ready(function() {
           if (!rowData.hasRead) {
             $(td).parent().addClass("text-primary");
 
-          }}
+          }
+         }
           },
           {
              'targets': [1,2,3,4],
@@ -114,6 +75,61 @@ $(document).ready(function() {
          }
       }
    });
+
+
+//
+// Updates "Select all" control in a data table
+//
+var rows_selected = [];
+var rows_selected_data = [];
+
+
+function updateDataTableSelectAllCtrl(table){
+   var $table             = table.table().node();
+   var $chkbox_all        = $('tbody input[type="checkbox"]', $table);
+   var $chkbox_checked    = $('tbody input[type="checkbox"]:checked', $table);
+   var chkbox_select_all  = $('thead input[name="select_all"]', $table).get(0);
+
+   // If none of the checkboxes are checked
+   if($chkbox_checked.length === 0){
+      chkbox_select_all.checked = false;
+      $(table.button()[0].node).addClass("disabled");
+      if('indeterminate' in chkbox_select_all){
+         chkbox_select_all.indeterminate = false;
+      }
+
+   // If all of the checkboxes are checked
+   } else if ($chkbox_checked.length === $chkbox_all.length){
+      chkbox_select_all.checked = true;
+      $(table.button()[0].node).removeClass("disabled");
+      if('indeterminate' in chkbox_select_all){
+         chkbox_select_all.indeterminate = false;
+      }
+
+   // If some of the checkboxes are checked
+   } else {
+      chkbox_select_all.checked = true;
+      $(table.button()[0].node).removeClass("disabled");
+      //console.log(table.button()[0].node);
+      if('indeterminate' in chkbox_select_all){
+         chkbox_select_all.indeterminate = true;
+      }
+   }
+}
+
+$(document).ready(function() {
+    $.get("/api/method/iot_ui.ui_api.query_iot_event?filter=len_"+filter, function (r) {
+        console.log(r.message);
+        l = r.message;
+        if(l){
+            console.log(filter);
+             $('#no_data').addClass("hide");
+             $('#table_area').removeClass("hide");
+            var rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter="+filter;
+            table.ajax.url(rtvalueurl).load();
+        }
+
+    });
 
 
 /*    var table = jQuery('#example').DataTable({
@@ -271,7 +287,18 @@ $(document).ready(function() {
                 success: function(r) {
                     //console.log(r);
                     if(r.message.result == "sucessful" ){
-                        table.ajax.url(rtvalueurl).load();
+                                $.get("/api/method/iot_ui.ui_api.query_iot_event?filter=len_"+filter, function (r) {
+                                    if(r.message) {
+                                        $('#no_data').addClass("hide");
+                                        $('#table_area').removeClass("hide");
+                                        rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter="+filter;
+                                        table.ajax.url(rtvalueurl).load();
+                                    }
+                                    else{
+                                        $('#no_data').removeClass("hide");
+                                        $('#table_area').addClass("hide");
+                                    }
+                                });
                      }
                   },
                  error: function() {
@@ -312,7 +339,18 @@ $(document).ready(function() {
                 dataType: "json",
                 success: function(r) {
                     if(r.message.result == "sucessful" ){
-                        table.ajax.url(rtvalueurl).load();
+                                $.get("/api/method/iot_ui.ui_api.query_iot_event?filter=len_"+filter, function (r) {
+                                    if(r.message) {
+                                        $('#no_data').addClass("hide");
+                                        $('#table_area').removeClass("hide");
+                                        rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter="+filter;
+                                        table.ajax.url(rtvalueurl).load();
+                                    }
+                                    else{
+                                        $('#no_data').removeClass("hide");
+                                        $('#table_area').addClass("hide");
+                                    }
+                                });
                      }
                   },
                  error: function() {
@@ -341,23 +379,62 @@ $(document).ready(function() {
         $('#event-all').addClass("btn-success");
         $('#event-unread').removeClass("btn-success");
         $('#event-hasread').removeClass("btn-success");
-        rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter=all";
-        table.ajax.url(rtvalueurl).load();
+        $(table.button()[0].node).removeClass("hide");
+        $(table.button()[0].node).next().removeClass("hide");
+        filter = "all";
+        $.get("/api/method/iot_ui.ui_api.query_iot_event?filter=len_"+filter, function (r) {
+        if(r.message) {
+            $('#no_data').addClass("hide");
+            $('#table_area').removeClass("hide");
+            rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter="+filter;
+            table.ajax.url(rtvalueurl).load();
+        }
+        else{
+            $('#no_data').removeClass("hide");
+            $('#table_area').addClass("hide");
+        }
+        });
     });
     $('#event-unread').click(function() {
         $('#event-all').removeClass("btn-success");
         $('#event-unread').addClass("btn-success");
         $('#event-hasread').removeClass("btn-success");
-        rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter=unread";
-        table.ajax.url(rtvalueurl).load();
+        $(table.button()[0].node).removeClass("hide");
+        $(table.button()[0].node).next().removeClass("hide");
+        filter = "unread";
+        $.get("/api/method/iot_ui.ui_api.query_iot_event?filter=len_"+filter, function (r) {
+        if(r.message) {
+            $('#no_data').addClass("hide");
+            $('#table_area').removeClass("hide");
+            rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter="+filter;
+            table.ajax.url(rtvalueurl).load();
+        }
+        else{
+            $('#no_data').removeClass("hide");
+            $('#table_area').addClass("hide");
+        }
+        });
     });
     $('#event-hasread').click(function() {
         $('#event-all').removeClass("btn-success");
         $('#event-unread').removeClass("btn-success");
         $('#event-hasread').addClass("btn-success");
-        //$(this).removeClass("btn-pink");
-        rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter=hasread";
-        table.ajax.url(rtvalueurl).load();
+        $(table.button()[0].node).addClass("hide");
+        $(table.button()[0].node).next().addClass("hide");
+
+        filter = "hasread";
+        $.get("/api/method/iot_ui.ui_api.query_iot_event?filter=len_" + filter, function (r) {
+        if(r.message) {
+            $('#no_data').addClass("hide");
+            $('#table_area').removeClass("hide");
+            rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter="+filter;
+            table.ajax.url(rtvalueurl).load();
+        }
+        else{
+            $('#no_data').removeClass("hide");
+            $('#table_area').addClass("hide");
+        }
+        });
     });
 
 
