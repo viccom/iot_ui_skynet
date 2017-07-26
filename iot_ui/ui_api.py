@@ -212,6 +212,8 @@ def devices_list_array(filter):
 		return len(userdevices_offline)
 	elif filter=="len_offline_7d":
 		return len(userdevices_offline_7d)
+	elif filter=="devices_amount":
+		return {"all":len(userdevices), "online":len(userdevices_online), "offline":len(userdevices_offline), "offline_7d":len(userdevices_offline_7d)}
 	else:
 		if userdevices:
 			return userdevices
