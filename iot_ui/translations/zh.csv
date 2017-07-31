@@ -79,3 +79,20 @@ apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +174,operation,操作
 apps/iot_ui/iot_ui/templates/pages/iot_bunchcode.html +40,private bunchcode,私有绑定码
 apps/iot_ui/iot_ui/templates/pages/iot_bunchcode.html +126,private_bunch_codes,私有绑定码
 apps/iot_ui/iot_ui/templates/pages/iot_console.html +56,total gateways,网关总数
+,Notifications,通知
+,Device message,设备消息
+,Service message,服务消息
+,See all notifications,所有通知
+,hasread,已读
+,unread,未读
+,error_type,设备序列号
+,error_key,标签
+,error_level,等级
+,brief,摘要
+,Details,详情
+,Variable or label,变量标签
+,Device for event,事件发生设备
+,Event Type,事件类型
+,Event Level,事件级别
+,Occurrence Time,发生时间
+,Description,描述
