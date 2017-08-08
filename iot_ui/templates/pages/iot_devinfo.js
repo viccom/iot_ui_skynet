@@ -76,10 +76,10 @@ $(document).ready(function() {
             "sInfoEmpty": "没有数据",
             "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
             "oPaginate": {
-                        "sFirst": "首页",
-                        "sPrevious": "前一页",
-                        "sNext": "后一页",
-                        "sLast": "尾页"
+                        "sFirst": "|<<",
+                        "sPrevious": "<",
+                        "sNext": ">",
+                        "sLast": ">>|"
                         },
             "sZeroRecords": "没有检索到数据",
             },
