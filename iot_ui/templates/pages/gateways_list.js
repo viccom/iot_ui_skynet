@@ -68,7 +68,7 @@ $(document).ready(function() {
 
 
     $('#example tbody').on('click', 'tr td:nth-child(2)', function (e) {
-
+        var data = table.row( this ).data();
         if(data){
 
             $curdevsn = data['device_sn'];
