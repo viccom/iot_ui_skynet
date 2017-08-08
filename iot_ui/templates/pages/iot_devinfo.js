@@ -238,6 +238,6 @@ $(document).ready(function() {
     } );
     //双击表格行tooltip({html : true }
     //$(function () { $('table .tooltip-show').tooltip('show');});
-    $(function () { $("table.tooltip-options").tooltip({html : true });});
+    // $(function () { $("table.tooltip-options").tooltip({html : true });});
 
 });
