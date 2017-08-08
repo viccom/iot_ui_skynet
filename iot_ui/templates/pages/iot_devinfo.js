@@ -86,10 +86,9 @@ $(document).ready(function() {
         "columns": [
             {"data": "NAME"},
             {"data": "DESC"},
-            {"data": "TM"},
             {"data": "PV"},
             {"data": "Q"},
-
+            {"data": "TM"},
 
         ]
     });
