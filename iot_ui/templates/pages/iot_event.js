@@ -42,16 +42,16 @@
       ],
       'order': [[1, 'asc']],
                 "oLanguage": {
-            "sLengthMenu": "每页显示 _MENU_ 条记录",
+            "sLengthMenu": "每页显示 _MENU_",
              "sZeroRecords": "抱歉， 没有找到",
             "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
             "sInfoEmpty": "没有数据",
             "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
             "oPaginate": {
-                        "sFirst": "首页",
-                        "sPrevious": "前一页",
-                        "sNext": "后一页",
-                        "sLast": "尾页"
+                        "sFirst": "|<<",
+                        "sPrevious": "<",
+                        "sNext": ">",
+                        "sLast": ">>|"
                         },
             "sZeroRecords": "没有检索到数据",
             },
@@ -119,14 +119,17 @@ function updateDataTableSelectAllCtrl(table){
 
 $(document).ready(function() {
     $.get("/api/method/iot_ui.ui_api.query_iot_event?filter=len_"+filter, function (r) {
-        console.log(r.message);
-        l = r.message;
-        if(l){
+        //console.log(r.message);
+        if(r.message){
             console.log(filter);
              $('#no_data').addClass("hide");
              $('#table_area').removeClass("hide");
             var rtvalueurl = "/api/method/iot_ui.ui_api.query_iot_event?filter="+filter;
             table.ajax.url(rtvalueurl).load();
+        }
+        else{
+            $('#no_data').removeClass("hide");
+            $('#table_area').addClass("hide");
         }
 
     });

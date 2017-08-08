@@ -57,7 +57,7 @@
                                 <h4 class="widget-title lighter">{{gg.desc}}</h4>
 
                                 <div class="widget-toolbar no-border add_group-bunch_code">
-                                    <a href="#" data-action="settings">
+                                    <a class="btn" href="#" data-action="settings">
                                         <i class="ace-icon fa fa-plus-square"></i>
                                         {{_('new bunchcode')}}
                                     </a>
@@ -68,10 +68,10 @@
                             <div class="widget-body">
                                 <div class="widget-main padding-6 no-padding-left no-padding-right" id="{{gg.name}}">
                                     {% for g in gg.code %}
-                                        <div class="col-xs-6 col-sm-6 profile-info-value">
+                                        <div class="col-xs-9 col-sm-6 profile-info-value">
                                             {{g.name}}
                                         </div>
-                                        <div class="col-xs-6 col-sm-6 profile-info-value">
+                                        <div class="col-xs-3 col-sm-6 profile-info-value">
                                             <div class="btn btn-white btn-warning btn-bold bunchcode" data-bunchcode="{{g.name}}">
                                                 <i class="ace-icon fa fa-trash-o"></i>
                                                 {{_('Delete')}}
@@ -126,7 +126,7 @@
                                         <h4 class="widget-title lighter">{{ _("private_bunch_codes") }}</h4>
 
                                         <div class="widget-toolbar no-border">
-                                            <a href="#" data-action="settings" id="add_bunch_code">
+                                            <a class="btn" href="#" data-action="settings" id="add_bunch_code">
                                                 <i class="ace-icon fa fa-plus-square"></i>
                                                 {{_('new bunchcode')}}
                                             </a>
@@ -138,10 +138,10 @@
                                         <div class="widget-main padding-6 no-padding-left no-padding-right">
                                             <div class="col-sm-12" id="own-bunchcode">
                                                 {% for p in private_bunch_codes %}
-                                                    <div class="col-xs-6 col-sm-6 profile-info-value">
+                                                    <div class="col-xs-9 col-sm-6 profile-info-value">
                                                         {{p.name}}
                                                     </div>
-                                                    <div class="col-xs-6 col-sm-6 profile-info-value">
+                                                    <div class="col-xs-3 col-sm-6 profile-info-value">
                                                         <div class="btn btn-white btn-warning btn-bold bunchcode"  data-bunchcode="{{p.name}}">
                                                             <i class="ace-icon fa fa-trash-o"></i>
                                                             {{_('Delete')}}

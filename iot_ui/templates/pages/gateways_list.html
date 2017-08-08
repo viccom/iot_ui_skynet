@@ -34,10 +34,10 @@
                 <span class="btn btn-default pull-right" id="table-refresh">
                     <i class="ace-icon fa fa-refresh"></i>
                 </span>
-                <span class="btn btn-default pull-right" id="table-offline_7d">
+                <span class="btn btn-default pull-right hidden-xs" id="table-offline_7d">
                     {{_('offline_7d')}}
                 </span>
-                <span class="btn btn-default pull-right" id="table-offline">
+                <span class="btn btn-default pull-right hidden-xs" id="table-offline">
                     {{_('offline')}}
                 </span>
                 <span class="btn btn-default pull-right" id="table-online">
@@ -48,11 +48,11 @@
                 </span>
             </div>
 
-            <div class="col-xs-12 col-sm-12 well center" id="no_data">
+            <div class="center hide" id="no_data">
                 <h4 class="blue large lighter">未找到任何数据！</h4>
             </div>
 
-            <div class="hide" id="table_area">
+            <div id="table_area">
                 <table id="example"  class="display responsive nowrap" cellspacing="0" width="100%">
                     <thead>
                         <tr>

@@ -18,10 +18,10 @@ $(document).ready(function() {
         $.post("/api/method/iot_ui.ui_api.add_own_bunch_code", {}, function(data) {
           console.log(data);
           if(data.message.result == "sucessful"){
-                 $("#own-bunchcode").append('<div class="col-xs-6 col-sm-6 profile-info-value">'
+                 $("#own-bunchcode").append('<div class="col-xs-9 col-sm-6 profile-info-value">'
                 + data.message.code
                 + '</div>'
-                + '<div class="col-xs-6 col-sm-6 profile-info-value">'
+                + '<div class="col-xs-3 col-sm-6 profile-info-value">'
                     + '<div class="btn btn-white btn-warning btn-bold bunchcode"  data-bunchcode="'+ data.message.code +'">'
                         + '<i class="ace-icon fa fa-trash-o smaller-90"></i>{{_("Delete")}}'
                     + '</div>'
@@ -42,10 +42,10 @@ $(document).ready(function() {
         $.post("/api/method/iot_ui.ui_api.add_group_bunch_code?groupid="+groupid, {}, function(data) {
           console.log(data);
           if(data.message.result == "sucessful"){
-                 $("#"+groupid).append('<div class="col-xs-6 col-sm-6 profile-info-value">'
+                 $("#"+groupid).append('<div class="col-xs-9 col-sm-6 profile-info-value">'
                 + data.message.code
                 + '</div>'
-                + '<div class="col-xs-6 col-sm-6 profile-info-value">'
+                + '<div class="col-xs-3 col-sm-6 profile-info-value">'
                     + '<div class="btn btn-white btn-warning btn-bold bunchcode"  data-bunchcode="'+ data.message.code +'">'
                         + '<i class="ace-icon fa fa-trash-o smaller-90"></i>{{_("Delete")}}'
                     + '</div>'
