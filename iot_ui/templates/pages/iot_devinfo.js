@@ -90,7 +90,19 @@ $(document).ready(function() {
             {"data": "Q"},
             {"data": "TM"},
 
-        ]
+        ],
+        'rowCallback': function(row, data, dataIndex){
+         // Get row ID
+         if(data.Q=="0"){
+             $(row).addClass('green');
+         }
+         else if(data.Q=="255"){
+             $(row).addClass('grey');
+         }
+         else if(data.Q=="1"){
+             $(row).addClass('red');
+         }
+      }
     });
 
       if($('#gritter-light').get(0).checked){
