@@ -229,7 +229,7 @@ $(document).ready(function() {
    });
 
    // Handle click on table cells with checkboxes
-   $('#example').on('click', 'tbody td', function(e){
+   $('#example').on('click', 'tr td:nth-child(n+3)', function(e){
       //$(this).parent().find('input[type="checkbox"]').trigger('click');
         var data = table.row( this ).data();
         var errid = data['name'];
