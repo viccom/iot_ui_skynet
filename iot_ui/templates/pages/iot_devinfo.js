@@ -204,8 +204,8 @@ $(document).ready(function() {
           });
     //点击按钮
 
-    //双击表格行
-      $('#RTValue-Table tbody').on('dblclick', 'tr', function () {
+    //点击表格第2列
+      $('#RTValue-Table tbody').on('click', 'tr td:nth-child(2)', function () {
         var data = table.row( this ).data();
         tnm = data['NAME'].toLowerCase();
         console.log(isvsn);
