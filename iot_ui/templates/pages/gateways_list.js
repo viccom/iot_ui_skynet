@@ -14,7 +14,8 @@
         },
         "oLanguage": {
             "sLengthMenu": "每页显示 _MENU_",
-             "sZeroRecords": "抱歉， 没有找到",
+            "sSearch": "搜索:",
+             "sZeroRecords": "没有匹配结果",
             "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
             "sInfoEmpty": "没有数据",
             "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
