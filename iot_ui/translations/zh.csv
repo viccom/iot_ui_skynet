@@ -4,20 +4,20 @@ apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +318,Are you sure?,你
 apps/iot_ui/iot_ui/ui_api.py +282,Bunch code already exists!,绑定码重复
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +291,Cancel,取消
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +224,Confirm,确认
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +95,Data List,数据列表
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +109,Data List,数据列表
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +200,Define Group Name,定义组名
 apps/iot_ui/iot_ui/templates/pages/iot_bunchcode.html +77,Delete,删除
-apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +77,Description,描述
-apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +27,Details,详细信息
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +75,Device Message,设备报文
-apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +44,Device for event,事件发生设备
+apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +79,Description,描述
+apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +29,Details,详细信息
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +89,Device Message,设备报文
+apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +46,Device for event,事件发生设备
 apps/iot_ui/iot_ui/templates/iot_ui_topnav.html +51,Device message,设备消息
 apps/iot_ui/iot_ui/templates/pages/iot_devinfo.py +45,Devices_List,设备列表
 DocType: Error Visited,Error Visited,
 apps/iot_ui/iot_ui/templates/pages/iot_bunchcode.js +90,Error deleting bunchcode,删除绑定码错误
-apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +61,Event Level,事件级别
-apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +53,Event Type,事件类型
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +79,Gateway Log,网关日志
+apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +63,Event Level,事件级别
+apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +55,Event Type,事件类型
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +93,Gateway Log,网关日志
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +209,Group Name,组名称
 DocType: Error Visited,IOT Manager,IOT 管理员
 DocType: Error Visited,IOT User,IOT 用户
@@ -36,68 +36,69 @@ DocType: Iot Menu,Menu_Url,
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +219,Modify,修改
 apps/iot_ui/iot_ui/templates/iot_ui_topnav.html +120,My Account,我的账户
 apps/iot_ui/iot_ui/templates/iot_ui_topnav.html +93,My BunchCode,我的绑定码
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.js +201,Name,名称
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.js +212,Name,名称
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +191,New Group,新组
 apps/iot_ui/iot_ui/templates/iot_ui_topnav.html +41,Notifications,通知
-apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +69,Occurrence Time,发生时间
+apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +71,Occurrence Time,发生时间
+apps/iot_ui/iot_ui/templates/pages/iot_event.html +75,Occurrence_time,发生时间
 DocType: Iot Menu,Order_Num,
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +67,Platform Data,平台数据
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +81,Platform Data,平台数据
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +267,Possible members list,可能的成员列表
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +117,Quality,质量
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +130,Quality,质量
 apps/iot_ui/iot_ui/ui_api.py +56,Request Method Must be POST!,只接受POST请求
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +230,Reset,重置
 DocType: Iot Menu,Role,角色
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.js +202,SN,设备序列号
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.js +213,SN,设备序列号
 apps/iot_ui/iot_ui/templates/iot_ui_topnav.html +74,See all notifications,所有通知
 apps/iot_ui/iot_ui/templates/iot_ui_topnav.html +63,Service message,服务消息
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +71,Spot Data,现场数据
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +85,Spot Data,现场数据
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +87,Structure,架构
 DocType: Error Visited,System Manager,系统管理员
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +311,The item will be permanently deleted and the members of the Group will be removed.,这个组将被永久删除，组内成员也将被移除
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +115,TimeStamp,时间戳
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +22,Total  devices,总设备数
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +131,TimeStamp,时间戳
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +36,Total  devices,总设备数
 DocType: Error Visited,User,用户
 apps/iot_ui/iot_ui/ui_api.py +387,User is in another company {0},用户已经存在其他公司 {0}
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +116,Value,值
-apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +36,Variable or label,变量标签
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +129,Value,值
+apps/iot_ui/iot_ui/templates/pages/iot_event_info.html +38,Variable or label,变量或标签
 apps/iot_ui/iot_ui/templates/iot_ui_topnav.html +108,Welcome,欢迎
 apps/iot_ui/iot_ui/ui_api.py +277,You are not an IOT User,您不是IOT用户
 apps/iot_ui/iot_ui/ui_api.py +378,You not the admin of company {0},您不是{0}公司的管理员
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +47,all,所有
-apps/iot_ui/iot_ui/templates/pages/iot_event.html +72,brief,摘要
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +41,device,设备
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +57,device name,设备名称
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +64,device_ascription,设备归属
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +60,device_desc,设备描述
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +59,device_name,设备名称
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +63,device_sn,设备序列号
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +61,device_status,设备状态
-apps/iot_ui/iot_ui/templates/pages/iot_event.html +69,error_key,标签
-apps/iot_ui/iot_ui/templates/pages/iot_event.html +71,error_level,级别
-apps/iot_ui/iot_ui/templates/pages/iot_event.html +68,error_type,类型
-apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +19,gateway,网关
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +51,all,所有
+apps/iot_ui/iot_ui/templates/pages/iot_event.html +76,brief,摘要
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +55,device,设备
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +71,device name,设备名称
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +68,device_ascription,设备归属
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +64,device_desc,设备描述
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +63,device_name,设备名称
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +67,device_sn,设备序列号
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +65,device_status,设备状态
+apps/iot_ui/iot_ui/templates/pages/iot_event.html +73,error_key,标签
+apps/iot_ui/iot_ui/templates/pages/iot_event.html +74,error_level,级别
+apps/iot_ui/iot_ui/templates/pages/iot_event.html +72,error_type,类型
+apps/iot_ui/iot_ui/templates/pages/iot_devinfo.html +33,gateway,网关
 apps/iot_ui/iot_ui/templates/pages/iot_console.html +27,gateway overview,网关总览
 apps/iot_ui/iot_ui/templates/pages/gateways_list.py +63,gateways_list,网关列表
 apps/iot_ui/iot_ui/templates/pages/gateways_map.py +43,gateways_map,网关地图
 apps/iot_ui/iot_ui/templates/pages/iot_bunchcode.html +36,group bunchcode,组绑定码
-apps/iot_ui/iot_ui/templates/pages/iot_event.html +48,hasread,已读
+apps/iot_ui/iot_ui/templates/pages/iot_event.html +52,hasread,已读
 apps/iot_ui/iot_ui/templates/pages/iot_bunchcode.py +81,iot_bunchcode,绑定码
 apps/iot_ui/iot_ui/templates/iot_ui_breadcrumbs.html +11,iot_console,控制台
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.py +69,iot_ent_structure,组织架构
 apps/iot_ui/iot_ui/templates/pages/iot_event.py +45,iot_event,
 apps/iot_ui/iot_ui/templates/pages/iot_event_info.py +62,iot_event_info,
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +62,last_updated,最后更新
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +66,last_updated,最后更新
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +173,member_id,成员ID
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +172,member_name,成员名称
 apps/iot_ui/iot_ui/templates/pages/iot_bunchcode.html +62,new bunchcode,新绑定码
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +41,offline,离线
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +45,offline,离线
 apps/iot_ui/iot_ui/templates/pages/iot_console.html +86,offline gateways,离线网关
 apps/iot_ui/iot_ui/templates/pages/iot_console.html +99,offline gateways exceeds 7days,离线超7天网关
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +38,offline_7d,离线7天
-apps/iot_ui/iot_ui/templates/pages/gateways_list.html +44,online,在线
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +42,offline_7d,离线7天
+apps/iot_ui/iot_ui/templates/pages/gateways_list.html +48,online,在线
 apps/iot_ui/iot_ui/templates/pages/iot_console.html +69,online gateways,在线网关
 apps/iot_ui/iot_ui/templates/pages/iot_ent_structure.html +174,operation,操作
 apps/iot_ui/iot_ui/templates/pages/iot_bunchcode.html +40,private bunchcode,私有绑定码
 apps/iot_ui/iot_ui/templates/pages/iot_bunchcode.html +126,private_bunch_codes,私有绑定码
 apps/iot_ui/iot_ui/templates/pages/iot_console.html +56,total gateways,网关总数
-apps/iot_ui/iot_ui/templates/pages/iot_event.html +54,unread,未读
+apps/iot_ui/iot_ui/templates/pages/iot_event.html +58,unread,未读
