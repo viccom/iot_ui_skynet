@@ -60,8 +60,8 @@
             {"data": "device"},
             {"data": "error_type"},
             {"data": "error_key"},
-
             {"data": "error_level"},
+            {"data": "time"},
             {"data": "brief"}
         ],
       'rowCallback': function(row, data, dataIndex){

@@ -530,7 +530,7 @@ def query_iot_event(filter):
 		#print(g)
 		if g["device_sn"]:
 			print(g["device_sn"])
-			rr = frappe.db.get_list("IOT Device Error", fields=["name", "device", "error_type", "error_key", "error_level", "error_info"], filters={"device": g["device_sn"],})
+			rr = frappe.db.get_list("IOT Device Error", fields=["name", "device", "error_type", "error_key", "error_level", "time", "error_info"], filters={"device": g["device_sn"],})
 			if rr:
 				for r in rr:
 					events.append(r)
@@ -566,18 +566,18 @@ def query_iot_event(filter):
 		if events:
 			return events
 		else:
-			return [{"name":None, "device":"No Data", "error_type":None, "error_key":None, "error_level":None, "error_info":None, "brief":None, "hasRead":True}]
+			return [{"name":None, "device":"No Data", "error_type":None, "error_key":None, "error_level":None, "time":None, "error_info":None, "brief":None, "hasRead":True}]
 	elif filter == "unread":
 		if ev_unread:
 			return ev_unread
 		else:
-			return [{"name": None, "device": "No Data", "error_type": None, "error_key": None, "error_level": None,
+			return [{"name": None, "device": "No Data", "error_type": None, "error_key": None, "error_level": None, "time":None,
 			         "error_info": None, "brief":None, "hasRead": True}]
 	elif filter == "hasread":
 		if ev_hasread:
 			return ev_hasread
 		else:
-			return [{"name": None, "device":"No Data", "error_type": None, "error_key": None, "error_level": None,
+			return [{"name": None, "device":"No Data", "error_type": None, "error_key": None, "error_level": None, "time":None,
 			         "error_info": None, "brief":None, "hasRead": True}]
 	elif filter == "len_all":
 		return len(events)
