@@ -32,12 +32,12 @@
          }
           },
           {
-             'targets': [1,2,3,4],
-              'width': '15%'
+             'targets': [1,2,3,4,5],
+              'width': '10%'
           },
           {
-             'targets': [5],
-              'width': '40%'
+             'targets': [6],
+              'width': '50%'
           },
       ],
       'order': [[1, 'asc']],
