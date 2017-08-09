@@ -29,7 +29,7 @@
         {{_('Details')}}
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            xxxxxx
+            {{eventid}}
         </small>
     </h1>
 </div><!-- /.page-header -->
@@ -46,7 +46,7 @@
         <div class="profile-info-name"> {{_('Device for event')}} </div>
 
         <div class="profile-info-value">
-            <i class="fa fa-map-marker light-orange bigger-110"></i>
+            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
             <span class="editable" id="device">{{ device }}</span>
         </div>
     </div>
@@ -71,7 +71,7 @@
         <div class="profile-info-name"> {{_('Occurrence Time')}} </div>
 
         <div class="profile-info-value">
-            <span class="editable" id="occurrence_time">3 hours ago</span>
+            <span class="editable" id="occurrence_time">{{time}}</span>
         </div>
     </div>
 

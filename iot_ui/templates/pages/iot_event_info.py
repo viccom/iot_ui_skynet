@@ -29,6 +29,7 @@ def get_context(context):
 	context.error_key = event.error_key
 	context.error_level = event.error_level
 	context.error_info = event.error_info
+	context.time = event.time
 
 	query_ev = frappe.db.get_list("Error Visited", fields=["error_visited"], filters={"user": frappe.session.user, "error_visited": eventid})
 	print(query_ev)
