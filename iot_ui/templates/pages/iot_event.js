@@ -41,20 +41,20 @@
           },
       ],
       'order': [[1, 'asc']],
-                "oLanguage": {
-                    "sLengthMenu": "每页显示 _MENU_",
-                    "sSearch": "搜索:",
-                     "sZeroRecords": "没有匹配结果",
-                    "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
-                    "sInfoEmpty": "没有数据",
-                    "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
-                    "oPaginate": {
-                                "sFirst": "|<<",
-                                "sPrevious": "<",
-                                "sNext": ">",
-                                "sLast": ">>|"
-                                },
-                    "sZeroRecords": "没有检索到数据",
+    "oLanguage": {
+        "sLengthMenu": "每页显示 _MENU_",
+        "sSearch": "搜索:",
+         "sZeroRecords": "没有匹配结果",
+        "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+        "sInfoEmpty": "没有数据",
+        "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
+        "oPaginate": {
+                    "sFirst": "|<<",
+                    "sPrevious": "<",
+                    "sNext": ">",
+                    "sLast": ">>|"
+                    },
+        "sZeroRecords": "没有检索到数据",
             },
         "columns": [
             {"data": "name"},
