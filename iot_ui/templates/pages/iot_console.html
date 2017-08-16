@@ -52,7 +52,7 @@
                             </div>
 
                             <div class="infobox-data" data-id="all">
-                                <span class="infobox-data-number" id="devices_total">0</span>
+                                <span class="infobox-data-number" id="devices_total">{{userdevices.total|length}}</span>
                                 <div class="infobox-content">{{_('total gateways')}}</div>
                             </div>
 
@@ -65,7 +65,7 @@
                             </div>
 
                             <div class="infobox-data"  data-id="online">
-                                <span class="infobox-data-number" id="devices_online">0</span>
+                                <span class="infobox-data-number" id="devices_online">{{userdevices.online|length}}</span>
                                 <div class="infobox-content">{{_('online gateways')}}</div>
                             </div>
 
@@ -82,7 +82,7 @@
                             </div>
 
                             <div class="infobox-data"  data-id="offline">
-                                <span class="infobox-data-number" id="devices_offline">0</span>
+                                <span class="infobox-data-number" id="devices_offline">{{userdevices.offline|length}}</span>
                                 <div class="infobox-content">{{_('offline gateways')}}</div>
                             </div>
 
@@ -95,7 +95,7 @@
                             </div>
 
                             <div class="infobox-data"  data-id="offline_7d">
-                                <span class="infobox-data-number" id="devices_offline_7d">0</span>
+                                <span class="infobox-data-number" id="devices_offline_7d">{{userdevices.offline_7d|length}}</span>
                                 <div class="infobox-content">{{_('offline gateways exceeds 7days')}}</div>
                             </div>
 
