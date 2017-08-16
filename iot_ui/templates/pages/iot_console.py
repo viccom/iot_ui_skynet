@@ -129,7 +129,7 @@ def get_context(context):
 						 "latitude": devinfo.latitude})
 			pass
 		pass
-	context.userdevices = {"total":userdevices_total, "online":userdevices_online, "offline":userdevices_offline, "offline_7d":userdevices_offline_7d}
+	context.userdevices = {"total":0, "online":0, "offline":0, "offline_7d":0}
 
 	menulist = frappe.get_all("Iot Menu")
 	n_list = []
