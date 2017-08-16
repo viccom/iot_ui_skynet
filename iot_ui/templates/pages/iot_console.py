@@ -129,7 +129,7 @@ def get_context(context):
 						 "latitude": devinfo.latitude})
 			pass
 		pass
-	if userdevices:
+	if userdevices_total:
 		context.userdevices = {"total":userdevices_total,"online":userdevices_online,"offline":userdevices_offline,"offline_7d":userdevices_offline_7d}
 	else:
 		context.userdevices = {"total": "", "online": "", "offline": "", "offline_7d": ""}
