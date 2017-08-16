@@ -47,6 +47,37 @@ def get_context(context):
 	userdevices_offline = []
 	userdevices_offline_7d = []
 
+	if devices["private_devices"]:
+		for d in devices["private_devices"]:
+			for dsn in d["sn"]:
+				devinfo = IOTDevice.get_device_doc(dsn)
+				userdevices_total.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+				if devinfo.device_status == "ONLINE":
+					userdevices_online.append(
+						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+						 "device_company": devinfo.company, "longitude": devinfo.longitude,
+						 "latitude": devinfo.latitude})
+				elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
+					userdevices_offline_7d.append(
+						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+						 "device_company": devinfo.company, "longitude": devinfo.longitude,
+						 "latitude": devinfo.latitude})
+					userdevices_offline.append(
+						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+						 "device_company": devinfo.company, "longitude": devinfo.longitude,
+						 "latitude": devinfo.latitude})
+				else:
+					userdevices_offline.append(
+						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+						 "device_company": devinfo.company, "longitude": devinfo.longitude,
+						 "latitude": devinfo.latitude})
+			pass
+		pass
+
 	context.userdevices = {"total":userdevices_total, "online":userdevices_online, "offline":userdevices_offline, "offline_7d":userdevices_offline_7d}
 
 	menulist = frappe.get_all("Iot Menu")
