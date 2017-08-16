@@ -80,6 +80,8 @@ def get_context(context):
 				for dsn in d["sn"]:
 					devinfo = IOTDevice.get_device_doc(dsn)
 					#print(dir(devinfo))
+					lasttime = get_datetime(devinfo.last_updated)
+					nowtime = now_datetime()
 					userdevices_total.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
 					if devinfo.device_status == "ONLINE":
 						userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
@@ -103,6 +105,9 @@ def get_context(context):
 		for d in devices["private_devices"]:
 			for dsn in d["sn"]:
 				devinfo = IOTDevice.get_device_doc(dsn)
+				lasttime = get_datetime(devinfo.last_updated)
+				nowtime = now_datetime()
+
 				userdevices_total.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
 				try:
 					if devinfo.device_status == "ONLINE":
