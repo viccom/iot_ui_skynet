@@ -104,29 +104,32 @@ def get_context(context):
 			for dsn in d["sn"]:
 				devinfo = IOTDevice.get_device_doc(dsn)
 				userdevices_total.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
-				if devinfo.device_status == "ONLINE":
-					userdevices_online.append(
-						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
-						 "device_company": devinfo.company, "longitude": devinfo.longitude,
-						 "latitude": devinfo.latitude})
-				elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
-					userdevices_offline_7d.append(
-						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
-						 "device_company": devinfo.company, "longitude": devinfo.longitude,
-						 "latitude": devinfo.latitude})
-					userdevices_offline.append(
-						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
-						 "device_company": devinfo.company, "longitude": devinfo.longitude,
-						 "latitude": devinfo.latitude})
-				else:
-					userdevices_offline.append(
-						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
-						 "device_company": devinfo.company, "longitude": devinfo.longitude,
-						 "latitude": devinfo.latitude})
+				try:
+					if devinfo.device_status == "ONLINE":
+						userdevices_online.append(
+							{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+							 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+							 "device_company": devinfo.company, "longitude": devinfo.longitude,
+							 "latitude": devinfo.latitude})
+					elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
+						userdevices_offline_7d.append(
+							{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+							 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+							 "device_company": devinfo.company, "longitude": devinfo.longitude,
+							 "latitude": devinfo.latitude})
+						userdevices_offline.append(
+							{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+							 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+							 "device_company": devinfo.company, "longitude": devinfo.longitude,
+							 "latitude": devinfo.latitude})
+					else:
+						userdevices_offline.append(
+							{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+							 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+							 "device_company": devinfo.company, "longitude": devinfo.longitude,
+							 "latitude": devinfo.latitude})
+				except Exception as ex:
+					frappe.logger(__name__).error(str(ex))
 			pass
 		pass
 
