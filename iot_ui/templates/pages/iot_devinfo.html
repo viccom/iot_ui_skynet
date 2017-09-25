@@ -74,6 +74,7 @@
 
 
             <span class="btn btn-default hide" id="manual_query">手动查询</span>
+            <span class="btn btn-default hide" id="stop_query">停止</span>
             <div class="widget-toolbar no-border">
 
                 <ul class="nav nav-tabs" id="recent-tab">
@@ -81,9 +82,9 @@
                         <a data-toggle="tab" href="#cloud-data-tab">{{_('Platform Data')}}</a>
                     </li>
 
-                    <li id="locale-data">
+{#                    <li id="locale-data">
                         <a data-toggle="tab" href="#locale-data-tab">{{_('Spot Data')}}</a>
-                    </li>
+                    </li>#}
 
                     <li class="hide" id="dev-message">
                         <a data-toggle="tab" href="#message-tab">{{_('Device Message')}}</a>
@@ -141,18 +142,93 @@
 
                     </div>
                     <!-- /.#cloud-data-tab -->
-
+{#
                     <div id="locale-data-tab" class="tab-pane">
 
+                        <div class="col-md-12">
+                          <div class="panel panel-default">
+                            <div class="panel-heading">
+                              <a class="chevron-toggle">Data</a>
+
+                                <span class="chevron-toggle pull-right"><a href="#" onclick="clearDevData()">Clear</a></span>
+                            </div>
+                            <div class="panel-body collapse in fixed-height-panel" id="DataCollapse">
+
+                              <table class="table table-hover table-condensed  tableSection" id="incomingDataTable">
+
+                                <thead>
+                                  <tr>
+                                    <th style="width: 25%">Name</th>
+                                    <th style="width: 25%">Time</th>
+                                    <th style="width: 40%">RtValue</th>
+                                    <th style="width: 10%">Quality</th>
+                                  </tr>
+                                </thead>
+                                <tbody></tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
                     </div>
+ #}
                     <!-- /.#locale-data-tab -->
 
                     <div id="message-tab" class="tab-pane">
 
+                        <div class="col-md-12">
+                          <div class="panel panel-default">
+                            <div class="panel-heading">
+                              <a class="chevron-toggle">Message</a>
+
+                                <span class="chevron-toggle pull-right"><a href="#" onclick="clearHistory()">Clear</a></span>
+                            </div>
+                            <div class="panel-body collapse in fixed-height-panel" id="historyCollapse">
+
+                              <table class="table table-hover table-condensed  tableSection" id="incomingMessageTable">
+
+                                <thead>
+                                  <tr>
+                                    <th style="width: 5%">Dir</th>
+                                    <th style="width: 15%">Time</th>
+                                    <th>Message</th>
+                                  </tr>
+                                </thead>
+                                <tbody></tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
                     </div>
                     <!-- /.#message-tab -->
 
-                    <div id="log-tab" class="tab-pane hide">
+                    <div id="log-tab" class="tab-pane">
+
+                        <div class="col-md-12">
+                          <div class="panel panel-default">
+                            <div class="panel-heading">
+                              <a class="chevron-toggle">Data</a>
+
+                                <span class="chevron-toggle pull-right"><a href="#" onclick="clearDevLog()">Clear</a></span>
+                            </div>
+                            <div class="panel-body collapse in fixed-height-panel" id="LogCollapse">
+
+                              <table class="table table-hover table-condensed  tableSection" id="incomingLogTable">
+
+                                <thead>
+                                  <tr>
+                                    <th style="width: 10%">Category</th>
+                                    <th style="width: 15%">Time</th>
+                                    <th style="width: 75%">Details</th>
+                                  </tr>
+                                </thead>
+                                <tbody></tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
 
                     </div>
                     <!-- /.#log-tab -->
@@ -170,11 +246,20 @@
 		<script src="/assets/iot_ui/assets/js/jquery.dataTables.min.js"></script>
 		<script src="/assets/iot_ui/assets/js/jquery.dataTables.bootstrap.min.js"></script>
         <script src="/assets/iot_ui/assets/js/dataTables.responsive.min.js"></script>
+        <script src="/assets/iot_ui/assets/js/paho-mqtt.js"></script>
+          <script type="text/javascript">
+
+        {% include "templates/pages/mqtt_utility.js" %}
+
+         </script>
+
          <script type="text/javascript">
 
         {% include "templates/pages/iot_devinfo.js" %}
 
          </script>
+
+
 
 {% endblock %}
 

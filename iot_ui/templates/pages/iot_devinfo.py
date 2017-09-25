@@ -49,18 +49,16 @@ def get_context(context):
 	device.has_permission('read')
 	context.doc = device
 
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/1")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11")
 	context.devices = []
 	for d in client.lrange(name, 0, -1):
 		dev = {
 			'sn': d
 		}
-		if d[0:len(name)] == name:
-			dev['name']= d[len(name):]
-
-		context.devices.append(dev)
-	print(device)
-	print(context.devices)
+		if d.encode("ascii") != name.encode("ascii"):
+			if d[0:len(name)] == name:
+				dev['name']= d[len(name):]
+			context.devices.append(dev)
 	if device.sn:
 		context.vsn = iot_device_tree(device.sn)
 	else:

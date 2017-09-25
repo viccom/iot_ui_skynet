@@ -56,7 +56,7 @@ $(document).ready(function() {
 
     //判断当前URL设置页面中的哪一个菜单被激活
 
-    var rtvalueurl = "/api/method/iot.hdb.iot_device_data_array?sn=" + symlinksn;
+    var rtvalueurl = "/api/method/iot_ui.ui_api.iot_device_data_array?sn=" + symlinksn;
     var table = jQuery('#RTValue-Table').DataTable({
         "dom": 'lfrtp',
         //"bInfo" : false,
@@ -128,32 +128,37 @@ $(document).ready(function() {
 
         $("#cloud-data").click(function(){
               $('#manual_query').addClass('hide');
+              $('#stop_query').addClass('hide');
       });
-
+/*
         $("#locale-data").click(function(){
               $('#manual_query').removeClass('hide');
+              $('#stop_query').removeClass('hide');
       });
+        */
         $("#symlink-log").click(function(){
               $('#manual_query').removeClass('hide');
+              $('#stop_query').removeClass('hide');
       });
         $("#dev-message").click(function(){
               $('#manual_query').removeClass('hide');
+              $('#stop_query').removeClass('hide');
       });
     //点击按钮
           $("div .btn-app").each(function(){
               $(this).click(function(){
                   var name = $(this).attr("devname");
                   id = $(this).attr("devid");
-                  console.log(name, id);
+                  console.log(name, id, lastid, symlinksn);
                   if(id==symlinksn){
-                      var rtvalueurl = "/api/method/iot.hdb.iot_device_data_array?sn=" + symlinksn;
+                      var rtvalueurl = "/api/method/iot_ui.ui_api.iot_device_data_array?sn=" + symlinksn;
                       isvsn = false;
                       current_vsn = '';
                       if(lastid!=symlinksn){
                       $('#cloud-data').addClass('active');
                       $('#cloud-data-tab').addClass('active');
 
-                      $('#locale-data').removeClass('active');
+                      // $('#locale-data').removeClass('active');
 
                       $('#symlink-log').removeClass('active hide');
                       $('#log-tab').removeClass('active hide');
@@ -164,22 +169,23 @@ $(document).ready(function() {
                       }
                       lastid = id;
                       $('#manual_query').addClass('hide');
-
+                        $('#stop_query').addClass('hide');
 
                   }
                   else if(lastid==symlinksn){
-                      var rtvalueurl = "/api/method/iot.hdb.iot_device_data_array?sn=" + symlinksn + "&vsn=" + id;
+                      var rtvalueurl = "/api/method/iot_ui.ui_api.iot_device_data_array?sn=" + symlinksn + "&vsn=" + id;
                       isvsn = true;
                       current_vsn = id;
                       lastid = id;
-
+                        console.log("hide message");
                       $('#cloud-data').addClass('active');
                       $('#cloud-data-tab').addClass('active');
 
-                      $('#locale-data').removeClass('active');
-                      $('#locale-data-tab').removeClass('active');
+                      // $('#locale-data').removeClass('active');
+                      // $('#locale-data-tab').removeClass('active');
 
                       $('#dev-message').removeClass('hide');
+                      $('#dev-message').removeClass('active');
                       $('#message-tab').removeClass('hide');
 
                       $('#symlink-log').removeClass('active');
@@ -188,11 +194,11 @@ $(document).ready(function() {
                       $('#log-tab').addClass('hide');
 
                       $('#manual_query').addClass('hide');
-
+                       $('#stop_query').addClass('hide');
 
                   }
                   else{
-                      var rtvalueurl = "/api/method/iot.hdb.iot_device_data_array?sn=" + symlinksn + "&vsn=" + id;
+                      var rtvalueurl = "/api/method/iot_ui.ui_api.iot_device_data_array?sn=" + symlinksn + "&vsn=" + id;
                       isvsn = true;
                       current_vsn = id;
                       lastid = id;
@@ -217,10 +223,296 @@ $(document).ready(function() {
           });
     //点击按钮
 
+    $('#manual_query').click(function(){
+
+        if(client){
+            client.unsubscribe(symlinksn+'/comm', {
+                 onSuccess: unsubscribeSuccess,
+                 onFailure: unsubscribeFailure
+             });
+            client.unsubscribe(symlinksn+'/log', {
+                 onSuccess: unsubscribeSuccess,
+                 onFailure: unsubscribeFailure
+             });
+        disconnect();
+        client=null;
+        }
+
+        console.log(current_vsn);
+        if(current_vsn){
+            console.log("查询报文");
+            clearHistory();
+            //----------------------------------------------------------------------------
+                var url = "/api/method/iot.device_api.sys_enable_comm";
+                var mmm = {
+                            "device": symlinksn,
+                            "data": "120",
+                            "id": current_vsn,
+                        };
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    contentType: "application/json", //必须有
+                    data: JSON.stringify(mmm),
+                    dataType: "json",
+                    headers: {
+                                "HDB-AuthorizationCode" : "12312313aaa"
+                            },
+                    success: function(r) {
+                        console.log(r);
+                    //---------------------------------------------------------------------------------
+
+                    var hostname = "192.168.174.133";
+                    var port = "8083";
+                    var clientId = 'js-mqtt-' + makeid();
+
+                    var path = "/mqtt";
+                    var user = null;
+                    var pass = null;
+                    var keepAlive = 60;
+                    var timeout = 6;
+                    var tls = false;
+                    var cleanSession = true;
+                    var lastWillTopic = null;
+                    var lastWillQos = 0;
+                    var lastWillRetain = false;
+                    var lastWillMessage = null;
+
+
+                    if(path){
+                      client = new Paho.MQTT.Client(hostname, Number(port), path, clientId);
+                    } else {
+                      client = new Paho.MQTT.Client(hostname, Number(port), clientId);
+                    }
+                    console.info('Connecting to Server: Hostname: ', hostname, '. Port: ', port, '. Path: ', client.path, '. Client ID: ', clientId);
+
+                    // set callback handlers
+                    client.onConnectionLost = onConnectionLost;
+                    client.onMessageArrived = onMessageArrived;
+
+
+                    var options = {
+                      invocationContext: {host : hostname, port: port, path: client.path, clientId: clientId},
+                      timeout: timeout,
+                      keepAliveInterval:keepAlive,
+                      cleanSession: cleanSession,
+                      useSSL: tls,
+                      onSuccess: onConnect,
+                      onFailure: onFail
+                    };
+
+
+
+                    if(user){
+                      options.userName = user;
+                    }
+
+                    if(pass){
+                      options.password = pass;
+                    }
+
+                    if(lastWillTopic){
+                      var lastWillMessage = new Paho.MQTT.Message(lastWillMessage);
+                      lastWillMessage.destinationName = lastWillTopic;
+                      lastWillMessage.qos = lastWillQos;
+                      lastWillMessage.retained = lastWillRetain;
+                      options.willMessage = lastWillMessage;
+                    }
+
+                    // connect the client
+                    client.connect(options);
+
+                    var  t=setTimeout("client.subscribe(symlinksn+'/comm', {qos: 0})",100);
+
+                    //---------------------------------------------------------------------------------
+                      },
+                     error: function() {
+                          console.log("异常!");
+                      }
+                });
+
+    //----------------------------------------------------------------------------
+        }
+        else{
+            console.log("查询日志");
+            clearDevLog();
+            //----------------------------------------------------------------------------
+                var url = "/api/method/iot.device_api.sys_enable_log";
+                var mmm = {
+                            "device": symlinksn,
+                            "data": "120",
+                            "id": symlinksn,
+                        };
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    contentType: "application/json", //必须有
+                    data: JSON.stringify(mmm),
+                    dataType: "json",
+                    headers: {
+                                "HDB-AuthorizationCode" : "12312313aaa"
+                            },
+                    success: function(r) {
+                        console.log(r);
+                                            //---------------------------------------------------------------------------------
+
+                    var hostname = "192.168.174.133";
+                    var port = "8083";
+                    var clientId = 'js-mqtt-' + makeid();
+
+                    var path = "/mqtt";
+                    var user = null;
+                    var pass = null;
+                    var keepAlive = 60;
+                    var timeout = 6;
+                    var tls = false;
+                    var cleanSession = true;
+                    var lastWillTopic = null;
+                    var lastWillQos = 0;
+                    var lastWillRetain = false;
+                    var lastWillMessage = null;
+
+
+                    if(path){
+                      client = new Paho.MQTT.Client(hostname, Number(port), path, clientId);
+                    } else {
+                      client = new Paho.MQTT.Client(hostname, Number(port), clientId);
+                    }
+                    console.info('Connecting to Server: Hostname: ', hostname, '. Port: ', port, '. Path: ', client.path, '. Client ID: ', clientId);
+
+                    // set callback handlers
+                    client.onConnectionLost = onConnectionLost;
+                    client.onMessageArrived = onLogArrived;
+
+
+                    var options = {
+                      invocationContext: {host : hostname, port: port, path: client.path, clientId: clientId},
+                      timeout: timeout,
+                      keepAliveInterval:keepAlive,
+                      cleanSession: cleanSession,
+                      useSSL: tls,
+                      onSuccess: onConnect,
+                      onFailure: onFail
+                    };
+
+
+
+                    if(user){
+                      options.userName = user;
+                    }
+
+                    if(pass){
+                      options.password = pass;
+                    }
+
+                    if(lastWillTopic){
+                      var lastWillMessage = new Paho.MQTT.Message(lastWillMessage);
+                      lastWillMessage.destinationName = lastWillTopic;
+                      lastWillMessage.qos = lastWillQos;
+                      lastWillMessage.retained = lastWillRetain;
+                      options.willMessage = lastWillMessage;
+                    }
+
+                    // connect the client
+                    client.connect(options);
+
+                    var  t=setTimeout("client.subscribe(symlinksn+'/log', {qos: 0})",100);
+
+                    //---------------------------------------------------------------------------------
+                      },
+                     error: function() {
+                          console.log("异常!");
+                      }
+                });
+
+    //----------------------------------------------------------------------------
+        }
+    });
+
+    $('#stop_query').click(function(){
+        if(client){
+
+            if(current_vsn){
+                console.log("停止查询报文");
+
+                //----------------------------------------------------------------------------
+                    var url = "/api/method/iot.device_api.sys_enable_comm";
+                    var mmm = {
+                                "device": symlinksn,
+                                "data": "0",
+                                "id": current_vsn,
+                            };
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        contentType: "application/json", //必须有
+                        data: JSON.stringify(mmm),
+                        dataType: "json",
+                        headers: {
+                                    "HDB-AuthorizationCode" : "12312313aaa"
+                                },
+                        success: function(r) {
+                            console.log(r);
+                            client.unsubscribe(symlinksn+'/comm', {
+                                 onSuccess: unsubscribeSuccess,
+                                 onFailure: unsubscribeFailure
+                             });
+                            disconnect();
+                            client=null;
+
+
+
+                          },
+                         error: function() {
+                              console.log("异常!");
+                          }
+                    });
+
+        //----------------------------------------------------------------------------
+            }
+            else{
+                console.log("停止查询日志");
+
+                //----------------------------------------------------------------------------
+                    var url = "/api/method/iot.device_api.sys_enable_log";
+                    var mmm = {
+                                "device": symlinksn,
+                                "data": "0",
+                                "id": symlinksn,
+                            };
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        contentType: "application/json", //必须有
+                        data: JSON.stringify(mmm),
+                        dataType: "json",
+                        headers: {
+                                    "HDB-AuthorizationCode" : "12312313aaa"
+                                },
+                        success: function(r) {
+                            console.log(r);
+                            client.unsubscribe(symlinksn+'/log', {
+                                 onSuccess: unsubscribeSuccess,
+                                 onFailure: unsubscribeFailure
+                             });
+                            disconnect();
+                            client=null;
+                          },
+                         error: function() {
+                              console.log("异常!");
+                          }
+                    });
+
+        //----------------------------------------------------------------------------
+            }
+
+     }
+    });
+
     //点击表格第2列
       $('#RTValue-Table tbody').on('click', 'tr td:nth-child(n+2)', function () {
         var data = table.row( this ).data();
-        tnm = data['NAME'].toLowerCase();
+        tnm = data['NAME'];
         console.log(isvsn);
         console.log(current_vsn);
         console.log(tnm);
@@ -228,10 +520,10 @@ $(document).ready(function() {
 
           if(isvsn){
 
-            hisdataurl = "/iot_tag_his?sn="+symlinksn+"&vsn="+ current_vsn +"&tag="+tnm;
+            hisdataurl = "/new_tag_his?sn="+symlinksn+"&vsn="+ current_vsn +"&tag="+tnm;
           }
           else{
-            hisdataurl = "/iot_tag_his?sn="+symlinksn+"&tag="+tnm;
+            hisdataurl = "/new_tag_his?sn="+symlinksn+"&tag="+tnm;
                   }
               console.log(hisdataurl);
               window.open(hisdataurl);

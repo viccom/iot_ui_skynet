@@ -5,23 +5,73 @@ from __future__ import unicode_literals
 import frappe
 import json
 import uuid
-from frappe import _dict, throw, _
-
-from iot.iot.doctype.iot_device.iot_device import IOTDevice
-from cloud.cloud.doctype.cloud_company_group.cloud_company_group import list_user_groups as _list_user_groups
-from cloud.cloud.doctype.cloud_company.cloud_company import list_user_companies
-from iot.hdb_api import list_iot_devices
+import requests
 import redis
+import datetime
+from frappe import _dict, throw, _
+from iot.iot.doctype.iot_device.iot_device import IOTDevice
 from iot.iot.doctype.iot_hdb_settings.iot_hdb_settings import IOTHDBSettings
-from iot.hdb import iot_device_tree
 from cloud.cloud.doctype.cloud_company_group.cloud_company_group import list_user_groups as _list_user_groups
 from cloud.cloud.doctype.cloud_company.cloud_company import list_user_companies
 from cloud.cloud.doctype.cloud_company.cloud_company import list_admin_companies
 from cloud.cloud.doctype.cloud_company.cloud_company import list_users, get_domain
-from cloud.cloud.doctype.cloud_employee.cloud_employee import add_employee
+
 from frappe.utils.user import get_user_fullname
 from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
 
+
+def valid_auth_code(auth_code=None):
+	auth_code = auth_code or frappe.get_request_header("HDB-AuthorizationCode")
+	if not auth_code:
+		throw(_("HDB-AuthorizationCode is required in HTTP Header!"))
+	frappe.logger(__name__).debug(_("HDB-AuthorizationCode as {0}").format(auth_code))
+
+	user = IOTHDBSettings.get_on_behalf(auth_code)
+	if not user:
+		throw(_("Authorization Code is incorrect!"))
+	# form dict keeping
+	form_dict = frappe.local.form_dict
+	frappe.set_user(user)
+	frappe.local.form_dict = form_dict
+
+def list_iot_devices(user):
+	# frappe.logger(__name__).debug(_("List Devices for user {0}").format(user))
+
+	# Get Private Devices
+
+	# pri_devices = frappe.db.get_values("IOT Device", {"owner_id": user, "owner_type": "User"})
+	# print(pri_devices)
+	ent_devices = []
+	groups = _list_user_groups(user)
+	for g in groups:
+		g.group_name = frappe.get_value("Cloud Company Group", g.name, "group_name")
+		gdev = [d[0] for d in
+						frappe.db.get_values("IOT Device", {"owner_id": g.name, "owner_type": "Cloud Company Group"})]
+		ent_devices = ent_devices + gdev
+	pri_devices = [d[0] for d in
+					frappe.db.get_values("IOT Device", {"owner_id": user, "owner_type": "User"})]
+
+	# for c in bunch_codes:
+	# 	pri_devices.append({"bunch": c, "sn": IOTDevice.list_device_sn_by_bunch(c)})
+	devices = {"company_devices": ent_devices, "shared_devices": [], "private_devices": pri_devices}
+	return devices
+
+
+@frappe.whitelist(allow_guest=True)
+def list_devices(user=None):
+	"""
+	List devices according to user specified in query params by naming as 'usr'
+		this user is ERPNext user which you got from @iot.auth.login
+	:param user: ERPNext username
+	:return: device list
+	"""
+	# valid_auth_code()
+	ssuser = frappe.session.user
+	# user = user or frappe.form_dict.get('user')
+	if not ssuser:
+		throw(_("Query string user does not specified"))
+
+	return list_iot_devices(ssuser)
 
 def get_all(user):
 	first_name, last_name, avatar, name, language, phone, mobile_no, last_login, last_ip = frappe.db.get_value("User",
@@ -38,6 +88,23 @@ def get_all(user):
 	})
 
 
+@frappe.whitelist()
+def iot_device_tree(sn=None):
+	sn = sn or frappe.form_dict.get('sn')
+	doc = frappe.get_doc('IOT Device', sn)
+	doc.has_permission("read")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11")
+	subdevice = client.lrange(sn, 0, -1)
+	return subdevice
+
+
+@frappe.whitelist()
+def iot_device_cfg(sn=None, vsn=None):
+	sn = sn or frappe.form_dict.get('sn')
+	doc = frappe.get_doc('IOT Device', sn)
+	doc.has_permission("read")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/10")
+	return json.loads(client.get(vsn or sn) or "")
 
 
 def get_bunch_codes(group, start=0, search=None):
@@ -71,45 +138,42 @@ def devices_list_array(filter):
 	userdevices_offline = []
 	userdevices_offline_7d = []
 	if devices["company_devices"]:
-		for devs in devices["company_devices"]:
-			for d in devs["devices"]:
-				for dsn in d["sn"]:
-					devinfo = IOTDevice.get_device_doc(dsn)
-					#print(dir(devinfo))
-					#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
-					lasttime = get_datetime(devinfo.last_updated)
-					nowtime = now_datetime()
-					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
-					if devinfo.device_status == "ONLINE":
-						userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
-						                           "device_desc": devinfo.description,
-						                           "device_status": devinfo.device_status,
-						                           "last_updated": devinfo.last_updated,
-						                           "device_company": devinfo.company, "longitude": devinfo.longitude,
-						                           "latitude": devinfo.latitude})
-					elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
-						userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
-						                               "device_desc": devinfo.description,
-						                               "device_status": devinfo.device_status,
-						                               "last_updated": devinfo.last_updated,
-						                               "device_company": devinfo.company,
-						                               "longitude": devinfo.longitude, "latitude": devinfo.latitude})
-						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
-						                            "device_desc": devinfo.description,
-						                            "device_status": devinfo.device_status,
-						                            "last_updated": devinfo.last_updated,
-						                            "device_company": devinfo.company, "longitude": devinfo.longitude,
-						                            "latitude": devinfo.latitude})
-					else:
-						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
-						                            "device_desc": devinfo.description,
-						                            "device_status": devinfo.device_status,
-						                            "last_updated": devinfo.last_updated,
-						                            "device_company": devinfo.company, "longitude": devinfo.longitude,
-						                            "latitude": devinfo.latitude})
-				pass
-			pass
+		for dsn in devices["company_devices"]:
+			devinfo = IOTDevice.get_device_doc(dsn)
+			print(devinfo)
+			# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
+			lasttime = get_datetime(devinfo.last_updated)
+			nowtime = now_datetime()
+			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+			if devinfo.device_status == "ONLINE":
+				userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+				                           "device_desc": devinfo.description,
+				                           "device_status": devinfo.device_status,
+				                           "last_updated": devinfo.last_updated,
+				                           "device_company": devinfo.company, "longitude": devinfo.longitude,
+				                           "latitude": devinfo.latitude})
+			elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
+				userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+				                               "device_desc": devinfo.description,
+				                               "device_status": devinfo.device_status,
+				                               "last_updated": devinfo.last_updated,
+				                               "device_company": devinfo.company,
+				                               "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+				userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+				                            "device_desc": devinfo.description,
+				                            "device_status": devinfo.device_status,
+				                            "last_updated": devinfo.last_updated,
+				                            "device_company": devinfo.company, "longitude": devinfo.longitude,
+				                            "latitude": devinfo.latitude})
+			else:
+				userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
+				                            "device_desc": devinfo.description,
+				                            "device_status": devinfo.device_status,
+				                            "last_updated": devinfo.last_updated,
+				                            "device_company": devinfo.company, "longitude": devinfo.longitude,
+				                            "latitude": devinfo.latitude})
 		pass
+
 
 	if devices["shared_devices"]:
 		for devs in devices["shared_devices"]:
@@ -154,40 +218,39 @@ def devices_list_array(filter):
 		pass
 
 	if devices["private_devices"]:
-		for d in devices["private_devices"]:
-			for dsn in d["sn"]:
-				devinfo = IOTDevice.get_device_doc(dsn)
-				#print(dir(devinfo))
-				#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
-				lasttime = get_datetime(devinfo.last_updated)
-				nowtime = now_datetime()
-				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
-				if devinfo.device_status == "ONLINE":
-					userdevices_online.append(
-						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
-						 "device_company": curuser, "longitude": devinfo.longitude,
-						 "latitude": devinfo.latitude})
-				elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
-					userdevices_offline_7d.append(
-						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
-						 "device_company": curuser, "longitude": devinfo.longitude,
-						 "latitude": devinfo.latitude})
-					userdevices_offline.append(
-						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
-						 "device_company": curuser, "longitude": devinfo.longitude,
-						 "latitude": devinfo.latitude})
-				else:
-					userdevices_offline.append(
-						{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-						 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
-						 "device_company": curuser, "longitude": devinfo.longitude,
-						 "latitude": devinfo.latitude})
+		for dsn in devices["private_devices"]:
+			devinfo = IOTDevice.get_device_doc(dsn)
+			print(dir(devinfo))
+			print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
+			lasttime = get_datetime(devinfo.last_updated)
+			nowtime = now_datetime()
+			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+			if devinfo.device_status == "ONLINE":
+				userdevices_online.append(
+					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+					 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+					 "device_company": curuser, "longitude": devinfo.longitude,
+					 "latitude": devinfo.latitude})
+			elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
+				userdevices_offline_7d.append(
+					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+					 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+					 "device_company": curuser, "longitude": devinfo.longitude,
+					 "latitude": devinfo.latitude})
+				userdevices_offline.append(
+					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+					 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+					 "device_company": curuser, "longitude": devinfo.longitude,
+					 "latitude": devinfo.latitude})
+			else:
+				userdevices_offline.append(
+					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
+					 "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,
+					 "device_company": curuser, "longitude": devinfo.longitude,
+					 "latitude": devinfo.latitude})
 
-			pass
 		pass
+
 
 	if filter=="online":
 		if userdevices_online:
@@ -612,6 +675,145 @@ def del_iot_event():
 	print(postdata)
 	company = postdata.company
 	members = postdata.members
+
+
+
+
+def get_post_json_data():
+	if frappe.request.method != "POST":
+		throw(_("Request Method Must be POST!"))
+	ctype = frappe.get_request_header("Content-Type")
+	if "json" not in ctype.lower():
+		throw(_("Incorrect HTTP Content-Type found {0}").format(ctype))
+	if not frappe.form_dict.data:
+		throw(_("JSON Data not found!"))
+	return json.loads(frappe.form_dict.data)
+
+@frappe.whitelist()
+def iot_device_data_array(sn=None, vsn=None):
+	sn = sn or frappe.form_dict.get('sn')
+	vsn = vsn or sn
+	doc = frappe.get_doc('IOT Device', sn)
+	doc.has_permission("read")
+
+	if vsn != sn:
+		if vsn not in iot_device_tree(sn):
+			return ""
+
+	cfg = iot_device_cfg(sn, vsn)
+	if not cfg:
+		return ""
+	# print(cfg)
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	hs = client.hgetall(vsn)
+	data = []
+	if cfg.has_key("inputs"):
+		tags = cfg.get("inputs")
+		for tag in tags:
+			name = tag.get('name')
+			valuegroup = hs.get(name + "/value")
+			if valuegroup:
+				# print("vvvvvv:",valuegroup)
+				vlist = eval(valuegroup)
+				timestr = ''
+				if vlist:
+					timestr = str(
+						convert_utc_to_user_timezone(datetime.datetime.utcfromtimestamp(int(vlist[0]))).replace(
+							tzinfo=None))
+				data.append({"NAME": name, "PV": vlist[1], "TM": timestr, "Q": vlist[2], "DESC": tag.get("desc"), })
+	return data
+
+@frappe.whitelist()
+def iot_device_his_data(sn=None, vsn=None, fields=None, condition=None):
+	vsn = vsn or sn
+	fields = fields or "*"
+	doc = frappe.get_doc('IOT Device', sn)
+	doc.has_permission("read")
+
+	if vsn != sn:
+		if vsn not in iot_device_tree(sn):
+			return 401
+
+	inf_server = IOTHDBSettings.get_influxdb_server()
+	if not inf_server:
+		frappe.logger(__name__).error("InfluxDB Configuration missing in IOTHDBSettings")
+		return 500
+	query = 'SELECT ' + fields + ' FROM "' + vsn + '"'
+	if condition:
+		query = query + " WHERE " + condition
+	else:
+		query = query + " LIMIT 1000"
+
+	domain = frappe.get_value("Cloud Company", doc.company, "domain")
+	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain}, timeout=10)
+	if r.status_code == 200:
+		return r.json()["results"] or r.json()
+
+	return r.text
+
+
+UTC_FORMAT1 = "%Y-%m-%dT%H:%M:%S.%fZ"
+UTC_FORMAT2 = "%Y-%m-%dT%H:%M:%SZ"
+
+
+def utc2local(utc_st):
+	now_stamp = time.time()
+	local_time = datetime.datetime.fromtimestamp(now_stamp)
+	utc_time = datetime.datetime.utcfromtimestamp(now_stamp)
+	offset = local_time - utc_time
+	local_st = utc_st + offset
+	return local_st
+
+
+@frappe.whitelist()
+def ping():
+	return "Pong"
+
+
+@frappe.whitelist()
+def taghisdata(sn=None, fields=None, tag=None, condition=None):
+	fields = fields or '"int_value", "value", "quality"'
+	doc = frappe.get_doc('IOT Device', sn)
+	doc.has_permission("read")
+
+	inf_server = IOTHDBSettings.get_influxdb_server()
+	if not inf_server:
+		frappe.logger(__name__).error("InfluxDB Configuration missing in IOTHDBSettings")
+		return 500
+	query = 'SELECT ' + fields + ' FROM "' + tag + '"'
+	if condition:
+		query = query + " WHERE " + condition
+	else:
+		query = query + " LIMIT 1000"
+	print("query:", query)
+	domain = frappe.get_value("Cloud Company", doc.company, "domain")
+	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain}, timeout=10)
+	if r.status_code == 200:
+		# return r.json()
+		try:
+			res = r.json()["results"][0]['series'][0]['values']
+			taghis = []
+			for i in range(0, len(res)):
+				hisvalue = {}
+				print('*********', res[i][0])
+				try:
+					utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
+				except Exception as err:
+					pass
+				try:
+					utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
+				except Exception as err:
+					pass
+				# local_time = utc2local(utc_time).strftime("%Y-%m-%d %H:%M:%S")
+				local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
+				# print('#######', local_time)
+				hisvalue = {'name': tag, 'value': res[i][1] or res[i][2], 'time': local_time, 'quality': res[i][3]}
+				taghis.append(hisvalue)
+			#print(taghis)
+			return taghis
+		except Exception as err:
+			return r.json()
+
 
 @frappe.whitelist(allow_guest=True)
 def ping():
