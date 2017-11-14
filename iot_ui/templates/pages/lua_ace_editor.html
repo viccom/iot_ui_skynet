@@ -1,0 +1,110 @@
+{% extends "templates/iot_ui_base.html" %}
+
+{% block mystyle %}
+<style>
+    #editor {
+        margin: 0px;
+        position: absolute;
+        top: 40px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+{#        height:0px;#}
+{#        padding-bottom:100%;#}
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block myscript %}
+
+{% endblock %}
+
+
+
+
+{% block content %}
+{% include "templates/iot_ui_breadcrumbs.html" %}
+<div class="page-content">
+    <button id="btn1">保存</button>
+    <button id="btn2">恢复保存前</button>
+<div id="editor"></div>
+</div>
+    <!-- load ace -->
+<script src="https://cdn.bootcss.com/ace/1.2.8/ace.js"></script>
+<!-- load ace language tools -->
+<script src="https://cdn.bootcss.com/ace/1.2.8/ext-language_tools.js"></script>
+ <script type="text/javascript">
+    var luafile = "{{ luafile }}";
+    var appver = "{{ appver }}";
+     function setValue() {
+        require("ace/lib/net").get("/assets/lua/apps/dev1/app.lua?appver="+appver, function(t){
+            var el = document.getElementById("editor");
+            el.env.editor.setValue(t, -1);
+//            console.log(t);
+        })
+    }
+$(function(){
+	$('#editor').height(parseInt($(window).height())-126);
+	$(window).resize(function() {
+	  $('#editor').height(parseInt($(window).height())-126);
+	});
+    $("#footerandfooter").remove();
+
+
+    // trigger extension
+    ace.require("ace/ext/language_tools");
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/lua");
+    editor.setTheme("ace/theme/crimson_editor");
+    // enable autocompletion and snippets
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+
+    require = ace.require;
+    setValue();
+
+    $('#editor')[0].style.fontSize='18px';
+{#    console.log($('#editor')[0]);#}
+{#    console.log(document.getElementById('editor'));#}
+     $("#btn1").click(function(){
+        var uu = editor.getValue();
+{#        console.log(uu);#}
+//-----------------------------------------------------------------------------------------------------------
+            var cc = {"abc":12};
+            $.ajax({
+                type: 'POST',
+                url: "/api/method/iot_ui.ui_api.save_lua",
+                contentType: "text/plain", //必须有
+                data: uu,
+                dataType: "json",
+                success: function(data) {
+                    console.log(data);
+                  },
+                 error: function(r) {
+                      console.log(r);
+                  }
+            });
+
+
+//-----------------------------------------------------------------------------------------------------------
+    });
+
+
+     $("#btn2").click(function(){
+//-----------------------------------------------------------------------------------------------------------
+    setValue();
+//-----------------------------------------------------------------------------------------------------------
+    });
+
+ });
+
+
+ </script>
+{% endblock %}
+

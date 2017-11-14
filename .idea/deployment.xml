@@ -2,17 +2,27 @@
 <project version="4">
   <component name="PublishConfigData" autoUpload="Always" serverName="frappe-192.168.174.133">
     <serverData>
+      <paths name="192.168.174.128">
+        <serverdata>
+          <mappings>
+            <mapping local="F:/code/iot_mqtt_clients" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/root/mytest" local="F:/code/iot_mqtt_clients/mytest" web="" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="frappe-192.168.174.133">
         <serverdata>
           <mappings>
             <mapping deploy="/iot_ui" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/iot_mobileui" local="F:/code/iot_mobileui" web="/" />
           </mappings>
         </serverdata>
       </paths>
       <paths name="frappe-192.168.174.140 (1)">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/iot_ui" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

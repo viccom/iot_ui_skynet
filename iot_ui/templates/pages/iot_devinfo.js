@@ -237,8 +237,9 @@ $(document).ready(function() {
         disconnect();
         client=null;
         }
-
-        console.log(current_vsn);
+        var cuser_id = $.cookie('user_id');
+        var csid = $.cookie('sid');
+        console.log(current_vsn, cuser_id, csid);
         if(current_vsn){
             console.log("查询报文");
             clearHistory();
@@ -267,8 +268,8 @@ $(document).ready(function() {
                     var clientId = 'js-mqtt-' + makeid();
 
                     var path = "/mqtt";
-                    var user = null;
-                    var pass = null;
+                    var user = cuser_id;
+                    var pass = csid;
                     var keepAlive = 60;
                     var timeout = 6;
                     var tls = false;
@@ -321,6 +322,7 @@ $(document).ready(function() {
 
                     // connect the client
                     client.connect(options);
+                    console.log(user,pass);
 
                     var  t=setTimeout("client.subscribe(symlinksn+'/comm', {qos: 0})",100);
 
@@ -361,8 +363,8 @@ $(document).ready(function() {
                     var clientId = 'js-mqtt-' + makeid();
 
                     var path = "/mqtt";
-                    var user = null;
-                    var pass = null;
+                    var user = cuser_id;
+                    var pass = csid;
                     var keepAlive = 60;
                     var timeout = 6;
                     var tls = false;
@@ -412,7 +414,7 @@ $(document).ready(function() {
                       lastWillMessage.retained = lastWillRetain;
                       options.willMessage = lastWillMessage;
                     }
-
+                    console.log(user,pass);
                     // connect the client
                     client.connect(options);
 

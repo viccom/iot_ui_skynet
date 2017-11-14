@@ -7,7 +7,9 @@ import json
 import uuid
 import requests
 import redis
-import datetime
+import datetime, time
+import commands
+import os
 from frappe import _dict, throw, _
 from iot.iot.doctype.iot_device.iot_device import IOTDevice
 from iot.iot.doctype.iot_hdb_settings.iot_hdb_settings import IOTHDBSettings
@@ -15,7 +17,7 @@ from cloud.cloud.doctype.cloud_company_group.cloud_company_group import list_use
 from cloud.cloud.doctype.cloud_company.cloud_company import list_user_companies
 from cloud.cloud.doctype.cloud_company.cloud_company import list_admin_companies
 from cloud.cloud.doctype.cloud_company.cloud_company import list_users, get_domain
-
+from frappe.desk.form.save import savedocs
 from frappe.utils.user import get_user_fullname
 from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
 
@@ -676,7 +678,37 @@ def del_iot_event():
 	company = postdata.company
 	members = postdata.members
 
+@frappe.whitelist()
+def save_lua():
+	if frappe.request.method != "POST":
+		throw(_("Request Method Must be POST!"))
+	ctype = frappe.get_request_header("Content-Type")
+	# print("ctype@@@@@@@@@@@@@", ctype)
+	cdata = frappe.request.get_data()
+	# print("cdata@@@@@@@@@@@@@", cdata)
+	with open('/home/frappe/frappe-bench/sites/assets/lua/apps/dev1/app.lua', 'w') as f:
+		f.write(cdata)
+	verfile = "/home/frappe/frappe-bench/sites/assets/lua/apps/dev1/ver.ver"
+	if os.path.exists(verfile):
+		with open(verfile, 'r') as f:
+			verdata = json.loads(f.read())
+		print(verdata["ver"])
+		verdata["ver"] = str(int(time.time()))
+		cdata = json.dumps(verdata)
+		with open(verfile, 'w') as f:
+			f.write(cdata)
 
+	if os.path.exists(verfile):
+		with open(verfile, 'r') as f:
+			verdata = json.loads(f.read())
+		print(verdata["ver"])
+	# with open(verfile, 'w') as f:
+	# 	f.write(vdata)
+	# luafle = "/home/frappe/frappe-bench/sites/assets/lua/app.lua"
+	# if os.path.exists(luafle):
+	# 	commands.getstatusoutput('rm /home/frappe/frappe-bench/sites/assets/lua/link_app_*.lua')
+	# 	commands.getstatusoutput('ln -s /home/frappe/frappe-bench/sites/assets/lua/app.lua /home/frappe/frappe-bench/sites/assets/lua/link_app_'+str(int(time.time()))+'.lua')
+	return {"result": "sucessful", "appver":verdata["ver"]}
 
 
 def get_post_json_data():
@@ -815,11 +847,35 @@ def taghisdata(sn=None, fields=None, tag=None, condition=None):
 			return r.json()
 
 
-@frappe.whitelist(allow_guest=True)
-def ping():
-	form_data = frappe.form_dict
-	if frappe.request and frappe.request.method == "POST":
-		if form_data.data:
-			form_data = json.loads(form_data.data)
-		return form_data.get("text") or "No Text"
-	return 'pong'
+@frappe.whitelist()
+def add_newuser2company(doc, action, userid, company):
+	print(userid, company)
+	savedocs(doc, action)
+	if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
+		throw(_("You not the admin of company {0}").format(company))
+	if 'Company Admin' in frappe.get_roles(frappe.session.user):
+		doc = frappe.get_doc({"doctype": "Cloud Employee", "user": userid, "company": company})
+		doc.insert(ignore_permissions=True)
+
+@frappe.whitelist()
+def iot_info(sn=None):
+	device = frappe.get_doc('IOT Device', sn)
+	device.has_permission('read')
+	data = device.as_dict()
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	if client.hget(sn, "version/value"):
+		data.iot_version = eval(client.hget(sn, "version/value"))[1]
+	# print("@@@@@@@@@@@@@@@@",context.iot_version)
+	if client.hget(sn, "skynet_version/value"):
+		data.skynet_version = eval(client.hget(sn, "skynet_version/value"))[1]
+	if client.hget(sn, "starttime/value"):
+		_starttime = eval(client.hget(sn, "starttime/value"))[1]
+		data.starttime = str(
+			convert_utc_to_user_timezone(datetime.datetime.utcfromtimestamp(int(_starttime))).replace(tzinfo=None))
+	if client.hget(sn, "uptime/value"):
+		data.uptime = int(eval(client.hget(sn, "uptime/value"))[1] / 1000)
+	if client.hget(sn, "skynet_platform/value"):
+		data.skynet_platform = eval(client.hget(sn, "skynet_platform/value"))[1]
+	return data
+
+

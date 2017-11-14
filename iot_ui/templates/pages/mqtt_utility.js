@@ -222,20 +222,17 @@ function onMessageArrived(message) {
   // console.log(message);
   var messageTime = new Date().toISOString();
   // Insert into History Table
-    mm = message.payloadString.substring(1,message.payloadString.length-1).split(',');
-    // console.log(mm);
-    // console.log(mm[1]);
-    var devicename = mm[0].substring(1,mm[0].length-1).split('\\/')[0];
-    var messagedir = mm[0].substring(1,mm[0].length-1).split('\\/')[1];
-    var localeTime = new Date(mm[1]*1000).toLocaleString('chinese',{hour12:false});
-    var millsec = mm[1].toString().split(".")[1];
+    var obj = JSON.parse(message.payloadString);
+    // console.log(obj[0]);
+    var devicename = obj[0].split('\/')[0];
+    var messagedir = obj[0].split('\/')[1];
+    var localeTime = new Date(obj[1]*1000).toLocaleString('chinese',{hour12:false});
+    var millsec = obj[1].toString().split(".")[1];
     // console.log(millsec);
-    var device_message_bin = CharToHex(base64decode(mm[2]));
-    // console.log(device_message_bin);
+    var device_message_bin = CharToHex(base64decode(obj[2]));
 
   var table = document.getElementById("incomingMessageTable").getElementsByTagName('tbody')[0];
   var row = table.insertRow(-1);
-      // row.insertCell(0).innerHTML = message.destinationName;
         if(messagedir=="OUT"){
             row.insertCell(0).innerHTML = "发送";
         }
@@ -243,7 +240,6 @@ function onMessageArrived(message) {
         else if(messagedir=="IN"){
             row.insertCell(0).innerHTML = "接收";
         }
-      // row.insertCell(1).innerHTML = safe_tags_regex(message.payloadString);
         if(millsec){
             row.insertCell(1).innerHTML = localeTime+"."+millsec;
         }
@@ -251,7 +247,6 @@ function onMessageArrived(message) {
             row.insertCell(1).innerHTML = localeTime;
         }
 
-      // row.insertCell(2).innerHTML = messageTime;
       row.insertCell(2).innerHTML = device_message_bin;
 
 }
@@ -260,14 +255,12 @@ function onLogArrived(message) {
    // console.log(message);
   // var messageTime = new Date().toISOString();
   // Insert into History Table
-    mm = message.payloadString.substring(1,message.payloadString.length-1).split(',');
-    // console.log(mm);
-    // console.log(mm[1]);
+    var mm = JSON.parse(message.payloadString);
+
     var cate = mm[0];
     var localeTime = new Date(mm[1]*1000).toLocaleString('chinese',{hour12:false});
     var millsec = mm[1].toString().split(".")[1];
-    // console.log(millsec);
-    // var device_message_bin = CharToHex(base64decode(mm[2]));
+
     var logdetail = mm[2];
     // console.log(logdetail);
 

@@ -34,6 +34,7 @@
             {"data": "last_updated"},
             {"data": "device_sn"},
             {"data": "device_company"},
+            {"data": null},
         ],
         'rowCallback': function(row, data, dataIndex){
          // Get row ID
@@ -43,7 +44,23 @@
          else if(data.device_status=="OFFLINE"){
              $(row).addClass('red');
          }
-      }
+      },
+        columnDefs: [{
+        //   指定第最后一列
+        targets: 6,
+        render: function(data, type, row, meta) {
+            return '<div class="btn btn-white btn-warning btn-bold" id="gateway-monitor">'
+                +'<i class="ace-icon fa fa-line-chart bigger-120 orange"></i>'
+                +'监视'
+                +'</div>'
+                +'<div class="btn btn-white btn-warning btn-bold" id="gateway-manager">'
+                +'<i class="ace-icon fa fa-wrench bigger-120 orange"></i>'
+                +'管理'
+                +'</div>'
+                ;
+        }
+    }]
+
     });
 
 $(document).ready(function() {
@@ -67,7 +84,7 @@ $(document).ready(function() {
 
     });
 
-
+/*
     $('#example tbody').on('click', 'tr td:nth-child(n+2)', function (e) {
         var data = table.row( this ).data();
         if(data){
@@ -75,6 +92,33 @@ $(document).ready(function() {
             $curdevsn = data['device_sn'];
             console.log($curdevsn);
             var url = "/iot_devinfo/" + $curdevsn;
+            window.location.href=url;
+
+        }
+    } );*/
+
+
+    $('#example tbody').on( 'click', 'div#gateway-monitor', function () {
+        var data = table.row($(this).parents('tr')).data();
+        if(data){
+
+            $curdevsn = data.device_sn;
+            console.log($curdevsn);
+            var url = "/iot_devinfo/" + $curdevsn;
+            window.location.href=url;
+
+        }
+
+    } );
+
+    $('#example tbody').on( 'click', 'div#gateway-manager', function () {
+        var data = table.row($(this).parents('tr')).data();
+        console.log(data);
+        if(data){
+
+            $curdevsn = data.device_sn;
+            console.log($curdevsn);
+            var url = "/iot_management/" + $curdevsn;
             window.location.href=url;
 
         }

@@ -2,7 +2,7 @@ $.ajaxSetup( {
 
 headers: { // 默认添加请求头
     "X-Frappe-CSRF-Token": "{{csrf_token}}",
-    "Powered-By": "CodePlayer"
+    "Powered-By": "Coder"
 }
 } );
 
@@ -33,7 +33,7 @@ function evcount_ref() {
 
 
 evcount_ref();
-setInterval( function () {evcount_ref(); }, 3000 );
+setInterval( function () {evcount_ref(); }, 300000 );
 
 $('#switch_Language').click(function() {
 //console.log("switch_Language");
