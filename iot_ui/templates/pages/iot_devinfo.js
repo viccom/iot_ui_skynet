@@ -1,6 +1,6 @@
 var refflag = 0;
 var symlinksn = '{{ doc.sn }}';
-var devices = {{ vsn }};
+var devices = '{{ vsn }}';
 var id = '';
 var lastid = '';
 var isvsn = false;

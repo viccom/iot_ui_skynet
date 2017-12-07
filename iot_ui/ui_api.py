@@ -8,7 +8,6 @@ import uuid
 import requests
 import redis
 import datetime, time
-import commands
 import os
 from frappe import _dict, throw, _
 from iot.iot.doctype.iot_device.iot_device import IOTDevice
