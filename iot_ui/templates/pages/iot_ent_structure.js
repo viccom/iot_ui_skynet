@@ -7,18 +7,19 @@ $.ajaxSetup( {
         "Powered-By": "CodePlayer"
     }
 } );
+var company = "{{company}}";
 $(document.body).css({"overflow-y":"scroll" });
     var selectnode = "root";
     var memberopflag = 1;
 $(document).ready(function() {
     $('[data-rel=tooltip]').tooltip();
-    var company = "{{company}}";
+
     var memberurl = '';
 
     ///console.log(company);
 
     var memberurl = "/api/method/iot_ui.ui_api.list_company_member?company="+company;
-    var table = jQuery('#example').DataTable({
+    table = jQuery('#example').DataTable({
         "dom": 'lfrtp',
         //"bInfo" : false,
         //"pagingType": "full_numbers" ,
@@ -432,7 +433,7 @@ container1.find('.btn').addClass('btn-white btn-info btn-bold');
                 var url = "/api/method/iot_ui.ui_api.add_company_member";
             }
             else if(memberopflag==0){
-                var url = "/api/method/iot_ui.ui_api.del_company_member";
+                var url = "/api/method/iot_ui.ui_api.del_userfromcompany";
             }
 
         if(memberlists){
@@ -531,10 +532,11 @@ container1.find('.btn').addClass('btn-white btn-info btn-bold');
         var data = table.row($(this).parents('tr')).data();
         //var data = table.row( this ).data();
         //var data = $('#example').DataTable().row($(this).parents('tr')).data();
+        var user =new Array(data.member_id);
         if(selectnode=="root"){
-            var url = "/api/method/iot_ui.ui_api.del_company_single_member";
+            var url = "/api/method/iot_ui.ui_api.del_userfromcompany";
             var mmm = {
-                "member": data.member_id,
+                "members": user,
                 "company": company
 	        };
             $.ajax({
@@ -545,7 +547,19 @@ container1.find('.btn').addClass('btn-white btn-info btn-bold');
                 dataType: "json",
                 success: function(r) {
                     if(r.message.result == "sucessful" ){
-                        table.ajax.url(memberurl).load();
+                        console.log(r.message.deleted);
+                        if(r.message.remained){
+                            table.ajax.url(memberurl).load();
+                            $.gritter.add({
+                                title: '删除成员失败',
+                                text: "成员" + r.message.remained + "被引用！",
+                                class_name: 'gritter-error gritter-light'
+					            });
+                        }
+                        else
+                        {
+                            table.ajax.url(memberurl).load();
+                        }
                      }
                      else{
                         $.gritter.add({

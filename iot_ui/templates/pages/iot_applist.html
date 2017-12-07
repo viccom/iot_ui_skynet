@@ -1,0 +1,83 @@
+{% extends "templates/iot_ui_base.html" %}
+
+{% block mystyle %}
+<link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/jquery.dataTables.min.css">
+<link type="text/css" rel="stylesheet" href="/assets/iot_ui/assets/css/responsive.dataTables.min.css">
+
+<style>
+    .paginate_button{
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+     .btn{
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+        .pagination{
+        margin-left: 0px !important;
+        margin-left: 0px !important;
+    }
+</style>
+{% endblock %}
+
+{% block myscript %}
+
+{% endblock %}
+
+{% block content %}
+{% include "templates/iot_ui_breadcrumbs.html" %}
+    <div class="col-xs-12 col-sm-12 widget-container-col" id="widget-container-col-2">
+        <div class="widget-box widget-color-grey" id="widget-box-2">
+            <div class="widget-header">
+
+                <h5 class="widget-title bigger lighter">
+                    <i class="ace-icon fa fa-table"></i>
+                    SN：{{ iotsn }}
+                </h5>
+
+
+                <span class="btn btn-primary pull-right" data-rel="tooltip" data-placement="top" title="检查更新" id="table-refresh">
+                    <i class="ace-icon fa fa-refresh"></i>
+                    {{_('Check update')}}
+                </span>
+                <span class="btn btn-info pull-right" data-rel="tooltip" data-placement="top" title="添加应用到当前网关" id="iot-add-app">
+                    <i class="ace-icon fa fa-plus-square"></i>
+                    {{_('Install NewAPP')}}
+                </span>
+            </div>
+
+            <div class="center hide" id="no_data">
+                <h4 class="blue large lighter">未找到任何数据！</h4>
+            </div>
+
+            <div id="table_area">
+                <table id="example"  class="display responsive nowrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%">{{_('name')}}</th>
+                            <th style="width: 25%">{{_('cloudname')}}</th>
+                            <th style="width: 10%">{{_('iot_ver')}}</th>
+                            <th style="width: 10%">{{_('cloud_ver')}}</th>
+                            <th style="width: 10%">{{_('owner')}}</th>
+                            <th style="width: 20%">{{_('operation')}}</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <script src="/assets/iot_ui/assets/js/jquery.dataTables.min.js"></script>
+    <script src="/assets/iot_ui/assets/js/jquery.dataTables.bootstrap.min.js"></script>
+    <script src="/assets/iot_ui/assets/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript">
+
+        {% include "templates/pages/iot_applist.js" %}
+
+    </script>
+
+{% endblock %}

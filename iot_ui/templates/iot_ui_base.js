@@ -2,7 +2,7 @@ $.ajaxSetup( {
 
 headers: { // 默认添加请求头
     "X-Frappe-CSRF-Token": "{{csrf_token}}",
-    "Powered-By": "Coder"
+    "Powered-By": "Coder",
 }
 } );
 

@@ -4,9 +4,10 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="iot_mobileui" />
     <orderEntry type="module" module-name="iot_mqtt_clients" />
     <orderEntry type="module" module-name="frappe_app_center" />
+    <orderEntry type="module" module-name="frappe_iot_skynet" />
+    <orderEntry type="module" module-name="mypycode" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />

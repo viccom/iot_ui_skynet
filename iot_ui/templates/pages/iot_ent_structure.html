@@ -68,6 +68,7 @@
 
 <script src="/assets/iot_ui/assets/js/jquery.gritter.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
 {% endblock %}
 
 
@@ -322,75 +323,54 @@
                 <div id="signup-box" class="signup-box widget-box no-border">
                     <div class="widget-body">
                         <div class="widget-main">
-                            <p>  {{_('Enter your details to begin')}}:</p>
+                            <p>  {{_('输入新用户详情')}}:  </p>
 
-                            <form>
-                                <fieldset>
-                                    <label class="block clearfix">
-                                        <span class="block input-icon input-icon-right">
-                                            <input type="email" class="form-control email" placeholder="Email"  onBlur="textBlur(this)" onFocus="textFocus(this)"/>
-                                            <i class="ace-icon fa fa-envelope"></i>
-                                        </span>
-                                    </label>
+                              <form action="" id="add_newuser_form" role="form">
 
-                                    <label class="block clearfix">
-                                        <span class="block input-icon input-icon-right">
-                                            <input type="text" class="form-control FirstName" placeholder="FirstName"  onBlur="textBlur(this)" onFocus="textFocus(this)"/>
-                                            <i class="ace-icon fa fa-user"></i>
-                                        </span>
-                                    </label>
+                                <div class="form-group">
+                                  <label class="control-label">邮箱</label>
+                                  <input class="form-control" id="newuseremail" name="email" data-validation="email" data-validation-error-msg="请输入正确的邮箱格式，如abc@qq.com">
+                                </div>
 
-                                    <label class="block clearfix">
-                                        <span class="block input-icon input-icon-right">
-                                            <input type="text" class="form-control LastName" placeholder="LastName" />
-                                            <i class="ace-icon fa fa-user"></i>
-                                        </span>
-                                    </label>
+                                <div class="form-group">
+                                  <label class="control-label">名字</label>
+                                  <input class="form-control" id="newuserFname" data-validation="custom" data-validation-regexp="^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$" type="text" data-validation-error-msg="请输入正确的人名，如：小明">
+                                </div>
 
-                                    <label class="block clearfix">
-                                        <span class="block input-icon input-icon-right">
-                                            <input type="text" class="form-control phone" placeholder="Cell-phone number " onBlur="textBlur(this)" onFocus="textFocus(this)"/>
-                                            <i class="ace-icon fa fa-phone"></i>
-                                        </span>
+                                <div class="form-group">
+                                  <label class="control-label">姓氏</label>
+                                  <input class="form-control" id="newuserLname" data-validation="custom" data-validation-regexp="^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$" type="text" data-validation-error-msg="请输入正确的姓，如：张">
+                                </div>
 
-                                    </label>
+                                <div class="form-group">
+                                  <label class="control-label">手机号</label>
+                                  <!--<input class="form-control" data-validation="even_number" type="text">-->
+                                  <input class="form-control" id="newuserphone" data-validation="custom" data-validation-regexp="^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$" type="text" data-validation-error-msg="请输入正确的手机号，如:13912345678">
 
-                                    <label class="block clearfix">
-                                        <span class="block input-icon input-icon-right">
-                                            <input type="password" class="form-control password" placeholder="Password"  onBlur="textBlur(this)" onFocus="textFocus(this)"/>
-                                            <i class="ace-icon fa fa-lock"></i>
-                                        </span>
+                                  <!--<input data-validation="even_number" type="text">-->
+                                </div>
 
-                                    </label>
+                                <div class="form-group">
+                                  <label class="control-label">密码</label>
+                                  <input class="form-control" id="newuserpassword" name="pass_confirmation" type="password"
+                                         data-validation="length"
+                                         data-validation-length="min3"
+                                         data-validation-error-msg="请输入符合要求的密码，最少3位" />
+                                </div>
 
-                                    <label class="block clearfix">
-                                        <span class="block input-icon input-icon-right">
-                                            <input type="password" class="form-control repassword" placeholder="Repeat password"  onBlur="textBlur(this)" onFocus="textFocus(this)"/>
-                                            <i class="ace-icon fa fa-retweet"></i>
-                                        </span>
-
-                                    </label>
+                                <div class="form-group">
+                                  <label class="control-label">再次输入</label>
+                                  <input class="form-control" name="pass" type="password" data-validation="confirmation" data-validation-error-msg="前后两次输入的密码不一致"/>
+                                </div>
 
 
+                                <div class="form-group">
+                                  <button type="submit">确定</button>
+                                  <button type="reset">重置</button>
+                                </div>
+                                <p class="red" id="error_tips"></p>
+                              </form>
 
-                                    <div class="space-24"></div>
-
-                                    <div class="clearfix">
-
-                                        <button type="button" class="width-65  pull-left btn btn-sm btn-success" onclick="NewUserRegister()">
-                                            <span class="bigger-110">{{_('Confirm')}}</span>
-
-                                            <i class="ace-icon fa fa-arrow-right icon-on-right"></i>
-                                        </button>
-
-                                        <button type="reset" class="width-30 pull-right btn btn-sm" onclick="emptyRegister()">
-                                            <i class="ace-icon fa fa-refresh"></i>
-                                            <span class="bigger-110">{{_('Reset')}}</span>
-                                        </button>
-
-                                    </div>
-                                </fieldset>
-                            </form>
                         </div>
 
                     </div><!-- /.widget-body -->
@@ -456,10 +436,80 @@
 {% include "templates/pages/iot_ent_structure.js" %}
 
      </script>
+<script src="https://cdn.bootcss.com/jquery-form-validator/2.3.77/jquery.form-validator.min.js"></script>
+<script type="text/javascript">
 
-         <script type="text/javascript">
+    function Add_NewUser(){
+        console.log("NewUserRegister");
+        var email = $("#newuseremail").val();
+        var FirstName = $("#newuserFname").val();
+        var LastName = $("#newuserLname").val();
+        var phone = $("#newuserphone").val();
+        var password = $("#newuserpassword").val();
+        var cuser_id = $.cookie('user_id');
 
-{% include "templates/pages/reg_validate.js" %}
+        console.log(email, FirstName, LastName, phone, password);
+            var newuserdata = {
+                    "doc": '{"docstatus":0,"doctype":"User","name":"New+User+1","__islocal":1,"__unsaved":1,"owner":"'+cuser_id+'","enabled":1,"send_welcome_email":0,"language":"zh","thread_notify":1,"simultaneous_sessions":1,"user_type":"System+User","email":"'+email+'","first_name":"'+FirstName+'","last_name":"'+LastName+'","mobile_no":"'+phone+'","new_password":"'+password+'"}',
+                    "action": "Save",
+                    "userid": email,
+                    "company": company,
+                };
+            $.ajax({
+                    type: 'POST',
+                    url: "/api/method/iot_ui.ui_api.add_newuser2company",
+                    contentType: "application/x-www-form-urlencoded;charset=utf-8", //必须有
+                    data: newuserdata,
+                    dataType: "json",
+                    success: function(r) {
+                            console.log(r);
+                            document.getElementById("add_newuser_form").reset();
+                            $('#add-group').addClass("hide");
+                            $('#structure-list').removeClass("hide");
+                            $('#member-list').removeClass("hide");
+                            $('#add-member').addClass("hide");
+                            $('#add-newuser').addClass("hide");
+                            var memberurl = "/api/method/iot_ui.ui_api.list_company_member?company="+company;
+                            table.ajax.url(memberurl).load();
+
+                      },
+                     error: function(r) {
+                          console.log("异常!");
+                         var obj = JSON.parse(r.responseText);
+                          console.log(typeof(obj));
+                          console.log(obj._server_messages);
+                          console.log(typeof(obj._server_messages));
+                          var obj1 = JSON.parse(obj._server_messages);
+                          console.log(obj1.length);
+                          if(obj1.length>1){
+                                var obj2 = JSON.parse(obj1[1]);
+                                console.log(obj2.message);
+                                $('#error_tips').html("邮箱已经被其他用户使用！请重新输入！");
+                                $("#newuseremail").focus();
+                          }
+                          else{
+                              var obj2 = JSON.parse(obj1[0]);
+                              console.log(obj2.message);
+                              $('#error_tips').html("手机号已经被其他用户使用！请重新输入！");
+                              $("#newuserphone").focus();
+                          }
+
+
+
+                      }
+                });
+
+    }
+
+    $.validate({
+      modules: 'html5, security, toggleDisabled',
+      onSuccess: function() {
+        Add_NewUser();
+        return false;
+      }
+    });
+
+
 
      </script>
 {% endblock %}

@@ -105,8 +105,8 @@ $(document).ready(function() {
             $curdevsn = data.device_sn;
             console.log($curdevsn);
             var url = "/iot_devinfo/" + $curdevsn;
-            window.location.href=url;
-
+            // window.location.href=url;
+            window.open(url);
         }
 
     } );
@@ -119,7 +119,7 @@ $(document).ready(function() {
             $curdevsn = data.device_sn;
             console.log($curdevsn);
             var url = "/iot_management/" + $curdevsn;
-            window.location.href=url;
+            window.open(url);
 
         }
     } );

@@ -86,6 +86,12 @@
 								<span>{{_('Membership')}}</span>
 							</a>
 						</li>
+
+                         <li class="grey">
+							<a href="/app_dashboard">
+								<span>{{_('Iot App Store')}}</span>
+							</a>
+						</li>
 						{% endif %}
 
 {#						<li class="grey">
@@ -120,8 +126,14 @@
 										<i class="ace-icon fa fa-user"></i>{{_('My Account')}}</a>
 								</li>
 								-->
-
-
+                            {% if isCompanyAdmin %}
+                                <li>
+									<a href="/desk" target="_blank">
+										<i class="ace-icon fa fa-desktop"></i>
+										{{_('Desk')}}
+									</a>
+								</li>
+                            {% endif %}
 
 								<li class="divider"></li>
 

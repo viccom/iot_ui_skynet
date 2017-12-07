@@ -674,7 +674,7 @@ def mark_iot_event_read():
 @frappe.whitelist()
 def del_iot_event():
 	postdata = get_post_json_data()
-	print(postdata)
+	# print(postdata)
 	company = postdata.company
 	members = postdata.members
 
@@ -692,7 +692,7 @@ def save_lua():
 	if os.path.exists(verfile):
 		with open(verfile, 'r') as f:
 			verdata = json.loads(f.read())
-		print(verdata["ver"])
+		# print(verdata["ver"])
 		verdata["ver"] = str(int(time.time()))
 		cdata = json.dumps(verdata)
 		with open(verfile, 'w') as f:
@@ -701,7 +701,7 @@ def save_lua():
 	if os.path.exists(verfile):
 		with open(verfile, 'r') as f:
 			verdata = json.loads(f.read())
-		print(verdata["ver"])
+		# print(verdata["ver"])
 	# with open(verfile, 'w') as f:
 	# 	f.write(vdata)
 	# luafle = "/home/frappe/frappe-bench/sites/assets/lua/app.lua"
@@ -817,7 +817,7 @@ def taghisdata(sn=None, fields=None, tag=None, condition=None):
 		query = query + " WHERE " + condition
 	else:
 		query = query + " LIMIT 1000"
-	print("query:", query)
+	# print("query:", query)
 	domain = frappe.get_value("Cloud Company", doc.company, "domain")
 	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain}, timeout=10)
 	if r.status_code == 200:
@@ -827,7 +827,7 @@ def taghisdata(sn=None, fields=None, tag=None, condition=None):
 			taghis = []
 			for i in range(0, len(res)):
 				hisvalue = {}
-				print('*********', res[i][0])
+				# print('*********', res[i][0])
 				try:
 					utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
 				except Exception as err:
@@ -847,15 +847,37 @@ def taghisdata(sn=None, fields=None, tag=None, condition=None):
 			return r.json()
 
 
+
 @frappe.whitelist()
 def add_newuser2company(doc, action, userid, company):
-	print(userid, company)
 	savedocs(doc, action)
 	if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
 		throw(_("You not the admin of company {0}").format(company))
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		doc = frappe.get_doc({"doctype": "Cloud Employee", "user": userid, "company": company})
 		doc.insert(ignore_permissions=True)
+
+@frappe.whitelist()
+def del_userfromcompany():
+	postdata = get_post_json_data()
+	print(postdata)
+	company = postdata.company
+	members = postdata.members
+	print(members, type(members))
+	if 'Company Admin' in frappe.get_roles(frappe.session.user):
+		if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
+			return "You not the admin of company"
+		else:
+			deleted_user = []
+			remained_users = []
+			for m in members:
+				try:
+					frappe.delete_doc("Cloud Employee", m, ignore_permissions=True)
+					frappe.delete_doc("User", m)
+					deleted_user.append(m)
+				except Exception as ex:
+					remained_users.append(m)
+			return {"deleted": deleted_user, "remained": remained_users, "result": 'sucessful'}
 
 @frappe.whitelist()
 def iot_info(sn=None):
@@ -878,4 +900,38 @@ def iot_info(sn=None):
 		data.skynet_platform = eval(client.hget(sn, "skynet_platform/value"))[1]
 	return data
 
+@frappe.whitelist()
+def iot_applist(sn=None):
+	if sn:
+		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+		applist = json.loads(client.get(sn))
+		iot_applist = []
+		for app in applist:
+			filters = {"app": applist[app]['name']}
+			lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop()
+			cloud_ver = lastver.version
+			owner = lastver.owner
+			print("app_cloud_lastver", cloud_ver)
+			print(app, applist[app]['name'], applist[app]['version'])
+			a = {"name": app, "cloudname": applist[app]['name'], "iot_ver": int(applist[app]['version']), "cloud_ver": cloud_ver, "owner":owner}
+			iot_applist.append(a)
+		return iot_applist
+	else:
+		return None
 
+
+@frappe.whitelist()
+def appstore_applist(category=None, protocol=None, device_supplier=None, user=None, name=None):
+	filters = {}
+	if user:
+		filters = {"owner": user}
+	if category:
+		filters["category"] = category
+	if protocol:
+		filters["protocol"] = protocol
+	if device_supplier:
+		filters["device_supplier"] = device_supplier
+	if name:
+		filters["name"] = name
+	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
+	return apps

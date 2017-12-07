@@ -535,4 +535,8 @@ $(document).ready(function() {
     //$(function () { $('table .tooltip-show').tooltip('show');});
     // $(function () { $("table.tooltip-options").tooltip({html : true });});
 
+    $('#switch-mode').click(function(){
+            var url = "/iot_management/" + symlinksn;
+            window.location.href=url;
+    } );
 });
