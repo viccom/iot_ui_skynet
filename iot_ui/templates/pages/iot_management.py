@@ -46,37 +46,38 @@ def get_context(context):
 	device.has_permission('read')
 	context.doc = device
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
-	if client.hget(name, "version/value"):
-		context.iot_version = eval(client.hget(name, "version/value"))[1]
-	# print("@@@@@@@@@@@@@@@@",context.iot_version)
-	if client.hget(name, "skynet_version/value"):
-		context.skynet_version = eval(client.hget(name, "skynet_version/value"))[1]
-	if client.hget(name, "starttime/value"):
-		_starttime = eval(client.hget(name, "starttime/value"))[1]
-		context.starttime = str(
-			convert_utc_to_user_timezone(datetime.datetime.utcfromtimestamp(int(_starttime))).replace(tzinfo=None))
-	if client.hget(name, "uptime/value"):
-		context.uptime = int(eval(client.hget(name, "uptime/value"))[1] / 1000)
-	if client.hget(name, "skynet_platform/value"):
-		context.skynet_platform = eval(client.hget(name, "skynet_platform/value"))[1]
-	context.iot_lastver = 0
-	filters = {"app": 'skynet_iot'}
-	try:
-		context.iot_lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop().version
-	except Exception as err:
-		pass
-	context.skynet_lastver = 0
-	filters = {"app": 'amd_skynet'}
-	try:
-		context.skynet_lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop().version
-	except Exception as err:
-		pass
-	s = requests.Session()
-	s.auth = ('admin', 'symtechPa88word')
-	r = s.get('http://127.0.0.1:18083/api/v2/nodes/emq@127.0.0.1/clients/'+name)
-	rdict = json.loads(r.text)
-	context.public_ip = rdict['result']['objects'][0]['ipaddress']
-	context.public_port = rdict['result']['objects'][0]['port']
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
-	context.applist = json.loads(client.get(name))
+	if client.exists(name):
+		if client.hget(name, "version/value"):
+			context.iot_version = eval(client.hget(name, "version/value"))[1]
+		# print("@@@@@@@@@@@@@@@@",context.iot_version)
+		if client.hget(name, "skynet_version/value"):
+			context.skynet_version = eval(client.hget(name, "skynet_version/value"))[1]
+		if client.hget(name, "starttime/value"):
+			_starttime = eval(client.hget(name, "starttime/value"))[1]
+			context.starttime = str(
+				convert_utc_to_user_timezone(datetime.datetime.utcfromtimestamp(int(_starttime))).replace(tzinfo=None))
+		if client.hget(name, "uptime/value"):
+			context.uptime = int(eval(client.hget(name, "uptime/value"))[1] / 1000)
+		if client.hget(name, "skynet_platform/value"):
+			context.skynet_platform = eval(client.hget(name, "skynet_platform/value"))[1]
+		context.iot_lastver = 0
+		filters = {"app": 'skynet_iot'}
+		try:
+			context.iot_lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop().version
+		except Exception as err:
+			pass
+		context.skynet_lastver = 0
+		filters = {"app": 'amd_skynet'}
+		try:
+			context.skynet_lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop().version
+		except Exception as err:
+			pass
+		s = requests.Session()
+		s.auth = ('admin', 'symtechPa88word')
+		r = s.get('http://127.0.0.1:18083/api/v2/nodes/emq@127.0.0.1/clients/'+name)
+		rdict = json.loads(r.text)
+		context.public_ip = rdict['result']['objects'][0]['ipaddress']
+		context.public_port = rdict['result']['objects'][0]['port']
+		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+		context.applist = json.loads(client.get(name))
 
