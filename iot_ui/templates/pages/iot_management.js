@@ -11,6 +11,7 @@ $(document).ready(function() {
         data: JSON.stringify({ "device": iotsn}),
         dataType: "json",
         success: function(r) {
+            console.log(r);
           },
          error: function() {
               console.log("异常!");
