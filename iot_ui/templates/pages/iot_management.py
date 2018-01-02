@@ -72,7 +72,7 @@ def get_context(context):
 	except Exception as err:
 		pass
 	s = requests.Session()
-	s.auth = ('admin', 'public')
+	s.auth = ('admin', 'symtechPa88word')
 	r = s.get('http://127.0.0.1:18083/api/v2/nodes/emq@127.0.0.1/clients/'+name)
 	rdict = json.loads(r.text)
 	context.public_ip = rdict['result']['objects'][0]['ipaddress']
