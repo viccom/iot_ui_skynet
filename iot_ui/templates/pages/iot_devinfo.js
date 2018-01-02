@@ -1,6 +1,5 @@
 var refflag = 0;
 var symlinksn = '{{ doc.sn }}';
-var devices = {{ vsn }};
 var id = '';
 var lastid = '';
 var isvsn = false;
@@ -47,7 +46,7 @@ $(document).ready(function() {
     if(mypath[1]=='Devices_List'){
         $("ul.breadcrumb").children().last().remove();
         $("ul.breadcrumb").append('<li><a href="/'+mypath[1]+'">{{_('Devices_List')}}</a></li>');
-        $("ul.breadcrumb").append('<li class="active">{{ doc.dev_name }}</li>');
+        $("ul.breadcrumb").append("<li class=\"active\">{{ doc.dev_name }}</li>");
     }
     if(mypath[1]=="Devices_List"){
         console.log($("ul.nav-list li:eq(0) a").attr("href"));

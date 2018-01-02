@@ -435,9 +435,8 @@ def list_company_member(company):
 @frappe.whitelist()
 def add_company_member():
 	postdata = get_post_json_data()
-	print(postdata)
-	company = postdata.company
-	members = postdata.members
+	company = postdata['company']
+	members = postdata['members']
 	if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
 		throw(_("You not the admin of company {0}").format(company))
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
@@ -460,8 +459,8 @@ def add_company_member():
 def del_company_member():
 	postdata = get_post_json_data()
 	print(postdata)
-	company = postdata.company
-	members = postdata.members
+	company = postdata['company']
+	members = postdata['members']
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
 			return "You not the admin of company"
@@ -480,8 +479,8 @@ def del_company_member():
 def del_company_single_member():
 	postdata = get_post_json_data()
 	print(postdata)
-	company = postdata.company
-	member = postdata.member
+	company = postdata['company']
+	member = postdata['member']
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
 			return "You not the admin of company"
@@ -570,18 +569,20 @@ def list_member_group(user):
 def add_group_members():
 	postdata = get_post_json_data()
 	print(postdata)
-	group = postdata.group
-	users = postdata.members
+	group = postdata['group']
+	users = postdata['members']
+	role = postdata['role']
+	print(group, users)
 	g = frappe.get_doc("Cloud Company Group", group)
-	g.add_users("User", *users)
+	g.add_users(role, *users)
 	return {"result": 'sucessful'}
 
 @frappe.whitelist()
 def delete_group_members():
 	postdata = get_post_json_data()
 	print(postdata)
-	group = postdata.group
-	users = postdata.members
+	group = postdata['group']
+	users = postdata['members']
 	g = frappe.get_doc("Cloud Company Group", group)
 	g.remove_users(*users)
 	return {"result": 'sucessful'}
@@ -658,7 +659,7 @@ def get_iot_event(errid):
 @frappe.whitelist()
 def mark_iot_event_read():
 	postdata = get_post_json_data()
-	errid = postdata.errid
+	errid = postdata['errid']
 	print(errid)
 	for id in errid:
 		doc = frappe.get_doc({
@@ -674,8 +675,8 @@ def mark_iot_event_read():
 def del_iot_event():
 	postdata = get_post_json_data()
 	# print(postdata)
-	company = postdata.company
-	members = postdata.members
+	company = postdata['company']
+	members = postdata['members']
 
 @frappe.whitelist()
 def save_lua():
@@ -859,10 +860,9 @@ def add_newuser2company(doc, action, userid, company):
 @frappe.whitelist()
 def del_userfromcompany():
 	postdata = get_post_json_data()
-	print(postdata)
-	company = postdata.company
-	members = postdata.members
-	print(members, type(members))
+	company = postdata['company']
+	members = postdata['members']
+	# print(members, type(members))
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
 			return "You not the admin of company"
@@ -907,11 +907,14 @@ def iot_applist(sn=None):
 		iot_applist = []
 		for app in applist:
 			filters = {"app": applist[app]['name']}
-			lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop()
-			cloud_ver = lastver.version
-			owner = lastver.owner
-			print("app_cloud_lastver", cloud_ver)
-			print(app, applist[app]['name'], applist[app]['version'])
+			cloud_ver = None
+			owner = None
+			try:
+				lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop()
+				cloud_ver = lastver.version
+				owner = lastver.owner
+			except Exception as ex:
+				pass
 			a = {"name": app, "cloudname": applist[app]['name'], "iot_ver": int(applist[app]['version']), "cloud_ver": cloud_ver, "owner":owner}
 			iot_applist.append(a)
 		return iot_applist
@@ -920,8 +923,8 @@ def iot_applist(sn=None):
 
 
 @frappe.whitelist()
-def appstore_applist(category=None, protocol=None, device_supplier=None, user=None, name=None):
-	filters = {}
+def appstore_applist(category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
+	filters = {"category": ["!=", "IOT"]}
 	if user:
 		filters = {"owner": user}
 	if category:
@@ -932,5 +935,7 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 		filters["device_supplier"] = device_supplier
 	if name:
 		filters["name"] = name
+	if app_name:
+		filters["app_name"] = app_name
 	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
 	return apps

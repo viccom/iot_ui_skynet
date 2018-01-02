@@ -26,7 +26,18 @@
 
 {% block content %}
 {% include "templates/iot_ui_breadcrumbs.html" %}
-    <div class="col-xs-12 col-sm-12 widget-container-col" id="widget-container-col-2">
+
+<div class="page-header">
+<h1>
+    {{ iotsn }}
+
+    <span class="btn btn-success pull-right" id="switch-mode">
+        切换到设备监视
+    </span>
+</h1>
+</div><!-- /.page-header -->
+
+    <div class="col-xs-12 col-sm-12 widget-container-col" id="iot-app-list">
         <div class="widget-box widget-color-grey" id="widget-box-2">
             <div class="widget-header">
 
@@ -40,7 +51,7 @@
                     <i class="ace-icon fa fa-refresh"></i>
                     {{_('Check update')}}
                 </span>
-                <span class="btn btn-info pull-right" data-rel="tooltip" data-placement="top" title="添加应用到当前网关" id="iot-add-app">
+                <span class="btn btn-info pull-right" data-rel="tooltip" data-placement="top" title="添加应用到当前网关" id="iot-add-newapp-btn">
                     <i class="ace-icon fa fa-plus-square"></i>
                     {{_('Install NewAPP')}}
                 </span>
@@ -69,7 +80,49 @@
 
     </div>
 
+<!-- #add-newapp div -->
+    <div class="col-xs-12 col-sm-12 hide" id="iot-add-newapp">
+        <div class="widget-box widget-color-grey no-border">
+            <div class="widget-header">
+                <h5 class="widget-title bigger lighter" id="iot-add-newapp-head">
+                    <i class="ace-icon fa fa-table"></i>
+                    {{_('Add New APP TO')}}  {{iotsn }}
+                </h5>
+                <div class="btn btn-info pull-right" id="iot-add-newapp-close-btn">
+                    <i class="ace-icon fa fa-close"></i>
+                </div>
+                <div class="btn btn-info pull-right" id="mytest-btn">
+                    <i class="ace-icon fa fa-cog"></i>
+                </div>
+            </div>
 
+            <div class="widget-box no-border">
+            <div id="appstore_area">
+                <table id="appstore_table"  class="display responsive nowrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">{{_('app_name')}}</th>
+                            <th style="width: 10%">{{_('protocol')}}</th>
+                            <th style="width: 15%">{{_('device_supplier')}}</th>
+                            <th style="width: 10%">{{_('category')}}</th>
+                            <th style="width: 10%">{{_('name')}}</th>
+                            <th style="width: 15%">{{_('Release time')}}</th>
+                            <th style="width: 10%">{{_('star')}}</th>
+                            <th style="width: 15%">{{_('operation')}}</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+<!-- #add-newapp div -->
 
     <script src="/assets/iot_ui/assets/js/jquery.dataTables.min.js"></script>
     <script src="/assets/iot_ui/assets/js/jquery.dataTables.bootstrap.min.js"></script>

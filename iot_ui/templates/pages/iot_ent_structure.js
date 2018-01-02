@@ -486,8 +486,10 @@ container1.find('.btn').addClass('btn-white btn-info btn-bold');
                 console.log(memberlists, memberlists.length);
                 var mmm = {
                     "members": memberlists,
-                    "group": selectnode
+                    "group": selectnode,
+                    "role": "Admin"
                 };
+                console.log(mmm);
                 $.ajax({
                     type: 'POST',
                     url: url,
@@ -539,6 +541,7 @@ container1.find('.btn').addClass('btn-white btn-info btn-bold');
                 "members": user,
                 "company": company
 	        };
+            console.log(mmm);
             $.ajax({
                 type: 'POST',
                 url: url,

@@ -202,12 +202,20 @@
     {% for key in applist %}
 
         <div class="col-xs-12 col-sm-12">
-                <div class="profile-info-row">
-                    <div class="profile-info-name" > appname: </div>
-                    <div class="profile-info-value" data-value="{{ applist[key]['name'] }}"><span>{{ key }}</span></div>
+                <div class="col-xs-4 col-sm-4">
 
-                    <div class="profile-info-name"> version: </div>
-                    <div class="profile-info-value"><span>{{ applist[key]['version'] }}</span></div>
+                        <div class="profile-info-name" > appname: </div>
+                        <div class="profile-info-value" data-value="{{ applist[key]['name'] }}"><span>{{ applist[key]['name'] }}</span></div>
+                </div>
+                <div class="col-xs-4 col-sm-4">
+
+                        <div class="profile-info-name" > sn: </div>
+                        <div class="profile-info-value" data-value="{{ applist[key]['name'] }}"><span>{{ applist[key]['sn'] }}</span></div>
+                </div>
+
+                <div class="col-xs-4 col-sm-4">
+                        <div class="profile-info-name"> version: </div>
+                        <div class="profile-info-value"><span>{{ applist[key]['version'] }}</span></div>
 
                 </div>
         </div>
