@@ -54,7 +54,7 @@ def get_context(context):
 	context.uptime = None
 	context.public_ip = None
 	context.public_port = None
-	context.applist = None
+	context.applist = {}
 	if client.exists(name):
 		if client.hget(name, "version/value"):
 			context.iot_version = eval(client.hget(name, "version/value"))[1]
