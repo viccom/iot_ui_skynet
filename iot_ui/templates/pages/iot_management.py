@@ -47,6 +47,8 @@ def get_context(context):
 	context.doc = device
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
 	if client.exists(name):
+		context.iot_version = 0
+		context.skynet_version = 0
 		if client.hget(name, "version/value"):
 			context.iot_version = eval(client.hget(name, "version/value"))[1]
 		# print("@@@@@@@@@@@@@@@@",context.iot_version)
