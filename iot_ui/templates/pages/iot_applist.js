@@ -358,7 +358,7 @@ $(document).ready(function() {
                     "data": {
                         "inst": makeid(),
                         "name": data.name,
-                        "version": "7",
+                        "version": "latest",
                         }
                 };
 
