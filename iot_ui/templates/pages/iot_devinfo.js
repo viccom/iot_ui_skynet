@@ -262,7 +262,7 @@ $(document).ready(function() {
                         console.log(r);
                     //---------------------------------------------------------------------------------
 
-                    var hostname = "192.168.174.133";
+                    var hostname = window.location.host;
                     var port = "8083";
                     var clientId = 'js-mqtt-' + makeid();
 
@@ -357,7 +357,7 @@ $(document).ready(function() {
                         console.log(r);
                                             //---------------------------------------------------------------------------------
 
-                    var hostname = "192.168.174.133";
+                    var hostname = window.location.host;
                     var port = "8083";
                     var clientId = 'js-mqtt-' + makeid();
 
