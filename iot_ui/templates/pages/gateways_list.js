@@ -49,6 +49,7 @@
         //   指定第最后一列
         targets: 6,
         render: function(data, type, row, meta) {
+            if(data.device_status=="ONLINE"){
             return '<div class="btn btn-white btn-warning btn-bold" id="gateway-monitor">'
                 +'<i class="ace-icon fa fa-line-chart bigger-120 orange"></i>'
                 +'监视'
@@ -58,6 +59,8 @@
                 +'管理'
                 +'</div>'
                 ;
+            }
+
         }
     }]
 
