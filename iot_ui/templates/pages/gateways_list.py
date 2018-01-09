@@ -29,7 +29,8 @@ def get_context(context):
 
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		context.isCompanyAdmin = True
-
+	if 'App User' in frappe.get_roles(frappe.session.user):
+		context.isAppUser = True
 	# ent_devices = []
 	curuser = frappe.session.user
 	# groups = _list_user_groups(curuser)

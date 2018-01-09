@@ -141,7 +141,7 @@ def devices_list_array(filter):
 	if devices["company_devices"]:
 		for dsn in devices["company_devices"]:
 			devinfo = IOTDevice.get_device_doc(dsn)
-			print(devinfo)
+			# print(devinfo)
 			# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 			lasttime = get_datetime(devinfo.last_updated)
 			nowtime = now_datetime()
@@ -221,8 +221,8 @@ def devices_list_array(filter):
 	if devices["private_devices"]:
 		for dsn in devices["private_devices"]:
 			devinfo = IOTDevice.get_device_doc(dsn)
-			print(dir(devinfo))
-			print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
+			# print(dir(devinfo))
+			# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 			lasttime = get_datetime(devinfo.last_updated)
 			nowtime = now_datetime()
 			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": devinfo.last_updated,  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
@@ -308,7 +308,7 @@ def list_curuser_groups():
 	groups = _list_user_groups(curuser)
 	for g in groups:
 		g.group_name = frappe.get_value("Cloud Company Group", g.name, "group_name")
-	print(groups)
+	# print(groups)
 	return groups
 
 @frappe.whitelist()
@@ -319,7 +319,7 @@ def list_curuser_bunch_codes():
 	for g in groups:
 		bunch_code = get_bunch_codes(g["name"], start=0)
 		if bunch_code:
-			print(bunch_code)
+			# print(bunch_code)
 			bunch_codes["group"][g["name"]] = bunch_code
 		pass
 
@@ -341,7 +341,7 @@ def add_own_bunch_code():
 		frappe.throw(_("You are not an IOT User"))
 
 	bunch_code = str(uuid.uuid1())
-	print("***********", bunch_code)
+	# print("***********", bunch_code)
 	if frappe.get_value("IOT Device Bunch", {"code": bunch_code}):
 		frappe.throw(_("Bunch code already exists!"))
 	doc = frappe.get_doc({
@@ -356,7 +356,7 @@ def add_own_bunch_code():
 @frappe.whitelist()
 def del_bunch_code(bunch_code):
 	ot = frappe.get_value("IOT Device Bunch", bunch_code, "owner_type")
-	print("owner_type", ot)
+	# print("owner_type", ot)
 	if ot == "Cloud Company Group":
 		if 'Company Admin' in frappe.get_roles(frappe.session.user):
 			try:
@@ -381,7 +381,7 @@ def add_group_bunch_code(groupid):
 	if 'IOT User' not in frappe.get_roles(frappe.session.user):
 		return {"result": 'failed', "reason": "You are not an IOT User"}
 	bunch_code = str(uuid.uuid1())
-	print("***********", bunch_code)
+	# print("***********", bunch_code)
 	if frappe.get_value("IOT Device Bunch", {"code": bunch_code}):
 		return {"result": 'failed', "reason": "Bunch code already exists!"}
 	doc = frappe.get_doc({
@@ -458,7 +458,7 @@ def add_company_member():
 @frappe.whitelist()
 def del_company_member():
 	postdata = get_post_json_data()
-	print(postdata)
+	# print(postdata)
 	company = postdata['company']
 	members = postdata['members']
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
@@ -478,7 +478,7 @@ def del_company_member():
 @frappe.whitelist()
 def del_company_single_member():
 	postdata = get_post_json_data()
-	print(postdata)
+	# print(postdata)
 	company = postdata['company']
 	member = postdata['member']
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
@@ -568,11 +568,11 @@ def list_member_group(user):
 @frappe.whitelist()
 def add_group_members():
 	postdata = get_post_json_data()
-	print(postdata)
+	# print(postdata)
 	group = postdata['group']
 	users = postdata['members']
 	role = postdata['role']
-	print(group, users)
+	# print(group, users)
 	g = frappe.get_doc("Cloud Company Group", group)
 	g.add_users(role, *users)
 	return {"result": 'sucessful'}
@@ -580,7 +580,7 @@ def add_group_members():
 @frappe.whitelist()
 def delete_group_members():
 	postdata = get_post_json_data()
-	print(postdata)
+	# print(postdata)
 	group = postdata['group']
 	users = postdata['members']
 	g = frappe.get_doc("Cloud Company Group", group)
@@ -594,7 +594,7 @@ def query_iot_event(filter):
 	for g in gates:
 		#print(g)
 		if g["device_sn"]:
-			print(g["device_sn"])
+			# print(g["device_sn"])
 			rr = frappe.db.get_list("IOT Device Error", fields=["name", "device", "error_type", "error_key", "error_level", "time", "error_info"], filters={"device": g["device_sn"],})
 			if rr:
 				for r in rr:
@@ -660,7 +660,7 @@ def get_iot_event(errid):
 def mark_iot_event_read():
 	postdata = get_post_json_data()
 	errid = postdata['errid']
-	print(errid)
+	# print(errid)
 	for id in errid:
 		doc = frappe.get_doc({
 			"doctype": "Error Visited",
@@ -940,3 +940,15 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 		filters["app_name"] = app_name
 	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
 	return apps
+
+@frappe.whitelist()
+def add_newgate(sn, name, desc):
+	# print("@@@@@@@@@@", sn, name, desc,  frappe.session.user)
+	# print(frappe.get_roles(frappe.session.user))
+	if 'IOT User' in frappe.get_roles(frappe.session.user):
+		print("start add newgate!")
+		doc = frappe.get_doc({"doctype": "IOT Device", "sn": sn, "dev_name": name, "description": desc, "owner_type": "User", "owner_id": frappe.session.user})
+		doc.insert(ignore_permissions=True)
+		return {"result": "sucessful"}
+	else:
+		return {"result": "failed", "reason": frappe.session.user+" is not a IOT User"}

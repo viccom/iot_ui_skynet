@@ -86,7 +86,9 @@
 								<span>{{_('Membership')}}</span>
 							</a>
 						</li>
+                        {% endif %}
 
+						{% if isAppUser %}
                          <li class="grey">
 							<a href="/app_dashboard">
 								<span>{{_('Iot App Store')}}</span>

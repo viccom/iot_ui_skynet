@@ -207,7 +207,49 @@ $(document).ready(function() {
         $('#iot-add-newgate').addClass("hide");
     } );
 
+    $('#submit_newgate').click(function(){
+        console.log("submit_newgate");
+        var gatesn = $("#newgatesn").val();
+        var gatename = $("#newgatename").val();
+        var gatedesc = $("#newgatedesc").val();
 
+        var newgate = {
+                "sn": gatesn,
+                "name": gatename,
+                "desc": gatedesc,
+            };
+
+        $.ajax({
+                type: 'POST',
+                url: "/api/method/iot_ui.ui_api.add_newgate",
+                contentType: "application/x-www-form-urlencoded;charset=utf-8", //必须有
+                data: newgate,
+                dataType: "json",
+                success: function(r) {
+                        if(r.message.result=="sucessful"){
+                            document.getElementById("add_newgate_form").reset();
+                            $('#iot-gate-list').removeClass("hide");
+                            $('#iot-add-newgate').addClass("hide");
+                            table.ajax.url(rtvalueurl).load();
+                            console.log(r);
+                            $('#error_tips').html(r.message.result);
+                        }
+                        else{
+                            console.log(r);
+                            $('#error_tips').html(r.message.reason);
+                        }
+
+                  },
+                 error: function(r) {
+                    // console.log(r);
+                    // console.log(r.responseJSON._server_messages);
+                    //   console.log(JSON.parse(JSON.parse(r.responseJSON._server_messages)[0]));
+                      $('#error_tips').html("绑定新设备失败！" + JSON.parse(JSON.parse(r.responseJSON._server_messages)[0]).message);
+                  }
+            });
+
+
+    } );
 
 
 });

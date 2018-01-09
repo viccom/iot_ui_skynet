@@ -38,6 +38,9 @@ def get_context(context):
 	context.csrf_token = frappe.local.session.data.csrf_token
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		context.isCompanyAdmin = True
+	if 'App User' in frappe.get_roles(frappe.session.user):
+		context.isAppUser = True
+
 	context.language = frappe.local.lang #frappe.db.get_value("User",frappe.session.user, ["language"])
 	curuser = frappe.session.user
 	context.userprofile = get_all(curuser)

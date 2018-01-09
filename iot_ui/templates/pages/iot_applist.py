@@ -33,6 +33,8 @@ def get_context(context):
 	context.show_sidebar = True
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		context.isCompanyAdmin = True
+	if 'App User' in frappe.get_roles(frappe.session.user):
+		context.isAppUser = True
 
 	n_list = [{"url": "/iot_management/"+str(name), "name": "网关信息", "ico": "fa fa-lastfm-square", "id": "1"}, {"url": "/iot_applist/"+str(name), "name": "应用管理", "ico": "fa fa-ioxhost", "id": "2"}]
 

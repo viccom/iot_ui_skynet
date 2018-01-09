@@ -51,7 +51,7 @@
                     {{_('all')}}
                 </span>
                 <span class="btn btn-default pull-right" id="bind_new">
-                    {{_('bind_newgate')}}
+                    {{_('Bind New Gate')}}
                 </span>
             </div>
 
@@ -86,7 +86,7 @@
             <div class="widget-header">
                 <h5 class="widget-title bigger lighter" id="iot-add-newgate-head">
                     <i class="ace-icon fa fa-table"></i>
-                    {{_('Add New Gate TO')}}
+                    {{_('Bind New Gate')}}
                 </h5>
                 <div class="btn btn-info pull-right" id="iot-add-newgate-close-btn">
                     <i class="ace-icon fa fa-close"></i>
@@ -97,7 +97,7 @@
             </div>
 
             <div class="widget-box no-border">
-                <form action="" id="add_newgate_form">
+                <form id="add_newgate_form">
                     <div class="form-group">
                       <label class="control-label">设备序列号</label>
                       <input class="form-control" id="newgatesn">
@@ -114,9 +114,10 @@
                     </div>
 
                     <div class="form-group">
-                      <button type="submit">确定</button>
+                      <button type="button" id="submit_newgate">确定</button>
                       <button type="reset">重置</button>
                     </div>
+                    <p class="red" id="error_tips"></p>
                 </form>
             </div>
 

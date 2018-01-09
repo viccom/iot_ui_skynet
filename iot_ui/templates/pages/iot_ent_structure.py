@@ -55,6 +55,9 @@ def get_context(context):
 
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
 		context.isCompanyAdmin = True
+	if 'App User' in frappe.get_roles(frappe.session.user):
+		context.isAppUser = True
+
 	menulist = frappe.get_all("Iot Menu")
 	n_list = []
 	for m in menulist:
