@@ -18,7 +18,24 @@ $(document).ready(function() {
           }
     });
 
+    $('#iot-update').click(function(){
+        console.log("iot-update");
+        $.ajax({
+            type: 'POST',
+            url: "/api/method/iot.device_api.sys_upgrade",
+            Accept: "application/json",
+            contentType: "application/json",
+            data: JSON.stringify({ "device": symlinksn, "data": {"no_ack": 1, "version": "latest"}}),
+            dataType: "json",
+            success: function(r) {
+                console.log(r);
+              },
+             error: function() {
+                  console.log("异常!");
+          }
+    });
 
+    } );
 
     $('#switch-mode').click(function(){
             var url = "/iot_devinfo/" + symlinksn;
