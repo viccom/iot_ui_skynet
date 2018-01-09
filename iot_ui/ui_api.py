@@ -805,7 +805,7 @@ def ping():
 
 @frappe.whitelist()
 def taghisdata(sn=None, fields=None, tag=None, condition=None):
-	fields = fields or '"int_value", "value", "quality"'
+	fields = fields or '"int_value", "float_value", "string_value", "value", "quality"'
 	doc = frappe.get_doc('IOT Device', sn)
 	doc.has_permission("read")
 
@@ -840,7 +840,7 @@ def taghisdata(sn=None, fields=None, tag=None, condition=None):
 				# local_time = utc2local(utc_time).strftime("%Y-%m-%d %H:%M:%S")
 				local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
 				# print('#######', local_time)
-				hisvalue = {'name': tag, 'value': res[i][1] or res[i][2], 'time': local_time, 'quality': res[i][3]}
+				hisvalue = {'name': tag, 'value': res[i][1] or res[i][2] or res[i][3] or res[i][4], 'time': local_time, 'quality': res[i][5]}
 				taghis.append(hisvalue)
 			#print(taghis)
 			return taghis
