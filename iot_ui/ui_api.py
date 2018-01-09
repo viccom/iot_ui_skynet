@@ -840,7 +840,15 @@ def taghisdata(sn=None, fields=None, tag=None, condition=None):
 				# local_time = utc2local(utc_time).strftime("%Y-%m-%d %H:%M:%S")
 				local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
 				# print('#######', local_time)
-				hisvalue = {'name': tag, 'value': res[i][1] or res[i][2] or res[i][3] or res[i][4], 'time': local_time, 'quality': res[i][5]}
+				if res[i][1] is not None:
+					value = res[i][1]
+				if res[i][2] is not None:
+					value = res[i][2]
+				if res[i][3] is not None:
+					value = res[i][3]
+				if res[i][4] is not None:
+					value = res[i][4]
+				hisvalue = {'name': tag, 'value': value, 'time': local_time, 'quality': res[i][5]}
 				taghis.append(hisvalue)
 			#print(taghis)
 			return taghis
