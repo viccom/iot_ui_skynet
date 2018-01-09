@@ -145,7 +145,7 @@ def devices_list_array(filter):
 			# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 			lasttime = get_datetime(devinfo.last_updated)
 			nowtime = now_datetime()
-			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
 			if devinfo.device_status == "ONLINE":
 				userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 				                           "device_desc": devinfo.description,
@@ -185,7 +185,7 @@ def devices_list_array(filter):
 					#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 					lasttime = get_datetime(devinfo.last_updated)
 					nowtime = now_datetime()
-					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": devinfo.last_updated, "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
 					if devinfo.device_status == "ONLINE":
 						userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 						                           "device_desc": devinfo.description,
