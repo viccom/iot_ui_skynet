@@ -175,6 +175,7 @@ $(document).ready(function() {
         }
         });
     });
+
     $('#table-offline_7d').click(function() {
         $('#table-offline_7d').addClass("btn-primary");
         $('#table-offline_7d').siblings().removeClass("btn-primary");
@@ -191,5 +192,22 @@ $(document).ready(function() {
         }
         });
     });
+
+
+    $('#iot-add-newgate-btn').click(function(){
+        console.log("show iot-add-newgate");
+        $('#iot-add-newgate').removeClass("hide");
+        $('#iot-gate-list').addClass("hide");
+    } );
+
+
+    $('#iot-add-newgate-close-btn').click(function(){
+        console.log("show iot-gate-list");
+        $('#iot-gate-list').removeClass("hide");
+        $('#iot-add-newgate').addClass("hide");
+    } );
+
+
+
 
 });
