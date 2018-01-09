@@ -194,7 +194,7 @@ $(document).ready(function() {
     });
 
 
-    $('#iot-add-newgate-btn').click(function(){
+    $('#bind_new').click(function(){
         console.log("show iot-add-newgate");
         $('#iot-add-newgate').removeClass("hide");
         $('#iot-gate-list').addClass("hide");
