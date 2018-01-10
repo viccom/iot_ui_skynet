@@ -145,34 +145,34 @@ def devices_list_array(filter):
 			# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 			lasttime = get_datetime(devinfo.last_updated)
 			nowtime = now_datetime()
-			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 			if devinfo.device_status == "ONLINE":
 				userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 				                           "device_desc": devinfo.description,
 				                           "device_status": devinfo.device_status,
 				                           "last_updated": str(devinfo.last_updated)[:-7],
 				                           "device_company": devinfo.company, "longitude": devinfo.longitude,
-				                           "latitude": devinfo.latitude})
+				                           "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 			elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 				userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 				                               "device_desc": devinfo.description,
 				                               "device_status": devinfo.device_status,
 				                               "last_updated": str(devinfo.last_updated)[:-7],
 				                               "device_company": devinfo.company,
-				                               "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+				                               "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 				userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 				                            "device_desc": devinfo.description,
 				                            "device_status": devinfo.device_status,
 				                            "last_updated": str(devinfo.last_updated)[:-7],
 				                            "device_company": devinfo.company, "longitude": devinfo.longitude,
-				                            "latitude": devinfo.latitude})
+				                            "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 			else:
 				userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 				                            "device_desc": devinfo.description,
 				                            "device_status": devinfo.device_status,
 				                            "last_updated": str(devinfo.last_updated)[:-7],
 				                            "device_company": devinfo.company, "longitude": devinfo.longitude,
-				                            "latitude": devinfo.latitude})
+				                            "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 		pass
 
 
@@ -185,34 +185,34 @@ def devices_list_array(filter):
 					#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 					lasttime = get_datetime(devinfo.last_updated)
 					nowtime = now_datetime()
-					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+					userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 					if devinfo.device_status == "ONLINE":
 						userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 						                           "device_desc": devinfo.description,
 						                           "device_status": devinfo.device_status,
 						                           "last_updated": str(devinfo.last_updated)[:-7],
 						                           "device_company": devinfo.company, "longitude": devinfo.longitude,
-						                           "latitude": devinfo.latitude})
+						                           "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 					elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 						userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 						                               "device_desc": devinfo.description,
 						                               "device_status": devinfo.device_status,
 						                               "last_updated": str(devinfo.last_updated)[:-7],
 						                               "device_company": devinfo.company,
-						                               "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+						                               "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 						                            "device_desc": devinfo.description,
 						                            "device_status": devinfo.device_status,
 						                            "last_updated": str(devinfo.last_updated)[:-7],
 						                            "device_company": devinfo.company, "longitude": devinfo.longitude,
-						                            "latitude": devinfo.latitude})
+						                            "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 					else:
 						userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 						                            "device_desc": devinfo.description,
 						                            "device_status": devinfo.device_status,
 						                            "last_updated": str(devinfo.last_updated)[:-7],
 						                            "device_company": devinfo.company, "longitude": devinfo.longitude,
-						                            "latitude": devinfo.latitude})
+						                            "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 
 				pass
 			pass
@@ -225,30 +225,30 @@ def devices_list_array(filter):
 			# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 			lasttime = get_datetime(devinfo.last_updated)
 			nowtime = now_datetime()
-			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude})
+			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 			if devinfo.device_status == "ONLINE":
 				userdevices_online.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
-					 "latitude": devinfo.latitude})
+					 "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 			elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 				userdevices_offline_7d.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
-					 "latitude": devinfo.latitude})
+					 "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 				userdevices_offline.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
-					 "latitude": devinfo.latitude})
+					 "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 			else:
 				userdevices_offline.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
-					 "latitude": devinfo.latitude})
+					 "latitude": devinfo.latitude, "beta": devinfo.use_beta})
 
 		pass
 
@@ -960,3 +960,10 @@ def add_newgate(sn, name, desc):
 		return {"result": "sucessful"}
 	else:
 		return {"result": "failed", "reason": frappe.session.user+" is not a IOT User"}
+
+@frappe.whitelist()
+def enable_beta(sn):
+	doc = frappe.get_doc("IOT Device", sn);
+	doc.set_use_beta()
+	from iot.device_api import send_action
+	return send_action("sys", action="enable/beta", device=sn, data="1")

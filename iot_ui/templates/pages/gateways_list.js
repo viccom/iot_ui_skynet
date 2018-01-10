@@ -50,7 +50,7 @@
         targets: 6,
         render: function(data, type, row, meta) {
             if(data.device_status=="ONLINE"){
-                return '<div class="btn btn-white btn-warning btn-bold" id="gateway-monitor">'
+                var gen_html = '<div class="btn btn-white btn-warning btn-bold" id="gateway-monitor">'
                     +'<i class="ace-icon fa fa-line-chart bigger-120 orange"></i>'
                     +'监视'
                     +'</div>'
@@ -58,6 +58,14 @@
                     +'<i class="ace-icon fa fa-wrench bigger-120 orange"></i>'
                     +'管理'
                     +'</div>';
+                if (!data.beta) {
+                    gen_html = gen_html
+                        +'<div class="btn btn-white btn-warning btn-bold" id="enable-beta">'
+                        +'<i class="ace-icon fa fa-wrench bigger-120 orange"></i>'
+                        +'Beta'
+                        +'</div>';
+                }
+                return gen_html;
             }
             else{
                 return '';
@@ -127,6 +135,37 @@ $(document).ready(function() {
 
         }
     } );
+
+        $('#example tbody').on( 'click', 'div#enable-beta', function () {
+        var data = table.row($(this).parents('tr')).data();
+        console.log(data);
+        if(data){
+
+            var curdevsn = data.device_sn;
+
+            $.ajax({
+                type: 'POST',
+                url: "/api/method/iot_ui.ui_api.enable_beta?sn="+curdevsn,
+                Accept: "application/json",
+                dataType: "json",
+                success: function(r) {
+                    if(r.message){
+                        console.log(r);
+                        table.ajax.url(rtvalueurl).load();
+                     }
+                  },
+                 error: function() {
+                      console.log("异常!");
+                  }
+            });
+
+
+
+
+        }
+    } );
+
+
 
     $('#table-refresh').click(function() {
         table.ajax.url(rtvalueurl).load();
