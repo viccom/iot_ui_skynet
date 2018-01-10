@@ -213,9 +213,9 @@ $(document).ready(function() {
 
     $('#submit_newgate').click(function(){
         console.log("submit_newgate");
-        var gatesn = $("#newgatesn").val();
-        var gatename = $("#newgatename").val();
-        var gatedesc = $("#newgatedesc").val();
+        var gatesn = $.trim($("#newgatesn").val());
+        var gatename = $.trim($("#newgatename").val());
+        var gatedesc = $.trim($("#newgatedesc").val());
 
         var newgate = {
                 "sn": gatesn,
