@@ -58,7 +58,7 @@
                     +'<i class="ace-icon fa fa-wrench bigger-120 orange"></i>'
                     +'管理'
                     +'</div>';
-                if (!data.beta) {
+                if (!data.iot_beta) {
                     gen_html = gen_html
                         +'<div class="btn btn-white btn-warning btn-bold" id="enable-beta">'
                         +'<i class="ace-icon fa fa-wrench bigger-120 orange"></i>'
