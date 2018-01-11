@@ -109,6 +109,7 @@ def iot_device_cfg(sn=None, vsn=None):
 
 @frappe.whitelist()
 def iot_is_beta(sn=None):
+	iot_beta_flag = None
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
 	try:
 		betainfo = client.hget(sn, 'enable_beta/value')
