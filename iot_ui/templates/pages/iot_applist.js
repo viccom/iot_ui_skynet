@@ -290,7 +290,7 @@ $(document).ready(function() {
                 type: 'POST',
                 url: "/api/method/app_center.appmgr.fork",
                 contentType: "application/x-www-form-urlencoded;charset=utf-8",
-                data: for_app,
+                data: fork_app,
                 dataType: "json",
                 success: function(r) {
                     if(r.message){
