@@ -295,7 +295,9 @@ $(document).ready(function() {
                 success: function(r) {
                     if(r.message){
                         console.log(r);
-                        table.ajax.url(appurl).load();
+
+                        var url = "/app_editor?app=" + r.message + "&device=XXXXXXXXX&app_inst=" + data.name + "&version=" + data.cloud_ver;
+                        window.location.href=url;
                      }
                   },
                  error: function() {
