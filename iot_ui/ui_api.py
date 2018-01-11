@@ -115,7 +115,7 @@ def iot_is_beta(sn=None):
 	except Exception as ex:
 		return None
 	betaflag = eval(betainfo)[1]
-	return betaflag
+	return betainfo
 
 def get_bunch_codes(group, start=0, search=None):
 	filters = {
