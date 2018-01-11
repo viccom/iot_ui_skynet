@@ -281,16 +281,16 @@ $(document).ready(function() {
         var data = table.row($(this).parents('tr')).data();
         if(data){
             console.log(data.name,data.cloudname, data.cloud_ver);
-            var update_app = {
+            var fork_app = {
                     "app": data.cloudname,
-                    "version": data.cloud_ver,
+                    "version": data.cloud_ver
                 };
 
             $.ajax({
                 type: 'POST',
                 url: "/api/method/app_center.appmgr.fork",
                 contentType: "application/x-www-form-urlencoded;charset=utf-8",
-                data: JSON.stringify(update_app),
+                data: for_app,
                 dataType: "json",
                 success: function(r) {
                     if(r.message){
