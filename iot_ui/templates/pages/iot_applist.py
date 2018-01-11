@@ -25,6 +25,7 @@ def get_context(context):
 		frappe.local.flags.redirect_location = "/"
 		raise frappe.Redirect
 
+	context.device = frappe.get_doc('IOT Device', name)
 	user_roles = frappe.get_roles(frappe.session.user)
 	context.language = frappe.db.get_value("User", frappe.session.user, ["language"])
 	if 'IOT User' not in user_roles or frappe.session.user == 'Guest':
