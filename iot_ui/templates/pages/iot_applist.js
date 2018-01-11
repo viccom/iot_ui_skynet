@@ -276,6 +276,40 @@ $(document).ready(function() {
     } );
 
 
+    $('#example tbody').on( 'click', 'div#app-fork', function () {
+        $(this).attr("disabled", true);
+        var data = table.row($(this).parents('tr')).data();
+        if(data){
+            console.log(data.name,data.cloudname, data.cloud_ver);
+            var update_app = {
+                    "app": data.cloudname,
+                    "version": data.cloud_ver,
+                };
+
+            $.ajax({
+                type: 'POST',
+                url: "/api/method/app_center.appmgr.fork",
+                Accept: "application/json",
+                contentType: "application/json",
+                data: JSON.stringify(update_app),
+                dataType: "json",
+                success: function(r) {
+                    if(r.message){
+                        console.log(r);
+                        table.ajax.url(appurl).load();
+                     }
+                  },
+                 error: function() {
+                      console.log("异常!");
+                  }
+            });
+
+
+        }
+
+    } );
+
+
     $('#example tbody').on( 'click', 'div#app-editor', function () {
         var data = table.row($(this).parents('tr')).data();
         if(data){
@@ -321,6 +355,8 @@ $(document).ready(function() {
 
     } );
 
+
+
     $('#iot-add-newapp-btn').click(function(){
         console.log("show add-app");
         $('#iot-add-newapp').removeClass("hide");
@@ -346,6 +382,11 @@ $(document).ready(function() {
 
     } );
 
+
+    $('#switch-mode').click(function(){
+            var url = "/iot_devinfo/" + iotsn;
+            window.location.href=url;
+    } );
 
 
     $('#appstore_table tbody').on( 'click', 'div#install-to-box', function () {
@@ -385,9 +426,7 @@ $(document).ready(function() {
 
     } );
 
-    $('#switch-mode').click(function(){
-            var url = "/iot_devinfo/" + iotsn;
-            window.location.href=url;
-    } );
+
+
 
 });

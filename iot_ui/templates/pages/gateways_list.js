@@ -137,27 +137,28 @@ $(document).ready(function() {
     } );
 
         $('#example tbody').on( 'click', 'div#enable-beta', function () {
-        var data = table.row($(this).parents('tr')).data();
-        console.log(data);
-        if(data){
+            $(this).attr("disabled", true);
+            var data = table.row($(this).parents('tr')).data();
+            console.log(data);
+            if(data){
 
-            var curdevsn = data.device_sn;
+                var curdevsn = data.device_sn;
 
-            $.ajax({
-                type: 'POST',
-                url: "/api/method/iot_ui.ui_api.enable_beta?sn="+curdevsn,
-                Accept: "application/json",
-                dataType: "json",
-                success: function(r) {
-                    if(r.message){
-                        console.log(r);
-                        table.ajax.url(rtvalueurl).load();
-                     }
-                  },
-                 error: function() {
-                      console.log("异常!");
-                  }
-            });
+                $.ajax({
+                    type: 'POST',
+                    url: "/api/method/iot_ui.ui_api.enable_beta?sn="+curdevsn,
+                    Accept: "application/json",
+                    dataType: "json",
+                    success: function(r) {
+                        if(r.message){
+                            console.log(r);
+                            table.ajax.url(rtvalueurl).load();
+                         }
+                      },
+                     error: function() {
+                          console.log("异常!");
+                      }
+                });
 
 
 
