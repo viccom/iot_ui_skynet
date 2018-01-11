@@ -289,8 +289,7 @@ $(document).ready(function() {
             $.ajax({
                 type: 'POST',
                 url: "/api/method/app_center.appmgr.fork",
-                Accept: "application/json",
-                contentType: "application/json",
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
                 data: JSON.stringify(update_app),
                 dataType: "json",
                 success: function(r) {
