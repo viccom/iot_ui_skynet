@@ -109,14 +109,14 @@ def iot_device_cfg(sn=None, vsn=None):
 
 @frappe.whitelist()
 def iot_is_beta(sn=None):
-	iot_beta_flag = None
+	iot_beta_flag = 0
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
 	try:
 		betainfo = client.hget(sn, 'enable_beta/value')
 	except Exception as ex:
 		return None
 	if betainfo:
-		iot_beta_flag = str(eval(betainfo)[1])
+		iot_beta_flag = eval(betainfo)[1]
 	return iot_beta_flag
 
 def get_bunch_codes(group, start=0, search=None):
