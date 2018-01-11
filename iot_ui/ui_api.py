@@ -107,6 +107,15 @@ def iot_device_cfg(sn=None, vsn=None):
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/10")
 	return json.loads(client.get(vsn or sn) or "")
 
+@frappe.whitelist()
+def iot_is_beta(sn=None):
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	try:
+		betainfo = client.hget(sn, 'enable_beta/value')
+	except Exception as ex:
+		return None
+	betaflag = eval(betainfo)[1]
+	return betaflag
 
 def get_bunch_codes(group, start=0, search=None):
 	filters = {
