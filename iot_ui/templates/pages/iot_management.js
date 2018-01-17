@@ -30,8 +30,8 @@ $(document).ready(function() {
             success: function(r) {
                 console.log(r);
               },
-             error: function() {
-                  console.log("异常!");
+             error: function(r) {
+                  console.log(r);
           }
     });
 
