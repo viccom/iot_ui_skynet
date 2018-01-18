@@ -21,6 +21,7 @@ from frappe.utils.user import get_user_fullname
 from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
 
 
+
 def valid_auth_code(auth_code=None):
 	auth_code = auth_code or frappe.get_request_header("HDB-AuthorizationCode")
 	if not auth_code:
@@ -929,13 +930,28 @@ def iot_applist(sn=None):
 			filters = {"app": applist[app]['name']}
 			cloud_ver = None
 			owner = None
+			fork_app = None
+			fork_ver =None
 			try:
 				lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop()
 				cloud_ver = lastver.version
 				owner = lastver.owner
 			except Exception as ex:
 				pass
-			a = {"name": app, "cloudname": applist[app]['name'], "iot_ver": int(applist[app]['version']), "cloud_ver": cloud_ver, "owner":owner}
+			try:
+				doc = frappe.get_doc("IOT Application", applist[app]['name'])
+				# print(dir(doc))
+				fork_app = doc.get_fork(frappe.session.user, cloud_ver)
+				# print(fork_app)
+				from app_center.app_center.doctype.iot_application_version.iot_application_version import IOTApplicationVersion
+				fork_ver = IOTApplicationVersion.get_latest_version(fork_app)
+				# print(fork_ver)
+			except Exception as ex:
+				pass
+			# fork_app = doc.get_fork(owner, cloud_ver)
+			# fork_ver = IOTApplicationVersion.get_latest_version(app)
+			# print(fork_app, fork_ver)
+			a = {"name": app, "cloudname": applist[app]['name'], "iot_ver": int(applist[app]['version']), "cloud_ver": cloud_ver, "owner":owner, "fork_app": fork_app, "fork_ver": fork_ver}
 			iot_applist.append(a)
 		return iot_applist
 	else:

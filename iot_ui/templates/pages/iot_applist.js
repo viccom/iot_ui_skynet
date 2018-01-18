@@ -3,6 +3,17 @@ function isNull(arg1)
  return !arg1 && arg1!==0 && typeof arg1!=="boolean"?true:false;
 }
 
+var hexToDec = function(str) {
+        //str = str.replace(/[\'\"\\\/\b\f\n\r\t]/g, '')
+  str=str.replace(/\\\\/g,"%");
+  return unescape(str);
+}
+
+function isContains(str, substr) {
+    return new RegExp(substr).test(str);
+}
+
+
 var iotsn = '{{ iotsn }}';
 var user = '{{user}}';
 var appurl = "/api/method/iot_ui.ui_api.iot_applist?sn="+iotsn;
@@ -50,74 +61,61 @@ var table = jQuery('#example').DataTable({
         else{
             isowner = 1
         }
-        // console.log(data.cloud_ver>data.iot_ver && isowner==0);
-        if(isNull(data.cloud_ver) && isNull(data.owner)){
-            return '<div class="btn btn-white btn-warning btn-bold">'
+        console.log(data, user, isowner);
+        var localapp_btn = '<div class="btn btn-white btn-warning btn-bold">'
             +'<i class="ace-icon fa  fa-leaf  bigger-120 orange"></i>'
             +'本地应用'
-            +'</div>'
-            +'<div class="btn btn-white btn-warning btn-bold" id="app-del">'
+            +'</div>';
+        var delapp_btn = '<div class="btn btn-white btn-warning btn-bold" id="app-del">'
             +'<i class="ace-icon fa fa-trash  bigger-120 green"></i>'
-            +'删除'
-            +'</div>'
-        }
-        else if(data.cloud_ver>data.iot_ver && isowner==0){
-            return '<div class="btn btn-white btn-warning btn-bold" id="app-update">'
+            +'删除应用'
+            +'</div>';
+        var update_btn = '<div class="btn btn-white btn-warning btn-bold" id="app-update">'
             +'<i class="ace-icon fa fa-cloud-upload  bigger-120 orange"></i>'
             +'升级最新'
-            +'</div>'
-            +'<div class="btn btn-white btn-warning btn-bold" id="app-editor">'
+            +'</div>';
+        var editor_btn = '<div class="btn btn-white btn-warning btn-bold" id="app-editor">'
             +'<i class="ace-icon fa fa-edit bigger-120 green"></i>'
-            +'编辑'
-            +'</div>'
-            +'<div class="btn btn-white btn-warning btn-bold" id="app-del">'
-            +'<i class="ace-icon fa fa-trash  bigger-120 green"></i>'
-            +'删除'
-            +'</div>'
-        }
-        else if((data.cloud_ver>data.iot_ver && isowner!==0)){
-            return '<div class="btn btn-white btn-warning btn-bold" id="app-update">'
-            +'<i class="ace-icon fa fa-cloud-upload  bigger-120 orange"></i>'
-            +'升级最新'
-            +'</div>'
-            +'<div class="btn btn-white btn-warning btn-bold" id="app-fork">'
-            +'<i class="ace-icon fa fa-clone  bigger-120 green"></i>'
-            +'复刻'
-            +'</div>'
-            +'<div class="btn btn-white btn-warning btn-bold" id="app-del">'
-            +'<i class="ace-icon fa fa-trash  bigger-120 green"></i>'
-            +'删除'
-            +'</div>'
-        }
-        else if((data.cloud_ver<=data.iot_ver && isowner==0)){
-            return '<div class="btn btn-white btn-bold">'
+            +'编辑应用'
+            +'</div>';
+        var latest_btn ='<div class="btn btn-white btn-bold">'
             +'<i class="ace-icon fa fa-thumbs-up bigger-120"></i>'
             +'已是最新'
-            +'</div>'
-            +'<div class="btn btn-white btn-warning btn-bold" id="app-editor">'
-            +'<i class="ace-icon fa fa-edit bigger-120 green"></i>'
-            +'编辑'
-            +'</div>'
-            +'<div class="btn btn-white btn-warning btn-bold" id="app-del">'
-            +'<i class="ace-icon fa fa-trash  bigger-120 green"></i>'
-            +'删除'
-            +'</div>'
-        }
+            +'</div>';
+        var switch_btn = '<div class="btn btn-white btn-warning btn-bold" id="app-hasfork">'
+            +'<i class="ace-icon fa fa-clone  bigger-120 green"></i>'
+            +'切换应用'
+            +'</div>';
+        var fork_btn = '<div class="btn btn-white btn-warning btn-bold" id="app-fork">'
+            +'<i class="ace-icon fa fa-clone  bigger-120 green"></i>'
+            +'克隆应用'
+            +'</div>';
+        var null_btn = '<div class="btn btn-white btn-bold">'
+            +'<i class="ace-icon fa fa-ban  bigger-120"></i>'
+            +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+            +'</div>';
+        var btns = '';
 
-        else{
-            return '<div class="btn btn-white btn-bold">'
-            +'<i class="ace-icon fa fa-thumbs-up bigger-120"></i>'
-            +'已是最新'
-            +'</div>'
-            +'<div class="btn btn-white btn-warning btn-bold" id="app-fork">'
-            +'<i class="ace-icon fa fa-clone  bigger-120 green"></i>'
-            +'复刻'
-            +'</div>'
-            +'<div class="btn btn-white btn-warning btn-bold" id="app-del">'
-            +'<i class="ace-icon fa fa-trash  bigger-120 green"></i>'
-            +'删除'
-            +'</div>'
+        if(!isNull(data.cloud_ver) && data.cloud_ver<=data.iot_ver){
+            btns = btns + latest_btn;
         }
+        if (!isNull(data.cloud_ver) && data.cloud_ver>data.iot_ver){
+            btns = btns + update_btn;
+        }
+        if(isNull(data.cloud_ver) && isNull(data.owner)){
+            btns = btns + null_btn + localapp_btn;
+        }
+        if(isowner==0){
+            btns = btns + editor_btn;
+        }
+        if(!isNull(data.cloud_ver) && isowner!==0 && isNull(data.fork_app)){
+            btns = btns + fork_btn;
+        }
+        if(isowner!==0 && !isNull(data.fork_app)){
+            btns = btns + switch_btn;
+        }
+            btns = btns + delapp_btn;
+        return btns
     }
 }]
 
@@ -243,7 +241,7 @@ $(document).ready(function() {
             console.log(data.name,data.cloudname, data.cloud_ver);
             var update_app = {
                     "device": iotsn,
-                    "id": iotsn+"-app_update",
+                    "id": iotsn+data.name+"-app_update",
                     "data": {
                         "inst": data.name,
                         "fork": 1,
@@ -296,8 +294,52 @@ $(document).ready(function() {
                     if(r.message){
                         console.log(r);
 
-                        var url = "/app_editor?app=" + r.message + "&device=XXXXXXXXX&app_inst=" + data.name + "&version=" + data.cloud_ver;
+                        var url = "/app_editor?app=" + r.message + "&device=" + iotsn + "&app_inst=" + data.name + "&version=" + data.cloud_ver;
                         window.location.href=url;
+                     }
+                  },
+                 error: function(r) {
+                      console.log(r.responseJSON._server_messages);
+                      if(isContains(r.responseJSON._server_messages, String(data.cloud_ver))){
+                        // var url = "/app_editor?app=" + r.message + "&device=XXXXXXXXX&app_inst=" + data.name + "&version=" + data.cloud_ver;
+                        // window.location.href=url;
+                      }
+                  }
+            });
+
+
+        }
+
+    } );
+
+
+    $('#example tbody').on( 'click', 'div#app-hasfork', function () {
+        $(this).attr("disabled", true);
+        var data = table.row($(this).parents('tr')).data();
+        if(data){
+
+            var switch_app = {
+                    "device": iotsn,
+                    "id": iotsn+data.name+"-app_hasfork",
+                    "data": {
+                        "inst": data.name,
+                        "fork": 1,
+                        "name": data.fork_app,
+                        "version": data.fork_ver,
+                        }
+                };
+
+            $.ajax({
+                type: 'POST',
+                url: "/api/method/iot.device_api.app_upgrade",
+                Accept: "application/json",
+                contentType: "application/json",
+                data: JSON.stringify(switch_app),
+                dataType: "json",
+                success: function(r) {
+                    if(r.message){
+                        console.log(r);
+                        table.ajax.url(appurl).load();
                      }
                   },
                  error: function() {
@@ -311,6 +353,7 @@ $(document).ready(function() {
     } );
 
 
+
     $('#example tbody').on( 'click', 'div#app-editor', function () {
         var data = table.row($(this).parents('tr')).data();
         if(data){
@@ -322,12 +365,13 @@ $(document).ready(function() {
     } );
 
     $('#example tbody').on( 'click', 'div#app-del', function () {
+        $(this).attr("disabled", true);
         var data = table.row($(this).parents('tr')).data();
         if(data){
 
             var del_app = {
                     "device": iotsn,
-                    "id": iotsn+"-app_del",
+                    "id": iotsn+data.name+"-app_del",
                     "data": {
                         "inst": data.name,
                         }
@@ -384,17 +428,11 @@ $(document).ready(function() {
     } );
 
 
-    $('#switch-mode').click(function(){
-            var url = "/iot_devinfo/" + iotsn;
-            window.location.href=url;
-    } );
-
-
     $('#appstore_table tbody').on( 'click', 'div#install-to-box', function () {
         $(this).attr("disabled", true);
         var data = appstore_table.row($(this).parents('tr')).data();
         if(data){
-            var update_app = {
+            var install_app = {
                     "device": iotsn,
                     "id": iotsn+"-app_install",
                     "data": {
@@ -409,7 +447,7 @@ $(document).ready(function() {
                 url: "/api/method/iot.device_api.app_install",
                 Accept: "application/json",
                 contentType: "application/json",
-                data: JSON.stringify(update_app),
+                data: JSON.stringify(install_app),
                 dataType: "json",
                 success: function(r) {
                     if(r.message){

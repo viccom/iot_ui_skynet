@@ -223,19 +223,7 @@ $(document).ready(function() {
     //点击按钮
 
     $('#manual_query').click(function(){
-
-        if(client){
-            client.unsubscribe(symlinksn+'/comm', {
-                 onSuccess: unsubscribeSuccess,
-                 onFailure: unsubscribeFailure
-             });
-            client.unsubscribe(symlinksn+'/log', {
-                 onSuccess: unsubscribeSuccess,
-                 onFailure: unsubscribeFailure
-             });
-        disconnect();
-        client=null;
-        }
+        // disconnect();
         var cuser_id = $.cookie('user_id');
         var csid = $.cookie('sid');
         console.log(current_vsn, cuser_id, csid);
@@ -262,7 +250,7 @@ $(document).ready(function() {
                         console.log(r);
                     //---------------------------------------------------------------------------------
 
-                    var hostname = window.location.host;
+                    var hostname = window.location.hostname;
                     var port = "8083";
                     var clientId = 'js-mqtt-' + makeid();
 
@@ -357,7 +345,7 @@ $(document).ready(function() {
                         console.log(r);
                                             //---------------------------------------------------------------------------------
 
-                    var hostname = window.location.host;
+                    var hostname = window.location.hostname;
                     var port = "8083";
                     var clientId = 'js-mqtt-' + makeid();
 
