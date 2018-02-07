@@ -106,7 +106,11 @@ def iot_device_cfg(sn=None, vsn=None):
 	doc = frappe.get_doc('IOT Device', sn)
 	doc.has_permission("read")
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/10")
-	return json.loads(client.get(vsn or sn) or "")
+	cfg = client.get(vsn or sn)
+	if cfg:
+		return json.loads(cfg)
+	else:
+		return None
 
 @frappe.whitelist()
 def iot_is_beta(sn=None):
@@ -951,7 +955,7 @@ def iot_applist(sn=None):
 			# fork_app = doc.get_fork(owner, cloud_ver)
 			# fork_ver = IOTApplicationVersion.get_latest_version(app)
 			# print(fork_app, fork_ver)
-			a = {"name": app, "cloudname": applist[app]['name'], "iot_ver": int(applist[app]['version']), "cloud_ver": cloud_ver, "owner":owner, "fork_app": fork_app, "fork_ver": fork_ver}
+			a = {"name": app, "cloudname": applist[app]['name'], "cloud_appname": applist[app]['app_name'], "iot_ver": int(applist[app]['version']), "cloud_ver": cloud_ver, "owner":owner, "fork_app": fork_app, "fork_ver": fork_ver}
 			iot_applist.append(a)
 		return iot_applist
 	else:
