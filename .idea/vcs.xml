@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="F:/code/frappe_app_center" vcs="Git" />
+    <mapping directory="F:/code/frappe_iot" vcs="Git" />
     <mapping directory="F:/code/frappe_iot_skynet" vcs="Git" />
     <mapping directory="F:/code/iot_mobileui" vcs="Git" />
     <mapping directory="F:/code/iot_mqtt_clients" vcs="Git" />

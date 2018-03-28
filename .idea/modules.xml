@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://F:/code/frappe_app_center/.idea/frappe_app_center.iml" filepath="F:/code/frappe_app_center/.idea/frappe_app_center.iml" />
+      <module fileurl="file://F:/code/frappe_iot/.idea/frappe_iot.iml" filepath="F:/code/frappe_iot/.idea/frappe_iot.iml" />
       <module fileurl="file://F:/code/frappe_iot_skynet/.idea/frappe_iot_skynet.iml" filepath="F:/code/frappe_iot_skynet/.idea/frappe_iot_skynet.iml" />
       <module fileurl="file://F:/code/iot_mqtt_clients/.idea/iot_mqtt_clients.iml" filepath="F:/code/iot_mqtt_clients/.idea/iot_mqtt_clients.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/iot_ui.iml" filepath="$PROJECT_DIR$/.idea/iot_ui.iml" />
