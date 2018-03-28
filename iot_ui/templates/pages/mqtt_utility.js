@@ -234,21 +234,21 @@ function onMessageArrived(message) {
   var table = document.getElementById("incomingMessageTable").getElementsByTagName('tbody')[0];
   var row = table.insertRow(-1);
         // if(messagedir=="OUT"){
-            row.insertCell(0).innerHTML = messagedir;
+        //     row.insertCell(0).innerHTML = messagedir;
         // }
         //
         // else if(messagedir=="IN"){
         //     row.insertCell(0).innerHTML = "接收";
         // }
         if(millsec){
-            row.insertCell(1).innerHTML = localeTime+"."+millsec;
+            row.insertCell(0).innerHTML = localeTime+"."+millsec;
         }
         else{
-            row.insertCell(1).innerHTML = localeTime;
+            row.insertCell(0).innerHTML = localeTime;
         }
 
-      row.insertCell(2).innerHTML = device_message_bin;
-
+        row.insertCell(1).innerHTML = device_message_bin;
+        row.insertCell(2).innerHTML = messagedir;
 }
 
 function onLogArrived(message) {
