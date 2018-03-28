@@ -233,13 +233,13 @@ function onMessageArrived(message) {
 
   var table = document.getElementById("incomingMessageTable").getElementsByTagName('tbody')[0];
   var row = table.insertRow(-1);
-        if(messagedir=="OUT"){
-            row.insertCell(0).innerHTML = "发送";
-        }
-
-        else if(messagedir=="IN"){
-            row.insertCell(0).innerHTML = "接收";
-        }
+        // if(messagedir=="OUT"){
+            row.insertCell(0).innerHTML = messagedir;
+        // }
+        //
+        // else if(messagedir=="IN"){
+        //     row.insertCell(0).innerHTML = "接收";
+        // }
         if(millsec){
             row.insertCell(1).innerHTML = localeTime+"."+millsec;
         }
