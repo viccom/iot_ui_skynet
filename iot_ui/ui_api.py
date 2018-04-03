@@ -936,21 +936,24 @@ def iot_applist(sn=None):
 			owner = None
 			fork_app = None
 			fork_ver =None
+			cloud_appname = None
 			try:
 				lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop()
-				cloud_ver = lastver.version
-				cloud_appname = lastver.app_name
-				owner = lastver.owner
+				if lastver:
+					cloud_ver = lastver.version
+					cloud_appname = lastver.app_name
+					owner = lastver.owner
 			except Exception as ex:
 				pass
 			try:
 				doc = frappe.get_doc("IOT Application", applist[app]['name'])
 				# print(dir(doc))
-				fork_app = doc.get_fork(frappe.session.user, cloud_ver)
-				# print(fork_app)
-				from app_center.app_center.doctype.iot_application_version.iot_application_version import IOTApplicationVersion
-				fork_ver = IOTApplicationVersion.get_latest_version(fork_app)
-				# print(fork_ver)
+				if doc:
+					fork_app = doc.get_fork(frappe.session.user, cloud_ver)
+					# print(fork_app)
+					from app_center.app_center.doctype.iot_application_version.iot_application_version import IOTApplicationVersion
+					fork_ver = IOTApplicationVersion.get_latest_version(fork_app)
+					# print(fork_ver)
 			except Exception as ex:
 				pass
 			# fork_app = doc.get_fork(owner, cloud_ver)
