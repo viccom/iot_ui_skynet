@@ -146,6 +146,13 @@ def get_post_json_data():
 	return frappe._dict(json.loads(frappe.form_dict.data))
 
 @frappe.whitelist()
+def get_user_token():
+	csrf_token = frappe.sessions.get_csrf_token()
+	frappe.db.commit()
+	return csrf_token
+
+
+@frappe.whitelist()
 def devices_list_array(filter):
 	curuser = frappe.session.user
 	devices = list_iot_devices(curuser)

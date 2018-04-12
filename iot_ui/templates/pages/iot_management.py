@@ -82,10 +82,11 @@ def get_context(context):
 		except Exception as err:
 			pass
 		s = requests.Session()
-		s.auth = ('admin', 'symtechPa88word')
+		s.auth = ("api", "Pa88word")
 		r = s.get('http://127.0.0.1:18083/api/v2/nodes/emq@127.0.0.1/clients/'+name)
 		rdict = json.loads(r.text)
 		context.public_ip = rdict['result']['objects'][0]['ipaddress']
+		print(rdict)
 		context.public_port = rdict['result']['objects'][0]['port']
 		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
 		context.applist = json.loads(client.get(name))
