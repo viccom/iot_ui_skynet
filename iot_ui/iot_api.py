@@ -36,7 +36,7 @@ def userinfo_all(user):
 
 
 @frappe.whitelist()
-def iot_device_tree(sn=None):
+def gate_device_tree(sn=None):
 	from iot.hdb import iot_device_tree as _iot_device_tree
 	subdevice = _iot_device_tree(sn)
 	if subdevice:
@@ -45,13 +45,13 @@ def iot_device_tree(sn=None):
 
 
 @frappe.whitelist()
-def iot_device_cfg(sn=None, vsn=None):
+def gate_device_cfg(sn=None, vsn=None):
 	from iot.hdb import iot_device_cfg as _iot_device_cfg
 	return _iot_device_cfg(sn, vsn)
 
 
 @frappe.whitelist()
-def iot_is_beta(sn=None):
+def gate_is_beta(sn=None):
 	iot_beta_flag = 0
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
 	try:
@@ -468,98 +468,82 @@ def gate_info(sn):
 
 
 @frappe.whitelist()
-def iot_applist(sn=None):
-	if sn:
-		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
-		applist = json.loads(client.get(sn))
-		iot_applist = []
-		for app in applist:
-			filters = {"app": applist[app]['name']}
-			cloud_ver = None
-			owner = None
-			fork_app = None
-			fork_ver =None
-			cloud_appname = None
-			try:
-				lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop()
-				if lastver:
-					cloud_ver = lastver.version
-					cloud_appname = lastver.app_name
-					owner = lastver.owner
-			except Exception as ex:
-				pass
-			try:
-				doc = frappe.get_doc("IOT Application", applist[app]['name'])
-				# print(dir(doc))
-				if doc:
-					fork_app = doc.get_fork(frappe.session.user, cloud_ver)
-					# print(fork_app)
-					from app_center.app_center.doctype.iot_application_version.iot_application_version import IOTApplicationVersion
-					fork_ver = IOTApplicationVersion.get_latest_version(fork_app)
-					# print(fork_ver)
-			except Exception as ex:
-				pass
-			# fork_app = doc.get_fork(owner, cloud_ver)
-			# fork_ver = IOTApplicationVersion.get_latest_version(app)
-			# print(fork_app, fork_ver)
-			a = {"name": app, "cloudname": applist[app]['name'], "cloud_appname": cloud_appname, "iot_ver": int(applist[app]['version']), "cloud_ver": cloud_ver, "owner":owner, "fork_app": fork_app, "fork_ver": fork_ver}
-			iot_applist.append(a)
-		return {"code": 1000, "data": iot_applist}
-	else:
-		return None
-
-
-@frappe.whitelist()
-def iot_app_dev_tree(sn=None):
+def gate_applist(sn):
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
-	applist = json.loads(client.get(sn))
-	device_tree = iot_device_tree(sn)
-	app_dev_tree = {}
+	applist = json.loads(client.get(sn) or "[]")
+	iot_applist = []
 	for app in applist:
-		app_dev_tree[app] = []
-		for devsn in device_tree:
-			devmeta = iot_device_cfg(sn, devsn)['meta']
-			if devmeta['app']==app:
-				devmeta['sn']=devsn
-				app_dev_tree[app].append(devmeta)
-			pass
-		pass
-	return {"code": 1000, "data": app_dev_tree}
+		app_obj = frappe._dict(applist[app])
+		app_name = app_obj.name
+		app_ver = int(app_obj.get('version') or 0)
+		cloud_ver = None
+		owner = None
+		fork_app = None
+		fork_ver =None
+		cloud_appname = None
+		app_islocal = app_obj.islocal
+		try:
+			filters = {"app": app_name}
+			lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop()
+			if lastver:
+				cloud_ver = lastver.version
+				cloud_appname = lastver.app_name
+				owner = lastver.owner
+
+			doc = frappe.get_doc("IOT Application", app_name)
+			# print(dir(doc))
+			if doc:
+				fork_app = doc.get_fork(frappe.session.user, cloud_ver)
+				# print(fork_app)
+				from app_center.app_center.doctype.iot_application_version.iot_application_version import IOTApplicationVersion
+				fork_ver = IOTApplicationVersion.get_latest_version(fork_app)
+				# print(fork_ver)
+		except Exception as ex:
+			app_islocal = 1
+
+		iot_applist.append({
+			"name": app,
+			"cloud_appname": cloud_appname,
+			"iot_ver": app_ver,
+			"islocal": app_islocal,
+			"cloud_ver": cloud_ver,
+			"owner":owner,
+			"fork_app": fork_app,
+			"fork_ver": fork_ver
+		})
+	return iot_applist
 
 
 @frappe.whitelist()
-def iot_device_data_array(sn=None, vsn=None):
-	sn = sn or frappe.form_dict.get('sn')
-	vsn = vsn or sn
-	doc = frappe.get_doc('IOT Device', sn)
-	doc.has_permission("read")
+def gate_app_dev_tree(sn=None):
+	from iot.hdb import iot_device_tree as _iot_device_tree
+	from iot.hdb import iot_device_cfg as _iot_device_cfg
 
-	if vsn != sn:
-		if vsn not in iot_device_tree(sn):
-			return ""
+	device_tree = _iot_device_tree(sn)
+	app_dev_tree = frappe._dict({})
 
-	cfg = iot_device_cfg(sn, vsn)
-	if not cfg:
-		return ""
-	# print(cfg)
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
-	hs = client.hgetall(vsn)
-	data = []
-	if cfg.has_key("inputs"):
-		tags = cfg.get("inputs")
-		for tag in tags:
-			name = tag.get('name')
-			valuegroup = hs.get(name + "/value")
-			if valuegroup:
-				# print("vvvvvv:",valuegroup)
-				vlist = eval(valuegroup)
-				timestr = ''
-				if vlist:
-					timestr = str(
-						convert_utc_to_user_timezone(datetime.datetime.utcfromtimestamp(int(vlist[0]))).replace(
-							tzinfo=None))
-				data.append({"name": name, "pv": vlist[1], "tm": timestr, "vt": tag.get("vt"), "q": vlist[2], "desc": tag.get("desc") })
-	return {"code": 1000, "data": data}
+	for devsn in device_tree:
+		cfg = _iot_device_cfg(sn, devsn)
+		devmeta = cfg['meta']
+		if not devmeta:
+			continue
+
+		app = devmeta['app']
+		if not app:
+			continue
+
+		devmeta['sn']=devsn
+		if not app_dev_tree.get(app):
+			app_dev_tree[app] = []
+		app_dev_tree[app].append(devmeta)
+
+	return app_dev_tree
+
+
+@frappe.whitelist()
+def gate_device_data_array(sn=None, vsn=None):
+	from iot.hdb import iot_device_data_array as _iot_device_data_array
+	return _iot_device_data_array(sn, vsn)
 
 
 UTC_FORMAT1 = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -574,6 +558,7 @@ def utc2local(utc_st):
 	local_st = utc_st + offset
 	return local_st
 
+
 @frappe.whitelist()
 def taghisdata(sn=None, vsn=None, vt=None, tag=None, condition=None):
 	vsn = vsn or sn
@@ -586,7 +571,8 @@ def taghisdata(sn=None, vsn=None, vt=None, tag=None, condition=None):
 	inf_server = IOTHDBSettings.get_influxdb_server()
 	if not inf_server:
 		frappe.logger(__name__).error("InfluxDB Configuration missing in IOTHDBSettings")
-		return 500
+		return
+
 	query = 'SELECT ' + fields + ' FROM "' + tag + '"'
 	if condition:
 		query = query + ' WHERE  ' + condition + ' AND "iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\'' + ' LIMIT 100'
@@ -596,29 +582,41 @@ def taghisdata(sn=None, vsn=None, vt=None, tag=None, condition=None):
 	domain = frappe.get_value("Cloud Company", doc.company, "domain")
 	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain}, timeout=10)
 	if r.status_code == 200:
-		# return r.json()
-		try:
-			res = r.json()["results"][0]['series'][0]['values']
-			taghis = []
-			for i in range(0, len(res)):
-				hisvalue = {}
-				# print('*********', res[i][0])
-				try:
-					utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
-				except Exception as err:
-					pass
-				try:
-					utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
-				except Exception as err:
-					pass
-				# local_time = utc2local(utc_time).strftime("%Y-%m-%d %H:%M:%S")
-				local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
-				hisvalue = {'name': tag, 'value': res[i][1], 'time': local_time, 'quality': res[i][2], 'vsn': vsn}
-				taghis.append(hisvalue)
-			#print(taghis)
-			return {"code": 1000, "data": taghis}
-		except Exception as err:
-			return r.json()
+		ret = r.json()
+		if not ret:
+			return
+
+		results = ret['results']
+		if not results or len(results) < 1:
+			return
+
+		series = results[0].get('series')
+		if not series or len(series) < 1:
+			return
+
+		res = series[0].get('values')
+		if not res:
+			return
+
+		taghis = []
+		for i in range(0, len(res)):
+			hisvalue = {}
+			# print('*********', res[i][0])
+			try:
+				utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
+			except Exception as err:
+				pass
+			try:
+				utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
+			except Exception as err:
+				pass
+			# local_time = utc2local(utc_time).strftime("%Y-%m-%d %H:%M:%S")
+			local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
+			hisvalue = {'name': tag, 'value': res[i][1], 'time': local_time, 'quality': res[i][2], 'vsn': vsn}
+			taghis.append(hisvalue)
+		#print(taghis)
+		return taghis
+
 
 @frappe.whitelist()
 def appstore_applist(category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
