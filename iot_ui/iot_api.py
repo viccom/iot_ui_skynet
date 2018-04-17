@@ -181,22 +181,31 @@ def add_newuser2company():
 	company = postdata['company']
 	userinfo = postdata['userinfo']
 	userid = userinfo["email"]
-	user = frappe.new_doc("User")
-	user.update({
-		"name": "New+User+1",
-		"email": userinfo["email"],
-		"language": "zh",
-		"enabled": 1,
-		"send_welcome_email": 0,
-		"first_name": userinfo["first_name"],
-		"last_name": userinfo["last_name"],
-		"phone": userinfo["phone"],
-		"mobile_no": userinfo["mobile_no"],
-		"new_password": userinfo["new_password"]
-	})
-	user.insert()
 	group = frappe.get_value("Cloud Company Group", {"company": company, "group_name": "root"})
 	role = "user"
+	user_exists = frappe.db.get_value("User", {"email": userid}, "email")
+	print("@@@@@@@@@@@@@@@@", user_exists)
+	if not user_exists:
+		user = frappe.new_doc("User")
+		user.update({
+			"name": "New+User+1",
+			"email": userinfo["email"],
+			"language": "zh",
+			"enabled": 1,
+			"send_welcome_email": 0,
+			"first_name": userinfo["first_name"],
+			"last_name": userinfo["last_name"],
+			"phone": userinfo["phone"],
+			"mobile_no": userinfo["mobile_no"],
+			"new_password": userinfo["new_password"]
+		})
+		user.insert()
+	user_companies = list_user_companies(userid)
+	if user_companies:
+		if company in user_companies:
+			return {"result": False, "info": userid + " has been an " + company +" Employee"}
+		else:
+			return {"result": False, "info": userid + " has been an other's company Employee"}
 	if not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user}):
 		throw(_("You not the admin of company {0}").format(company))
 	if 'Company Admin' in frappe.get_roles(frappe.session.user):
@@ -223,7 +232,7 @@ def del_userfromcompany():
 					g = frappe.get_doc("Cloud Company Group", group)
 					g.remove_users(m)
 					frappe.delete_doc("Cloud Employee", m, ignore_permissions=True)
-					frappe.delete_doc("User", m)
+					# frappe.delete_doc("User", m)
 					deleted_user.append(m)
 				except Exception as ex:
 					remained_users.append(m)
@@ -651,9 +660,9 @@ def taghisdata(sn=None, vsn=None, vt=None, tag=None, condition=None):
 		return 500
 	query = 'SELECT ' + fields + ' FROM "' + tag + '"'
 	if condition:
-		query = query + ' WHERE  ' + condition + ' AND "iot"=\'' + sn +'\' AND "device"=\'' + vsn +'\'' + ' LIMIT 100'
+		query = query + ' WHERE  ' + condition + ' AND "iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\'' + ' LIMIT 100'
 	else:
-		query = query + ' LIMIT 100'
+		query = query + ' WHERE  ' + '"iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\'' + ' LIMIT 100'
 	# print("query:", query)
 	domain = frappe.get_value("Cloud Company", doc.company, "domain")
 	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain}, timeout=10)
@@ -681,8 +690,6 @@ def taghisdata(sn=None, vsn=None, vt=None, tag=None, condition=None):
 			return {"code": 1000, "data": taghis}
 		except Exception as err:
 			return r.json()
-
-
 
 @frappe.whitelist()
 def appstore_applist(category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
