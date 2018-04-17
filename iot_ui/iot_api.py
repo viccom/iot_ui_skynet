@@ -411,7 +411,7 @@ def update_gate(sn, name, desc):
 @frappe.whitelist()
 def gate_info(sn):
 	device = frappe.get_doc('IOT Device', sn)
-	if not doc.has_permission("read"):
+	if not device.has_permission("read"):
 		raise frappe.PermissionError
 	basic = {
 		'sn': device.sn,
