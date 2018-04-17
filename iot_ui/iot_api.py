@@ -411,7 +411,8 @@ def update_gate(sn, name, desc):
 @frappe.whitelist()
 def gate_info(sn):
 	device = frappe.get_doc('IOT Device', sn)
-	device.has_permission('read')
+	if not doc.has_permission("read"):
+		raise frappe.PermissionError
 	basic = {
 		'sn': device.sn,
 		'model': "Q102",
@@ -564,7 +565,8 @@ def taghisdata(sn=None, vsn=None, vt=None, tag=None, condition=None):
 	vt = vt or "float"
 	fields = '"' + vtdict.get(vt) + '"' + ' , "quality"'
 	doc = frappe.get_doc('IOT Device', sn)
-	doc.has_permission("read")
+	if not doc.has_permission("read"):
+		raise frappe.PermissionError
 
 	inf_server = IOTHDBSettings.get_influxdb_server()
 	if not inf_server:
