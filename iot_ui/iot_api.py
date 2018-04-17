@@ -232,34 +232,34 @@ def devices_list(filter):
 				# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 				lasttime = get_datetime(devinfo.last_updated)
 				nowtime = now_datetime()
-				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				if devinfo.device_status == "ONLINE":
 					userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 											   "device_desc": devinfo.description,
 											   "device_status": devinfo.device_status,
 											   "last_updated": str(devinfo.last_updated)[:-7],
 											   "device_company": devinfo.company, "longitude": devinfo.longitude,
-											   "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+											   "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 					userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												   "device_desc": devinfo.description,
 												   "device_status": devinfo.device_status,
 												   "last_updated": str(devinfo.last_updated)[:-7],
 												   "device_company": devinfo.company,
-												   "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+												   "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
 												"device_status": devinfo.device_status,
 												"last_updated": str(devinfo.last_updated)[:-7],
 												"device_company": devinfo.company, "longitude": devinfo.longitude,
-												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				else:
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
 												"device_status": devinfo.device_status,
 												"last_updated": str(devinfo.last_updated)[:-7],
 												"device_company": devinfo.company, "longitude": devinfo.longitude,
-												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 
 	shared_devices = devices.get("shared_devices")
 	if shared_devices:
@@ -270,34 +270,34 @@ def devices_list(filter):
 				#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 				lasttime = get_datetime(devinfo.last_updated)
 				nowtime = now_datetime()
-				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				if devinfo.device_status == "ONLINE":
 					userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 											   "device_desc": devinfo.description,
 											   "device_status": devinfo.device_status,
 											   "last_updated": str(devinfo.last_updated)[:-7],
 											   "device_company": devinfo.company, "longitude": devinfo.longitude,
-											   "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+											   "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 					userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												   "device_desc": devinfo.description,
 												   "device_status": devinfo.device_status,
 												   "last_updated": str(devinfo.last_updated)[:-7],
 												   "device_company": devinfo.company,
-												   "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+												   "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
 												"device_status": devinfo.device_status,
 												"last_updated": str(devinfo.last_updated)[:-7],
 												"device_company": devinfo.company, "longitude": devinfo.longitude,
-												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				else:
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
 												"device_status": devinfo.device_status,
 												"last_updated": str(devinfo.last_updated)[:-7],
 												"device_company": devinfo.company, "longitude": devinfo.longitude,
-												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 
 	private_devices = devices.get("private_devices")
 	if private_devices:
@@ -307,30 +307,30 @@ def devices_list(filter):
 			# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 			lasttime = get_datetime(devinfo.last_updated)
 			nowtime = now_datetime()
-			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 			if devinfo.device_status == "ONLINE":
 				userdevices_online.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
-					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 			elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 				userdevices_offline_7d.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
-					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				userdevices_offline.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
-					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 			else:
 				userdevices_offline.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
-					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": iot_is_beta(dsn)})
+					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 
 
 	if filter =="online":
