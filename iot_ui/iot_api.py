@@ -39,7 +39,8 @@ def userinfo_all(user):
 def iot_device_tree(sn=None):
 	from iot.hdb import iot_device_tree as _iot_device_tree
 	subdevice = _iot_device_tree(sn)
-	subdevice.remove(sn)
+	if subdevice:
+		subdevice.remove(sn)
 	return subdevice
 
 
@@ -370,7 +371,6 @@ def add_new_gate(sn, name, desc, owner_type):
 		try:
 			owner = frappe.get_value("Cloud Company Group", {"company": company, "group_name": "root"})
 			type = "Cloud Company Group"
-			owner = groupid
 		except Exception as ex:
 			throw(_("Cannot find default group in company{0}. Error: {1}").format(company, ex.message))
 
@@ -382,8 +382,8 @@ def add_new_gate(sn, name, desc, owner_type):
 	else:
 		iot_device = frappe.get_doc("IOT Device", sn)
 
-	if not iot_device.owner_id:
-		if iot_device.owner_id == user_id and iot_device.owner_type == type:
+	if iot_device.owner_id:
+		if iot_device.owner_id == owner and iot_device.owner_type == type:
 			return True
 		throw(_("Device {0} is owned by {1}").format(sn, iot_device.owner_id))
 	else:
@@ -427,34 +427,33 @@ def gate_info(sn):
 	applist = {}
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
 	if client.exists(sn):
-		info = client.hgetall()
+		info = client.hgetall(sn)
 		print(info)
-
-		if client.hget(sn, "version/value"):
-			config['iot_version'] = eval(client.hget(sn, "version/value"))[1]
-		if client.hget(sn, "skynet_version/value"):
-			config['skynet_version'] = eval(client.hget(sn, "skynet_version/value"))[1]
-		if client.hget(sn, "starttime/value"):
-			_starttime = eval(client.hget(sn, "starttime/value"))[1]
+		if info:
+			config['iot_version'] = eval(info.get("version/value"))[1]
+			config['skynet_version'] = eval(info.get("skynet_version/value"))[1]
+			_starttime = eval(info.get("starttime/value"))[1]
 			config['starttime'] = str(
 				convert_utc_to_user_timezone(datetime.datetime.utcfromtimestamp(int(_starttime))).replace(
 					tzinfo=None))
-		if client.hget(sn, "uptime/value"):
-			config['uptime'] = int(eval(client.hget(sn, "uptime/value"))[1] / 1000)
-		if client.hget(sn, "skynet_platform/value"):
-			config['skynet_platform'] = eval(client.hget(sn, "skynet_platform/value"))[1]
+			config['uptime'] = int(eval(info.get("uptime/value"))[1] / 1000)
+			print(info.get("skynet_platform/value"))
+			config['platform'] = eval(info.get("platform/value"))[1]
 
 		s = requests.Session()
 		s.auth = ("api", "Pa88word")
-		r = s.get('http://127.0.0.1:18083/api/v2/nodes/emq@127.0.0.1/clients/' + sn)
+		r = s.get('http://172.30.11.139:18083/api/v2/nodes/emq@127.0.0.1/clients/' + sn)
 		rdict = json.loads(r.text)
-		config['public_ip'] = rdict['result']['objects'][0]['ipaddress']
-		config['public_port'] = rdict['result']['objects'][0]['port']
+		if rdict and rdict['result']:
+			objects = rdict['result']['objects']
+			if (len(objects) > 0):
+				config['public_ip'] = rdict['result']['objects'][0]['ipaddress']
+				config['public_port'] = rdict['result']['objects'][0]['port']
+
 		config['cpu'] = "imx6ull 528MHz"
 		config['ram'] = "256 MB"
 		config['rom'] = "4 GB"
 		config['os'] = "openwrt"
-
 	try:
 		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
 		applist = json.loads(client.get(sn))
@@ -462,9 +461,9 @@ def gate_info(sn):
 		applist = {}
 
 	return {
-		basic: basic,
-		config: config,
-		applist: app_list,
+		'basic': basic,
+		'config': config,
+		'applist': applist,
 	}
 
 
