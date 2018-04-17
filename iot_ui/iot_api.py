@@ -76,7 +76,6 @@ def get_post_json_data():
 
 @frappe.whitelist()
 def get_token():
-	print("WWWWWWWWWWWW")
 	csrf_token = frappe.sessions.get_csrf_token()
 	frappe.db.commit()
 	return csrf_token
@@ -428,7 +427,6 @@ def gate_info(sn):
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
 	if client.exists(sn):
 		info = client.hgetall(sn)
-		print(info)
 		if info:
 			config['iot_version'] = eval(info.get("version/value"))[1]
 			config['skynet_version'] = eval(info.get("skynet_version/value"))[1]
@@ -634,27 +632,24 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 	if app_name:
 		filters["app_name"] = app_name
 	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
-	return {"code": 1000, "data": apps}
+	return apps
 
 
 @frappe.whitelist()
 def appstore_category():
-
 	return None
+
 
 @frappe.whitelist()
 def appstore_supplier():
 	return None
 
+
 @frappe.whitelist()
 def appstore_protocol():
 	return None
 
+
 @frappe.whitelist()
 def app_details(app_name):
-	try:
-		doc = frappe.get_doc('IOT Application', app_name)
-		return {"code": 1000, "data": doc}
-	except Exception as ex:
-		print(ex)
-		return False
+	return frappe.get_doc('IOT Application', app_name)
