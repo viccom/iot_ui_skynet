@@ -19,12 +19,12 @@ from frappe.utils.user import get_user_fullname
 from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def ping():
 	return "Pong"
 
-@frappe.whitelist(allow_guest=True)
-def list_devices(user=None):
+@frappe.whitelist()
+def list_devices(user):
 	from iot.hdb_api import list_devices as _list_devices
 	return _list_devices(user)
 
@@ -36,7 +36,7 @@ def userinfo_all(user):
 
 
 @frappe.whitelist()
-def gate_device_tree(sn=None):
+def gate_device_tree(sn):
 	from iot.hdb import iot_device_tree as _iot_device_tree
 	subdevice = _iot_device_tree(sn)
 	if subdevice:
@@ -45,13 +45,13 @@ def gate_device_tree(sn=None):
 
 
 @frappe.whitelist()
-def gate_device_cfg(sn=None, vsn=None):
+def gate_device_cfg(sn, vsn=None):
 	from iot.hdb import iot_device_cfg as _iot_device_cfg
 	return _iot_device_cfg(sn, vsn)
 
 
 @frappe.whitelist()
-def gate_is_beta(sn=None):
+def gate_is_beta(sn):
 	iot_beta_flag = 0
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
 	try:
@@ -411,7 +411,7 @@ def update_gate(sn, name, desc):
 @frappe.whitelist()
 def gate_info(sn):
 	device = frappe.get_doc('IOT Device', sn)
-	if not doc.has_permission("read"):
+	if not device.has_permission("read"):
 		raise frappe.PermissionError
 	basic = {
 		'sn': device.sn,
@@ -468,6 +468,10 @@ def gate_info(sn):
 
 @frappe.whitelist()
 def gate_applist(sn):
+	device = frappe.get_doc('IOT Device', sn)
+	if not device.has_permission("read"):
+		raise frappe.PermissionError
+
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
 	applist = json.loads(client.get(sn) or "[]")
 	iot_applist = []
@@ -514,7 +518,7 @@ def gate_applist(sn):
 
 
 @frappe.whitelist()
-def gate_app_dev_tree(sn=None):
+def gate_app_dev_tree(sn):
 	from iot.hdb import iot_device_tree as _iot_device_tree
 	from iot.hdb import iot_device_cfg as _iot_device_cfg
 
@@ -559,7 +563,7 @@ def utc2local(utc_st):
 
 
 @frappe.whitelist()
-def taghisdata(sn=None, vsn=None, vt=None, tag=None, condition=None):
+def taghisdata(sn, vsn=None, vt=None, tag=None, condition=None):
 	vsn = vsn or sn
 	vtdict = {"float": "value", "int": "int_value", "string": "string_value"}
 	vt = vt or "float"
