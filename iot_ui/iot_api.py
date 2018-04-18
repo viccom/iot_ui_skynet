@@ -643,17 +643,17 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 
 @frappe.whitelist()
 def appstore_category():
-	return None
+	return frappe.get_all("App Category", fields=["name", "description"])
 
 
 @frappe.whitelist()
 def appstore_supplier():
-	return None
+	return frappe.get_all("App Device Supplier", fields=["name", "description"])
 
 
 @frappe.whitelist()
 def appstore_protocol():
-	return None
+	return frappe.get_all("App Device Protocol", fields=["name", "description"])
 
 
 @frappe.whitelist()
