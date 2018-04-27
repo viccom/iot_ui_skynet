@@ -662,3 +662,15 @@ def appstore_protocol():
 @frappe.whitelist()
 def app_details(app_name):
 	return frappe.get_doc('IOT Application', app_name)
+
+
+@frappe.whitelist()
+def query_device_logs_by_user(user):
+	from iot.iot.doctype.iot_device_activity.iot_device_activity import query_logs_by_user as _query_logs_by_user
+	return _query_logs_by_user(user)
+
+
+@frappe.whitelist()
+def query_device_logs_by_company(company):
+	from iot.iot.doctype.iot_device_activity.iot_device_activity import query_logs_by_company as _query_logs_by_company
+	return _query_logs_by_company(company)
