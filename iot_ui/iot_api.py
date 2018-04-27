@@ -439,15 +439,18 @@ def gate_info(sn):
 			print(info.get("skynet_platform/value"))
 			config['platform'] = eval(info.get("platform/value"))[1]
 
-		s = requests.Session()
-		s.auth = ("api", "Pa88word")
-		r = s.get('http://127.0.0.1:18083/api/v2/nodes/emq@127.0.0.1/clients/' + sn)
-		rdict = json.loads(r.text)
-		if rdict and rdict['result']:
-			objects = rdict['result']['objects']
-			if (len(objects) > 0):
-				config['public_ip'] = rdict['result']['objects'][0]['ipaddress']
-				config['public_port'] = rdict['result']['objects'][0]['port']
+		try:
+			s = requests.Session()
+			s.auth = ("api", "Pa88word")
+			r = s.get('http://127.0.0.1:18083/api/v2/nodes/emq@127.0.0.1/clients/' + sn)
+			rdict = json.loads(r.text)
+			if rdict and rdict['result']:
+				objects = rdict['result']['objects']
+				if (len(objects) > 0):
+					config['public_ip'] = rdict['result']['objects'][0]['ipaddress']
+					config['public_port'] = rdict['result']['objects'][0]['port']
+		except Exception as ex:
+			frappe.logger(__name__).error(ex.message)
 
 		config['cpu'] = "imx6ull 528MHz"
 		config['ram'] = "256 MB"
