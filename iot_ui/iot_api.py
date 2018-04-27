@@ -441,7 +441,7 @@ def gate_info(sn):
 
 		s = requests.Session()
 		s.auth = ("api", "Pa88word")
-		r = s.get('http://172.30.11.139:18083/api/v2/nodes/emq@127.0.0.1/clients/' + sn)
+		r = s.get('http://127.0.0.1:18083/api/v2/nodes/emq@127.0.0.1/clients/' + sn)
 		rdict = json.loads(r.text)
 		if rdict and rdict['result']:
 			objects = rdict['result']['objects']
