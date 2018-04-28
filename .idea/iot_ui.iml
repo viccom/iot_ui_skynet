@@ -8,7 +8,6 @@
     <orderEntry type="module" module-name="frappe_app_center" />
     <orderEntry type="module" module-name="frappe_iot_skynet" />
     <orderEntry type="module" module-name="mypycode" />
-    <orderEntry type="module" module-name="frappe_iot" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />

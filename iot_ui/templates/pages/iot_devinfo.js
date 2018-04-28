@@ -1,5 +1,5 @@
 var refflag = 0;
-var symlinksn = '{{ doc.sn }}';
+var symlinksn = '{{doc.sn}}'.replace(/(^\s*)|(\s*$)/g, "");
 var id = '';
 var lastid = '';
 var isvsn = false;
@@ -84,11 +84,11 @@ $(document).ready(function() {
             "sZeroRecords": "没有检索到数据",
             },
         "columns": [
-            {"data": "NAME"},
-            {"data": "DESC"},
-            {"data": "PV"},
-            {"data": "Q"},
-            {"data": "TM"},
+            {"data": "name"},
+            {"data": "desc"},
+            {"data": "pv"},
+            {"data": "q"},
+            {"data": "tm"},
 
         ],
         'rowCallback': function(row, data, dataIndex){
