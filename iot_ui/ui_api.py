@@ -747,37 +747,8 @@ def get_post_json_data():
 
 @frappe.whitelist()
 def iot_device_data_array(sn=None, vsn=None):
-	sn = sn or frappe.form_dict.get('sn')
-	vsn = vsn or sn
-	doc = frappe.get_doc('IOT Device', sn)
-	if not doc.has_permission("read"):
-		raise frappe.PermissionError
-
-	if vsn != sn:
-		if vsn not in iot_device_tree(sn):
-			return ""
-
-	cfg = iot_device_cfg(sn, vsn)
-	if not cfg:
-		return ""
-
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
-	hs = client.hgetall(vsn)
-	data = []
-
-	if cfg.has_key("inputs"):
-		inputs = cfg.get("inputs")
-		for input in inputs:
-			input_name = input.get('name')
-			s = hs.get(input_name + "/value")
-			if not s:
-				continue
-			val = json.loads(hs.get(input_name + "/value"))
-			ts = datetime.datetime.utcfromtimestamp(int(int(val[0]) / 1000))
-			timestr = str(convert_utc_to_user_timezone(ts).replace(tzinfo=None))
-			data.append({"name": input_name, "pv": val[1], "tm": timestr, "q": val[2], "vt": input.get('vt'), "desc": input.get("desc") })
-
-	return data
+	from iot.hdb import iot_device_data_array as _iot_device_data_array
+	return _iot_device_data_array(sn, vsn)
 
 @frappe.whitelist()
 def iot_device_his_data(sn=None, vsn=None, fields=None, condition=None):
