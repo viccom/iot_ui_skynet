@@ -750,7 +750,8 @@ def iot_device_data_array(sn=None, vsn=None):
 	sn = sn or frappe.form_dict.get('sn')
 	vsn = vsn or sn
 	doc = frappe.get_doc('IOT Device', sn)
-	doc.has_permission("read")
+	if not doc.has_permission("read"):
+		raise frappe.PermissionError
 
 	if vsn != sn:
 		if vsn not in iot_device_tree(sn):
@@ -759,24 +760,23 @@ def iot_device_data_array(sn=None, vsn=None):
 	cfg = iot_device_cfg(sn, vsn)
 	if not cfg:
 		return ""
-	# print(cfg)
+
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
 	hs = client.hgetall(vsn)
 	data = []
+
 	if cfg.has_key("inputs"):
-		tags = cfg.get("inputs")
-		for tag in tags:
-			name = tag.get('name')
-			valuegroup = hs.get(name + "/value")
-			if valuegroup:
-				# print("vvvvvv:",valuegroup)
-				vlist = eval(valuegroup)
-				timestr = ''
-				if vlist:
-					timestr = str(
-						convert_utc_to_user_timezone(datetime.datetime.utcfromtimestamp(int(vlist[0]))).replace(
-							tzinfo=None))
-				data.append({"NAME": name, "PV": vlist[1], "TM": timestr, "Q": vlist[2], "DESC": tag.get("desc"), })
+		inputs = cfg.get("inputs")
+		for input in inputs:
+			input_name = input.get('name')
+			s = hs.get(input_name + "/value")
+			if not s:
+				continue
+			val = json.loads(hs.get(input_name + "/value"))
+			ts = datetime.datetime.utcfromtimestamp(int(int(val[0]) / 1000))
+			timestr = str(convert_utc_to_user_timezone(ts).replace(tzinfo=None))
+			data.append({"name": input_name, "pv": val[1], "tm": timestr, "q": val[2], "vt": input.get('vt'), "desc": input.get("desc") })
+
 	return data
 
 @frappe.whitelist()
