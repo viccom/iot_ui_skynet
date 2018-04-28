@@ -487,21 +487,29 @@ def gate_applist(sn):
 	for app in applist:
 		app_obj = frappe._dict(applist[app])
 		try:
-			doc = frappe.get_doc("IOT Application", app_obj.name)
+			if not frappe.get_value("IOT Application", app_obj.name, "name"):
+				iot_applist.append({
+					"cloud": None,
+					"info": applist[app],
+					"inst": app,
+				})
+				continue
+			else:
+				doc = frappe.get_doc("IOT Application", app_obj.name)
 
-			iot_applist.append({
-				"cloud": {
-					"name": doc.name,
-					"app_name": doc.app_name,
-					"owner": doc.owner,
-					"fullname": get_fullname(doc.owner),
-					"ver": IOTApplicationVersion.get_latest_version(doc.name),
-					"fork_app": doc.fork_from,
-					"fork_ver": doc.fork_version
-				},
-				"info": applist[app],
-				"inst": app,
-			})
+				iot_applist.append({
+					"cloud": {
+						"name": doc.name,
+						"app_name": doc.app_name,
+						"owner": doc.owner,
+						"fullname": get_fullname(doc.owner),
+						"ver": IOTApplicationVersion.get_latest_version(doc.name),
+						"fork_app": doc.fork_from,
+						"fork_ver": doc.fork_version
+					},
+					"info": applist[app],
+					"inst": app,
+				})
 
 		except Exception as ex:
 			frappe.logger(__name__).error(ex.message)
