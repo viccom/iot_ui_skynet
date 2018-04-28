@@ -16,6 +16,7 @@ from cloud.cloud.doctype.cloud_company_group.cloud_company_group import list_use
 from cloud.cloud.doctype.cloud_company.cloud_company import list_admin_companies, list_user_companies, list_users, get_domain
 from frappe.desk.form.save import savedocs
 from frappe.utils.user import get_user_fullname
+from frappe.utils import get_fullname
 from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
 
 
@@ -471,52 +472,42 @@ def gate_info(sn):
 
 @frappe.whitelist()
 def gate_applist(sn):
+	from app_center.app_center.doctype.iot_application_version.iot_application_version import IOTApplicationVersion
 	device = frappe.get_doc('IOT Device', sn)
 	if not device.has_permission("read"):
 		raise frappe.PermissionError
 
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
 	applist = json.loads(client.get(sn) or "[]")
+
 	iot_applist = []
 	for app in applist:
 		app_obj = frappe._dict(applist[app])
-		app_name = app_obj.name
-		app_ver = int(app_obj.get('version') or 0)
-		cloud_ver = None
-		owner = None
-		fork_app = None
-		fork_ver =None
-		cloud_appname = None
-		app_islocal = app_obj.islocal
 		try:
-			filters = {"app": app_name}
-			lastver = frappe.db.get_all("IOT Application Version", "*", filters, order_by="version").pop()
-			if lastver:
-				cloud_ver = lastver.version
-				cloud_appname = lastver.app_name
-				owner = lastver.owner
+			doc = frappe.get_doc("IOT Application", app_obj.name)
 
-			doc = frappe.get_doc("IOT Application", app_name)
-			# print(dir(doc))
-			if doc:
-				fork_app = doc.get_fork(frappe.session.user, cloud_ver)
-				# print(fork_app)
-				from app_center.app_center.doctype.iot_application_version.iot_application_version import IOTApplicationVersion
-				fork_ver = IOTApplicationVersion.get_latest_version(fork_app)
-				# print(fork_ver)
+			iot_applist.append({
+				"cloud": {
+					"name": doc.name,
+					"app_name": doc.app_name,
+					"owner": doc.owner,
+					"fullname": get_fullname(doc.owner),
+					"ver": IOTApplicationVersion.get_latest_version(doc.name),
+					"fork_app": doc.fork_from,
+					"fork_ver": doc.fork_version
+				},
+				"info": applist[app],
+				"inst": app,
+			})
+
 		except Exception as ex:
-			app_islocal = 1
+			frappe.logger(__name__).error(ex.message)
+			iot_applist.append({
+				"cloud": None,
+				"info": applist[app],
+				"inst": app,
+			})
 
-		iot_applist.append({
-			"name": app,
-			"cloud_appname": cloud_appname,
-			"iot_ver": app_ver,
-			"islocal": app_islocal,
-			"cloud_ver": cloud_ver,
-			"owner":owner,
-			"fork_app": fork_app,
-			"fork_ver": fork_ver
-		})
 	return iot_applist
 
 
