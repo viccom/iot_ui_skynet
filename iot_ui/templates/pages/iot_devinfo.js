@@ -1,5 +1,5 @@
 var refflag = 0;
-var symlinksn = '{{ doc.sn }}';
+var symlinksn = '{{doc.sn}}';
 var id = '';
 var lastid = '';
 var isvsn = false;
