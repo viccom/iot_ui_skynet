@@ -487,6 +487,8 @@ def gate_applist(sn):
 	for app in applist:
 		app_obj = frappe._dict(applist[app])
 		try:
+			applist[app]['inst'] = app
+
 			if not frappe.get_value("IOT Application", app_obj.name, "name"):
 				iot_applist.append({
 					"cloud": None,
@@ -496,6 +498,8 @@ def gate_applist(sn):
 				continue
 			else:
 				doc = frappe.get_doc("IOT Application", app_obj.name)
+				if app_obj.auto is None:
+					applist[app]['auto'] = "1"
 
 				iot_applist.append({
 					"cloud": {
