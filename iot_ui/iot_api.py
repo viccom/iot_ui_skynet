@@ -34,10 +34,11 @@ def list_devices(user):
 def userinfo_all(user):
 	if 'Company Admin' not in frappe.get_roles(frappe.session.user):
 		return False
-	admin_company = list_admin_companies(frappe.session.user)
-	for i in admin_company:
-		if user in list_company_member(i):
+	admin_companies = list_admin_companies(frappe.session.user)
+	for company in admin_companies:
+		if frappe.get_value('Cloud Employee', user, 'company') == company:
 			return frappe.db.get_value("User", user, as_dict=True, fieldname=["first_name", "last_name", "user_image", "name", "language", "phone", "mobile_no", "last_login", "last_ip"])
+
 
 @frappe.whitelist()
 def gate_device_tree(sn):
