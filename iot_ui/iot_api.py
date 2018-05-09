@@ -397,8 +397,9 @@ def add_new_gate(sn, name, desc, owner_type):
 
 @frappe.whitelist()
 def remove_gate(sn):
-	doc = frappe.get_doc("IOT Device", sn)
-	doc.update_owner("", None)
+	for s in sn:
+		doc = frappe.get_doc("IOT Device", s)
+		doc.update_owner("", None)
 	return True
 
 
