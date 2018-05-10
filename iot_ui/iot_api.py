@@ -14,6 +14,7 @@ from iot.iot.doctype.iot_device.iot_device import IOTDevice
 from iot.iot.doctype.iot_hdb_settings.iot_hdb_settings import IOTHDBSettings
 from cloud.cloud.doctype.cloud_company_group.cloud_company_group import list_user_groups as _list_user_groups
 from cloud.cloud.doctype.cloud_company.cloud_company import list_admin_companies, list_user_companies, list_users, get_domain
+from app_center.api import get_latest_version
 from frappe.desk.form.save import savedocs
 from frappe.utils.user import get_user_fullname
 from frappe.utils import get_fullname
@@ -682,3 +683,15 @@ def query_device_logs_by_user(user):
 def query_device_logs_by_company(company):
 	from iot.iot.doctype.iot_device_activity.iot_device_activity import query_logs_by_company as _query_logs_by_company
 	return _query_logs_by_company(company)
+
+@frappe.whitelist()
+def query_firmware_lastver(sn, beta):
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	if client.exists(sn):
+		info = client.hgetall(sn)
+		if info:
+			gate_platform = eval(info.get("platform/value"))[1]
+			firmware_lastver = get_latest_version(gate_platform+"_skynet", int(beta))
+			skynet_iot_lastver = get_latest_version("skynet_iot", int(beta))
+			return {"firmware_lastver": firmware_lastver, "skynet_iot_lastver": skynet_iot_lastver,}
+	return None
