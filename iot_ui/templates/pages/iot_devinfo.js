@@ -501,7 +501,7 @@ $(document).ready(function() {
     //点击表格第2列
       $('#RTValue-Table tbody').on('click', 'tr td:nth-child(n+2)', function () {
         var data = table.row( this ).data();
-        tnm = data['NAME'];
+        tnm = data['name'];
         console.log(isvsn);
         console.log(current_vsn);
         console.log(tnm);

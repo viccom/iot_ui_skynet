@@ -672,6 +672,10 @@ def appstore_protocol():
 def app_details(app_name):
 	return frappe.get_doc('IOT Application', app_name)
 
+@frappe.whitelist(allow_guest=True)
+def app_review(app):
+	filters = {"app": app}
+	return frappe.get_all('IOT Application Review', "*", filters, order_by="modified desc")
 
 @frappe.whitelist()
 def query_device_logs_by_user(user):
