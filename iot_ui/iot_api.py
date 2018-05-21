@@ -681,3 +681,140 @@ def query_device_logs_by_user(user):
 def query_device_logs_by_company(company):
 	from iot.iot.doctype.iot_device_activity.iot_device_activity import query_logs_by_company as _query_logs_by_company
 	return _query_logs_by_company(company)
+
+
+@frappe.whitelist()
+def device_status_statistics():
+	company = frappe.get_value('Cloud Employee', frappe.session.user, 'company')
+	if not company:
+		return
+
+	inf_server = IOTHDBSettings.get_influxdb_server()
+	if not inf_server:
+		frappe.logger(__name__).error("InfluxDB Configuration missing in IOTHDBSettings")
+		return
+
+	query = 'SELECT "online", "offline" FROM "device_status_statistics" WHERE time > now() - 12h AND "owner"=\'' + company + '\''
+	domain = frappe.get_value("Cloud Company", company, "domain")
+	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain + '.statistics'}, timeout=10)
+	if r.status_code == 200:
+		ret = r.json()
+		if not ret:
+			return
+
+		results = ret['results']
+		if not results or len(results) < 1:
+			return
+
+		series = results[0].get('series')
+		if not series or len(series) < 1:
+			return
+
+		res = series[0].get('values')
+		if not res:
+			return
+
+		taghis = []
+		for i in range(0, len(res)):
+			hisvalue = {}
+			# print('*********', res[i][0])
+			try:
+				utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
+			except Exception as err:
+				pass
+			try:
+				utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
+			except Exception as err:
+				pass
+			local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
+			hisvalue = {'name': 'device_status_statistics', 'online': res[i][1], 'time': local_time, 'offline': res[i][2], 'owner': company}
+			taghis.append(hisvalue)
+		return taghis
+
+
+@frappe.whitelist()
+def device_event_type_statistics(cate):
+	company = frappe.get_value('Cloud Employee', frappe.session.user, 'company')
+	if not company:
+		return
+
+	inf_server = IOTHDBSettings.get_influxdb_server()
+	if not inf_server:
+		frappe.logger(__name__).error("InfluxDB Configuration missing in IOTHDBSettings")
+		return
+
+	query = 'SELECT "' + cate + '" FROM "device_event_type_statistics" WHERE time > now() - 24d AND "owner"=\'' + company + '\''
+	domain = frappe.get_value("Cloud Company", company, "domain")
+	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain + '.statistics'}, timeout=10)
+	if r.status_code == 200:
+		ret = r.json()
+		if not ret:
+			return
+
+		results = ret['results']
+		if not results or len(results) < 1:
+			return
+
+		series = results[0].get('series')
+		if not series or len(series) < 1:
+			return
+
+		res = series[0].get('values')
+		if not res:
+			return
+
+		taghis = []
+		for i in range(0, len(res)):
+			hisvalue = {}
+			# print('*********', res[i][0])
+			try:
+				utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
+			except Exception as err:
+				pass
+			try:
+				utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
+			except Exception as err:
+				pass
+			local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
+			hisvalue = {'name': cate, 'value': res[i][1], 'time': local_time, 'owner': company}
+			taghis.append(hisvalue)
+		return taghis
+
+
+@frappe.whitelist()
+def device_event_count_statistics():
+	company = frappe.get_value('Cloud Employee', frappe.session.user, 'company')
+	if not company:
+		return
+
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/15")
+
+	from iot.hdb_api import list_iot_devices as _list_iot_devices
+	devices = _list_iot_devices(frappe.session.user)
+	company_devices = devices.get('company_devices')
+
+	try:
+		result = []
+		if company_devices:
+			for group in company_devices:
+				devices = group["devices"]
+				for dev in devices:
+					vals = client.hgetall('event_count.' + dev)
+					vals['device'] = dev
+					result.append(vals)
+
+		return result
+	except Exception as ex:
+		return []
+
+@frappe.whitelist()
+def device_type_statistics():
+	company = frappe.get_value('Cloud Employee', frappe.session.user, 'company')
+	if not company:
+		return
+
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/15")
+	try:
+		return client.hgetall('device_type.' + company)
+	except Exception as ex:
+		return []
