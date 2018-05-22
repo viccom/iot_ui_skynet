@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 # Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 # License: GNU General Public License v3. See license.txt
 
@@ -397,7 +398,9 @@ def add_new_gate(sn, name, desc, owner_type):
 
 
 @frappe.whitelist()
-def remove_gate(sn):
+def remove_gate():
+	postdata = get_post_json_data()
+	sn = postdata['sn']
 	for s in sn:
 		doc = frappe.get_doc("IOT Device", s)
 		doc.update_owner("", None)
@@ -751,7 +754,7 @@ def device_status_statistics():
 
 
 @frappe.whitelist()
-def device_event_type_statistics(cate):
+def device_event_type_statistics():
 	company = frappe.get_value('Cloud Employee', frappe.session.user, 'company')
 	if not company:
 		return
@@ -761,11 +764,14 @@ def device_event_type_statistics(cate):
 		frappe.logger(__name__).error("InfluxDB Configuration missing in IOTHDBSettings")
 		return
 
-	query = 'SELECT "' + cate + '" FROM "device_event_type_statistics" WHERE time > now() - 24d AND "owner"=\'' + company + '\''
+	query = 'SELECT sum("系统") AS "系统", sum("设备") AS "设备", sum("通讯") AS "通讯", sum("数据") AS "数据", sum("应用") AS "应用"'
+	query = query + ' FROM "device_event_type_statistics" WHERE time > now() - 7d'
+	query = query + ' AND "owner"=\'' + company + '\' GROUP BY time(1d) FILL(0)'
 	domain = frappe.get_value("Cloud Company", company, "domain")
 	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain + '.statistics'}, timeout=10)
 	if r.status_code == 200:
 		ret = r.json()
+		print(ret)
 		if not ret:
 			return
 
@@ -794,7 +800,12 @@ def device_event_type_statistics(cate):
 			except Exception as err:
 				pass
 			local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
-			hisvalue = {'name': cate, 'value': res[i][1], 'time': local_time, 'owner': company}
+			hisvalue = {'name': 'device_event_type_statistics', 'time': local_time, 'owner': company}
+			hisvalue['系统'] = res[i][1] or 0
+			hisvalue['设备'] = res[i][2] or 0
+			hisvalue['通讯'] = res[i][3] or 0
+			hisvalue['数据'] = res[i][4] or 0
+			hisvalue['应用'] = res[i][5] or 0
 			taghis.append(hisvalue)
 		return taghis
 
