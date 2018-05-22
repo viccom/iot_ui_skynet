@@ -771,7 +771,6 @@ def device_event_type_statistics():
 	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain + '.statistics'}, timeout=10)
 	if r.status_code == 200:
 		ret = r.json()
-		print(ret)
 		if not ret:
 			return
 
