@@ -378,7 +378,7 @@ def add_new_gate(sn, name, desc, owner_type):
 			owner = frappe.get_value("Cloud Company Group", {"company": company, "group_name": "root"})
 			type = "Cloud Company Group"
 		except Exception as ex:
-			throw(_("Cannot find default group in company{0}. Error: {1}").format(company, ex.message))
+			throw(_("Cannot find default group in company{0}. Error: {1}").format(company, repr(ex)))
 
 	iot_device = None
 	sn_exists = frappe.db.get_value("IOT Device", {"sn": sn}, "sn")
@@ -460,7 +460,7 @@ def gate_info(sn):
 					config['public_ip'] = rdict['result']['objects'][0]['ipaddress']
 					config['public_port'] = rdict['result']['objects'][0]['port']
 		except Exception as ex:
-			frappe.logger(__name__).error(ex.message)
+			frappe.logger(__name__).error(ex)
 
 		config['cpu'] = "imx6ull 528MHz"
 		config['ram'] = "256 MB"
@@ -522,7 +522,7 @@ def gate_applist(sn):
 				})
 
 		except Exception as ex:
-			frappe.logger(__name__).error(ex.message)
+			frappe.logger(__name__).error(ex)
 			iot_applist.append({
 				"cloud": None,
 				"info": applist[app],
