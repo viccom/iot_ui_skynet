@@ -827,9 +827,15 @@ def device_event_count_statistics():
 			for group in company_devices:
 				devices = group["devices"]
 				for dev in devices:
-					vals = client.hgetall('event_count.' + dev)
-					vals['device'] = dev
-					result.append(vals)
+					devdoc = IOTDevice.get_device_doc(dev)
+					if devdoc:
+						vals = client.hgetall('event_count.' + dev)
+						vals['sn'] = dev
+						vals['name'] = devdoc.dev_name
+						vals['last_updated'] = str(devdoc.last_updated)[:-7]
+						vals['position'] = 'N/A'
+						vals['device_status'] = devdoc.device_status
+						result.append(vals)
 
 		return result
 	except Exception as ex:
