@@ -431,6 +431,7 @@ def gate_info(sn):
 		'company': device.company,
 		'location': device.sn,
 		'beta': device.use_beta,
+		'iot_beta': gate_is_beta(sn),
 		'status': device.device_status,
 	}
 	config = {}
