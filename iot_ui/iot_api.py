@@ -393,6 +393,8 @@ def add_new_gate(sn, name, desc, owner_type):
 			return True
 		throw(_("Device {0} is owned by {1}").format(sn, iot_device.owner_id))
 	else:
+		iot_device.set("dev_name", name)
+		iot_device.set("description", desc)
 		iot_device.update_owner(type, owner)
 		return True
 
