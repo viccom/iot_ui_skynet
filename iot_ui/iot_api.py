@@ -372,7 +372,8 @@ def enable_beta(sn):
 def new_virtual_gate():
 	doc = frappe.get_doc({
 		"doctype": "IOT Virtual Device",
-		"user": frappe.session.user
+		"user": frappe.session.user,
+		"sn": str(uuid.uuid1()).upper(),
 	}).insert()
 	return doc.name
 
