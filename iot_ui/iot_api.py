@@ -370,6 +370,8 @@ def enable_beta(sn):
 
 @frappe.whitelist()
 def new_virtual_gate():
+	if frappe.request.method != "POST":
+		throw(_("Request Method Must be POST!"))
 	doc = frappe.get_doc({
 		"doctype": "IOT Virtual Device",
 		"user": frappe.session.user,
