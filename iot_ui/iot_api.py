@@ -369,6 +369,15 @@ def enable_beta(sn):
 
 
 @frappe.whitelist()
+def new_virtual_gate():
+	doc = frappe.get_doc({
+		"doctype": "IOT Virtual Device",
+		"user": frappe.session.user
+	}).insert()
+	return doc.name
+
+
+@frappe.whitelist()
 def add_new_gate(sn, name, desc, owner_type):
 	type = "User"
 	owner = frappe.session.user
