@@ -530,7 +530,8 @@ def gate_applist(sn):
 						"fullname": get_fullname(doc.owner),
 						"ver": IOTApplicationVersion.get_latest_version(doc.name),
 						"fork_app": doc.fork_from,
-						"fork_ver": doc.fork_version
+						"fork_ver": doc.fork_version,
+						"icon_image": doc.icon_image,
 					},
 					"info": applist[app],
 					"inst": app,
