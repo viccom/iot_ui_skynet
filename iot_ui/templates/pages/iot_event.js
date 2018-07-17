@@ -25,10 +25,7 @@
              return '<input type="checkbox">';
          },
           "createdCell": function (td, cellData, rowData, row, col) {
-          if (!rowData.hasRead) {
-            $(td).parent().addClass("text-primary");
 
-          }
          }
           },
           {
