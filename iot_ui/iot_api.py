@@ -697,14 +697,17 @@ def app_review(app):
 
 
 @frappe.whitelist()
-def query_device_logs_by_user(user):
+def query_device_activity():
 	from iot.iot.doctype.iot_device_activity.iot_device_activity import query_logs_by_user as _query_logs_by_user
-	return _query_logs_by_user(user)
+	return _query_logs_by_user(frappe.session.user)
 
 
 @frappe.whitelist()
-def query_device_logs_by_company(company):
+def query_device_activity_by_company():
 	from iot.iot.doctype.iot_device_activity.iot_device_activity import query_logs_by_company as _query_logs_by_company
+	company = frappe.get_value("Cloud Employee", frappe.session.user, "company")
+	if not company:
+		return None
 	return _query_logs_by_company(company)
 
 
