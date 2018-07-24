@@ -461,6 +461,8 @@ def gate_info(sn):
 			config['uptime'] = int(eval(info.get("uptime/value"))[1] / 1000)
 			print(info.get("skynet_platform/value"))
 			config['platform'] = eval(info.get("platform/value"))[1]
+			config['data_upload'] = eval(info.get("data_upload/value"))[1]
+			config['data_upload_period'] = eval(info.get("data_upload_period/value"))[1]
 
 		try:
 			s = requests.Session()
