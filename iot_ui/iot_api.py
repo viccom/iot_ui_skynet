@@ -339,11 +339,20 @@ def devices_list(filter):
 
 
 	if filter =="online":
-		return userdevices_online or []
+		if len(userdevices_online) == 0:
+			frappe.response['message'] = []
+			return
+		return userdevices_online
 	elif filter =="offline":
-		return userdevices_offline or []
+		if len(userdevices_offline) == 0:
+			frappe.response['message'] = []
+			return
+		return userdevices_offline
 	elif filter =="offline_7d":
-		return userdevices_offline_7d or []
+		if len(userdevices_offline_7d) == 0:
+			frappe.response['message'] = []
+			return
+		return userdevices_offline_7d
 	elif filter == "len_all":
 		return len(userdevices)
 	elif filter == "len_online":
@@ -355,6 +364,9 @@ def devices_list(filter):
 	elif filter =="devices_amount":
 		return {"all":len(userdevices), "online":len(userdevices_online), "offline":len(userdevices_offline), "offline_7d":len(userdevices_offline_7d)}
 	else:
+		if len(userdevices) == 0:
+			frappe.response['message'] = []
+			return
 		return userdevices or []
 
 
