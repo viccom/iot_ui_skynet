@@ -339,11 +339,20 @@ def devices_list(filter):
 
 
 	if filter =="online":
-		return userdevices_online or []
+		if len(userdevices_online) == 0:
+			frappe.response['message'] = []
+			return
+		return userdevices_online
 	elif filter =="offline":
-		return userdevices_offline or []
+		if len(userdevices_offline) == 0:
+			frappe.response['message'] = []
+			return
+		return userdevices_offline
 	elif filter =="offline_7d":
-		return userdevices_offline_7d or []
+		if len(userdevices_offline_7d) == 0:
+			frappe.response['message'] = []
+			return
+		return userdevices_offline_7d
 	elif filter == "len_all":
 		return len(userdevices)
 	elif filter == "len_online":
@@ -355,6 +364,9 @@ def devices_list(filter):
 	elif filter =="devices_amount":
 		return {"all":len(userdevices), "online":len(userdevices_online), "offline":len(userdevices_offline), "offline_7d":len(userdevices_offline_7d)}
 	else:
+		if len(userdevices) == 0:
+			frappe.response['message'] = []
+			return
 		return userdevices or []
 
 
@@ -461,6 +473,8 @@ def gate_info(sn):
 			config['uptime'] = int(eval(info.get("uptime/value"))[1] / 1000)
 			print(info.get("skynet_platform/value"))
 			config['platform'] = eval(info.get("platform/value"))[1]
+			config['data_upload'] = eval(info.get("data_upload/value"))[1]
+			config['data_upload_period'] = eval(info.get("data_upload_period/value"))[1]
 
 		try:
 			s = requests.Session()
