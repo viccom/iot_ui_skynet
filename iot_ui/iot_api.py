@@ -508,7 +508,6 @@ def gate_info(sn):
 
 @frappe.whitelist()
 def gate_applist(sn):
-	from app_center.app_center.doctype.iot_application_version.iot_application_version import IOTApplicationVersion
 	device = frappe.get_doc('IOT Device', sn)
 	if not device.has_permission("read"):
 		raise frappe.PermissionError
