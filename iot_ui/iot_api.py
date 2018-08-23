@@ -526,7 +526,7 @@ def gate_applist(sn):
 						"app_name": doc.app_name,
 						"owner": doc.owner,
 						"fullname": get_fullname(doc.owner),
-						"ver": IOTApplicationVersion.get_latest_version(doc.name),
+						"ver": get_latest_version(doc.name, device.use_beta),
 						"fork_app": doc.fork_from,
 						"fork_ver": doc.fork_version,
 						"icon_image": doc.icon_image,
@@ -718,8 +718,8 @@ def query_firmware_lastver(sn, beta):
 		info = client.hgetall(sn)
 		if info:
 			gate_platform = eval(info.get("platform/value"))[1]
-			firmware_lastver = get_latest_version(gate_platform+"_skynet", int(beta))
-			freeioe_lastver = get_latest_version("freeioe", int(beta))
+			firmware_lastver = get_latest_version(gate_platform+"_skynet", int(beta)==1)
+			freeioe_lastver = get_latest_version("freeioe", int(beta)==1)
 			return {"firmware_lastver": firmware_lastver, "freeioe_lastver": freeioe_lastver}
 	return None
 

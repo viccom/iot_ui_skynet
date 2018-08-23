@@ -16,6 +16,7 @@ from cloud.cloud.doctype.cloud_company_group.cloud_company_group import list_use
 from cloud.cloud.doctype.cloud_company.cloud_company import list_user_companies
 from cloud.cloud.doctype.cloud_company.cloud_company import list_admin_companies
 from cloud.cloud.doctype.cloud_company.cloud_company import list_users, get_domain
+from app_center.api import get_latest_version
 from frappe.desk.form.save import savedocs
 from frappe.utils.user import get_user_fullname
 from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_datetime
@@ -929,13 +930,12 @@ def iot_applist(sn=None):
 				if doc:
 					fork_app = doc.get_fork(frappe.session.user, cloud_ver)
 					# print(fork_app)
-					from app_center.app_center.doctype.iot_application_version.iot_application_version import IOTApplicationVersion
-					fork_ver = IOTApplicationVersion.get_latest_version(fork_app)
+					fork_ver = get_latest_version(fork_app)
 					# print(fork_ver)
 			except Exception as ex:
 				pass
 			# fork_app = doc.get_fork(owner, cloud_ver)
-			# fork_ver = IOTApplicationVersion.get_latest_version(app)
+			# fork_ver = get_latest_version(app)
 			# print(fork_app, fork_ver)
 			a = {"name": app, "cloudname": applist[app]['name'], "cloud_appname": cloud_appname, "iot_ver": int(applist[app]['version']), "cloud_ver": cloud_ver, "owner":owner, "fork_app": fork_app, "fork_ver": fork_ver}
 			iot_applist.append(a)
