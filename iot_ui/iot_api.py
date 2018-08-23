@@ -731,8 +731,8 @@ def query_firmware_lastver(sn, beta):
 		info = client.hgetall(sn)
 		if info:
 			gate_platform = eval(info.get("platform/value"))[1]
-			firmware_lastver = get_latest_version(gate_platform+"_skynet", int(beta)==1)
-			freeioe_lastver = get_latest_version("freeioe", int(beta)==1)
+			firmware_lastver = get_latest_version(gate_platform+"_skynet", int(beta))
+			freeioe_lastver = get_latest_version("freeioe", int(beta))
 			return {"firmware_lastver": firmware_lastver, "freeioe_lastver": freeioe_lastver}
 	return None
 
