@@ -24,6 +24,8 @@ from frappe.utils import now, get_datetime, convert_utc_to_user_timezone, now_da
 
 
 def valid_auth_code(auth_code=None):
+	if 'Guest' != frappe.session.user:
+		return
 	auth_code = auth_code or frappe.get_request_header("HDB-AuthorizationCode")
 	if not auth_code:
 		throw(_("HDB-AuthorizationCode is required in HTTP Header!"))
