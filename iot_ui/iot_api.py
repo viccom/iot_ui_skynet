@@ -431,6 +431,10 @@ def Batch_entry_gates():
 	exec_result = {}
 	for gate in gates:
 		iot_device = None
+		if not gate['name']:
+			gate['name'] = gate['sn'] + '_name'
+		if not gate['desc']:
+			gate['desc'] = gate['sn'] + '_desc'
 		sn_exists = frappe.db.get_value("IOT Device", {"sn": gate['sn']}, "sn")
 		if not sn_exists:
 			iot_device = frappe.get_doc(
