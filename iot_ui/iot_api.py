@@ -423,7 +423,7 @@ def add_new_gate(sn, name, desc, owner_type):
 
 
 @frappe.whitelist()
-def Batch_entry_gates(gates):
+def Batch_entry_gates():
 	valid_auth_code()
 	postdata = get_post_json_data()
 	gates = postdata['gates']
