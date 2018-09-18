@@ -422,7 +422,7 @@ def add_new_gate(sn, name, desc, owner_type):
 		return True
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def Batch_entry_gates():
 	if frappe.session.user == "Guest":
 		valid_auth_code()
