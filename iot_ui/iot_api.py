@@ -13,6 +13,7 @@ import os
 from frappe import _dict, throw, _
 from iot.iot.doctype.iot_device.iot_device import IOTDevice
 from iot.iot.doctype.iot_hdb_settings.iot_hdb_settings import IOTHDBSettings
+from iot.hdb_api import valid_auth_code
 from cloud.cloud.doctype.cloud_company.cloud_company import list_admin_companies, list_user_companies, list_users, get_domain
 from app_center.api import get_latest_version
 from frappe.utils.user import get_user_fullname
@@ -420,6 +421,25 @@ def add_new_gate(sn, name, desc, owner_type):
 		iot_device.update_owner(type, owner)
 		return True
 
+
+@frappe.whitelist()
+def Batch_entry_gates(gates):
+	valid_auth_code()
+	postdata = get_post_json_data()
+	gates = postdata['gates']
+	exec_result = {}
+	for gate in gates:
+		iot_device = None
+		sn_exists = frappe.db.get_value("IOT Device", {"sn": gate['sn']}, "sn")
+		if not sn_exists:
+			iot_device = frappe.get_doc(
+				{"doctype": "IOT Device", "sn": gate['sn'], "dev_name": gate['name'], "description": gate['desc'], "owner_type": '',
+				 "owner_id": ''})
+			iot_device.insert(ignore_permissions=True)
+			exec_result[gate['sn']] = 1
+		else:
+			exec_result[gate['sn']] = 2
+	return exec_result
 
 @frappe.whitelist()
 def remove_gate():
