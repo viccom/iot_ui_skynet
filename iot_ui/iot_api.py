@@ -428,6 +428,16 @@ def Batch_entry_gates():
 		valid_auth_code()
 	postdata = get_post_json_data()
 	gates = postdata['gates']
+	company = postdata['company']
+	group = postdata['group']
+	if not group:
+		group = "root"
+	owner = ''
+	owntype = ''
+	if company:
+		owner = frappe.get_value("Cloud Company Group", {"company": company, "group_name": group})
+		if owner:
+			owntype = "Cloud Company Group"
 	exec_result = {}
 	for gate in gates:
 		iot_device = None
@@ -438,8 +448,8 @@ def Batch_entry_gates():
 		sn_exists = frappe.db.get_value("IOT Device", {"sn": gate['sn']}, "sn")
 		if not sn_exists:
 			iot_device = frappe.get_doc(
-				{"doctype": "IOT Device", "sn": gate['sn'], "dev_name": gate['name'], "description": gate['desc'], "owner_type": '',
-				 "owner_id": ''})
+				{"doctype": "IOT Device", "sn": gate['sn'], "dev_name": gate['name'], "description": gate['desc'], "owner_type": owntype,
+				 "owner_id": owner})
 			iot_device.insert(ignore_permissions=True)
 			exec_result[gate['sn']] = 1
 		else:
