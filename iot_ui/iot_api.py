@@ -13,7 +13,7 @@ import os
 from frappe import _dict, throw, _
 from iot.iot.doctype.iot_device.iot_device import IOTDevice
 from iot.iot.doctype.iot_hdb_settings.iot_hdb_settings import IOTHDBSettings
-from iot.hdb_api import valid_auth_code
+from iot.user_api import valid_auth_code
 from cloud.cloud.doctype.cloud_company.cloud_company import list_admin_companies, list_user_companies, list_users, get_domain
 from app_center.api import get_latest_version
 from frappe.utils.user import get_user_fullname
@@ -223,6 +223,7 @@ def verify_password(password):
 @frappe.whitelist()
 def devices_list(filter):
 	from iot.hdb_api import list_iot_devices as _list_iot_devices
+	valid_auth_code()
 	curuser = frappe.session.user
 	devices = _list_iot_devices(curuser)
 	userdevices = []
@@ -424,8 +425,7 @@ def add_new_gate(sn, name, desc, owner_type):
 
 @frappe.whitelist(allow_guest=True)
 def Batch_entry_gates():
-	if frappe.session.user == "Guest":
-		valid_auth_code()
+	valid_auth_code()
 	postdata = get_post_json_data()
 	gates = postdata['gates']
 	company = postdata['company']
@@ -479,6 +479,7 @@ def update_gate(sn, name, desc):
 
 @frappe.whitelist()
 def gate_info(sn):
+	valid_auth_code()
 	device = frappe.get_doc('IOT Device', sn)
 	if not device.has_permission("read"):
 		raise frappe.PermissionError
@@ -543,6 +544,7 @@ def gate_info(sn):
 
 @frappe.whitelist()
 def gate_applist(sn):
+	valid_auth_code()
 	device = frappe.get_doc('IOT Device', sn)
 	if not device.has_permission("read"):
 		raise frappe.PermissionError
@@ -596,6 +598,7 @@ def gate_applist(sn):
 
 @frappe.whitelist()
 def gate_app_dev_tree(sn):
+	valid_auth_code()
 	from iot.hdb import iot_device_tree as _iot_device_tree
 	from iot.hdb import iot_device_cfg as _iot_device_cfg
 
@@ -622,6 +625,7 @@ def gate_app_dev_tree(sn):
 
 @frappe.whitelist()
 def gate_device_data_array(sn=None, vsn=None):
+	valid_auth_code()
 	from iot.hdb import iot_device_data_array as _iot_device_data_array
 	return _iot_device_data_array(sn, vsn)
 
@@ -641,6 +645,7 @@ def utc2local(utc_st):
 
 @frappe.whitelist()
 def taghisdata(sn, vsn=None, vt=None, tag=None, condition=None):
+	valid_auth_code()
 	vsn = vsn or sn
 	vtdict = {"float": "value", "int": "int_value", "string": "string_value"}
 	vt = vt or "float"
