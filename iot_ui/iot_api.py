@@ -926,3 +926,39 @@ def device_type_statistics():
 		return client.hgetall('device_type.' + company)
 	except Exception as ex:
 		return []
+
+
+@frappe.whitelist()
+def apply_AccessKey():
+	AccessKey = frappe.db.get_value("IOT User Api", frappe.session.user, "authorization_code")
+	if AccessKey:
+		return AccessKey
+	else:
+		new_token = str(uuid.uuid1()).lower()
+		doc = frappe.get_doc({
+			"doctype": "IOT User Api",
+			"user": frappe.session.user,
+			"authorization_code": new_token
+		}).insert()
+		return new_token
+
+
+@frappe.whitelist()
+def renew_AccessKey():
+	AccessKey = frappe.db.get_value("IOT User Api", frappe.session.user, "authorization_code")
+	if AccessKey:
+		doc = frappe.get_doc("IOT User Api", frappe.session.user)
+		new_token = str(uuid.uuid1()).lower()
+		doc.set("authorization_code", new_token)
+		if doc.user == frappe.session.user:
+			doc.save(ignore_permissions=True)
+		else:
+			doc.save()
+		return new_token
+	else:
+		throw(_("Your Account has no authorization_code"))
+
+@frappe.whitelist()
+def delete_AccessKey():
+	frappe.delete_doc("IOT User Api", frappe.session.user, ignore_permissions=True)
+	return True
