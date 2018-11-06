@@ -4,3 +4,4 @@
 *.swp
 tags
 iot_ui/docs/current
+.idea
