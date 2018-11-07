@@ -962,3 +962,10 @@ def renew_AccessKey():
 def delete_AccessKey():
 	frappe.delete_doc("IOT User Api", frappe.session.user, ignore_permissions=True)
 	return True
+
+
+@frappe.whitelist()
+def get_virtual_gates():
+	virtual_gates = [d[0] for d in frappe.db.get_values('IOT Virtual Device', {"user": frappe.session.user})]
+	# virtual_gates = [d.name for d in frappe.get_all('IOT Virtual Device', {"user": frappe.session.user})]
+	return virtual_gates
