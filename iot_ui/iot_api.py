@@ -969,3 +969,15 @@ def get_virtual_gates():
 	virtual_gates = [d[0] for d in frappe.db.get_values('IOT Virtual Device', {"user": frappe.session.user})]
 	# virtual_gates = [d.name for d in frappe.get_all('IOT Virtual Device', {"user": frappe.session.user})]
 	return virtual_gates
+
+
+@frappe.whitelist()
+def apply_version_publish(appname, version):
+	appid = frappe.get_value('IOT Application', {"app_name": appname})
+	appdoc = frappe.get_doc("IOT Application Version", appid + "." + str(version))
+	# print("appdoc.beta:::::::::::::", appdoc.beta)
+	if appdoc:
+		if appdoc.beta:
+			appdoc.set("beta", 0)
+			appdoc.save(ignore_permissions=True)
+		return {"app_name": appname, "appid": appid, "version": version, "beta": appdoc.beta}
