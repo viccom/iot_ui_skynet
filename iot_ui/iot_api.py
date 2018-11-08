@@ -972,12 +972,10 @@ def get_virtual_gates():
 
 
 @frappe.whitelist()
-def apply_version_publish(appname, version):
-	appid = frappe.get_value('IOT Application', {"app_name": appname})
+def apply_version_publish(appid, version):
 	appdoc = frappe.get_doc("IOT Application Version", appid + "." + str(version))
-	# print("appdoc.beta:::::::::::::", appdoc.beta)
 	if appdoc:
 		if appdoc.beta:
 			appdoc.set("beta", 0)
 			appdoc.save(ignore_permissions=True)
-		return {"app_name": appname, "appid": appid, "version": version, "beta": appdoc.beta}
+		return {"appid": appid, "version": version, "beta": appdoc.beta}
