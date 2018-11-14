@@ -220,7 +220,7 @@ def verify_password(password):
 		throw(_("Incorrect password"))
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def devices_list(filter):
 	from iot.hdb_api import list_iot_devices as _list_iot_devices
 	valid_auth_code()
@@ -477,7 +477,7 @@ def update_gate(sn, name, desc):
 	return True
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def gate_info(sn):
 	valid_auth_code()
 	device = frappe.get_doc('IOT Device', sn)
@@ -542,7 +542,7 @@ def gate_info(sn):
 	}
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def gate_applist(sn):
 	valid_auth_code()
 	device = frappe.get_doc('IOT Device', sn)
@@ -596,7 +596,7 @@ def gate_applist(sn):
 	return iot_applist
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def gate_app_dev_tree(sn):
 	valid_auth_code()
 	from iot.hdb import iot_device_tree as _iot_device_tree
@@ -623,11 +623,11 @@ def gate_app_dev_tree(sn):
 	return app_dev_tree
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def gate_device_data_array(sn=None, vsn=None):
 	valid_auth_code()
-	from iot.hdb import iot_device_data_array as _iot_device_data_array
-	return _iot_device_data_array(sn, vsn)
+	from iot.hdb import iot_device_data_array
+	return iot_device_data_array(sn, vsn)
 
 
 UTC_FORMAT1 = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -643,7 +643,7 @@ def utc2local(utc_st):
 	return local_st
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def taghisdata(sn, vsn=None, vt=None, tag=None, condition=None):
 	valid_auth_code()
 	vsn = vsn or sn
