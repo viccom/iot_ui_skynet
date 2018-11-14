@@ -644,12 +644,9 @@ def utc2local(utc_st):
 
 
 @frappe.whitelist(allow_guest=True)
-def taghisdata(sn, vsn=None, vt=None, tag=None, condition=None):
+def taghisdata(sn, vsn=None, vt=None, tag=None, time_conditon=None, value_method=None, group_time_span=None, fill_method=None, count_limit=None):
 	valid_auth_code()
 	vsn = vsn or sn
-	vtdict = {"float": "value", "int": "int_value", "string": "string_value"}
-	vt = vt or "float"
-	fields = '"' + vtdict.get(vt) + '"' + ' , "quality"'
 	doc = frappe.get_doc('IOT Device', sn)
 	if not doc.has_permission("read"):
 		raise frappe.PermissionError
@@ -659,19 +656,44 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, condition=None):
 		frappe.logger(__name__).error("InfluxDB Configuration missing in IOTHDBSettings")
 		return
 
-	query = 'SELECT ' + fields + ' FROM "' + tag + '"'
-	if condition:
-		query = query + ' WHERE  ' + condition + ' AND "iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\'' + ' LIMIT 100'
-	else:
-		query = query + ' WHERE  ' + '"iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\'' + ' LIMIT 100'
-	# print("query:", query)
+	# ------------------------------------------------------------------------------------------------------------------
+	vtdict = {"float": "value", "int": "int_value", "string": "string_value"}
+	vt = vt or "float"
+	fields = '"' + vtdict.get(vt) + '"' + ' , "quality"'
+	method = dict(raw=fields, mean='mean("value")', max='max("value")', min='min("value")', first='first("value")',
+	              last='last("value")', sum='sum("value")', count='count("value")')
+	if value_method not in ["raw", "mean", "max", "min", "first", "last", "sum", "count"]:
+		value_method = "raw"
+	filter = ' "iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\''
+	if value_method != "raw":
+		filter = ' "iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\'' + ' AND "quality"=0 '
+	group_time_span = group_time_span or "1m"
+	# fill_method = "null/previous/none/linear"
+	fill_method = fill_method or "none"
+	group_method = ' GROUP BY time(' + group_time_span + ') FILL(' + fill_method + ')'
+	count = count_limit or 1000
+
+	query = 'SELECT'
+	get_method = method["raw"]
+	if value_method:
+		get_method = method[value_method]
+	query = query + ' ' + get_method + ' FROM "' + tag + '"' + ' WHERE '
+	if time_conditon:
+		query = query + time_conditon + ' AND'
+	query = query + filter
+	if value_method != "raw":
+		query = query + group_method
+	if count:
+		query = query + ' limit ' + str(count)
+
+	# ------------------------------------------------------------------------------------------------------------------
+
 	domain = frappe.get_value("Cloud Company", doc.company, "domain")
 	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain}, timeout=10)
 	if r.status_code == 200:
 		ret = r.json()
 		if not ret:
 			return
-
 		results = ret['results']
 		if not results or len(results) < 1:
 			return
@@ -685,22 +707,36 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, condition=None):
 			return
 
 		taghis = []
-		for i in range(0, len(res)):
-			hisvalue = {}
-			# print('*********', res[i][0])
-			try:
-				utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
-			except Exception as err:
-				pass
-			try:
-				utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
-			except Exception as err:
-				pass
-			# local_time = utc2local(utc_time).strftime("%Y-%m-%d %H:%M:%S")
-			local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
-			hisvalue = {'name': tag, 'value': res[i][1], 'time': local_time, 'quality': res[i][2], 'vsn': vsn}
-			taghis.append(hisvalue)
-		#print(taghis)
+		# print('@@@@@@@@@@@@@@@@@', len(res))
+		if value_method == "raw":
+			for i in range(0, len(res)):
+				try:
+					utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
+				except Exception as err:
+					pass
+				try:
+					utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
+				except Exception as err:
+					pass
+				# local_time = utc2local(utc_time).strftime("%Y-%m-%d %H:%M:%S")
+				local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
+				if res[i][1]:
+					hisvalue = {'name': tag, 'value': res[i][1], 'time': local_time, 'quality': res[i][2], 'vsn': vsn}
+					taghis.append(hisvalue)
+		else:
+			for i in range(0, len(res)):
+				try:
+					utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
+				except Exception as err:
+					pass
+				try:
+					utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
+				except Exception as err:
+					pass
+				local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
+				if res[i][1]:
+					hisvalue = {'name': tag, 'value': res[i][1], 'time': local_time, 'quality': 0, 'vsn': vsn}
+					taghis.append(hisvalue)
 		return taghis
 
 
