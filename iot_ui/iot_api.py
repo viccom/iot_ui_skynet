@@ -686,6 +686,7 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_conditon=None, value_method
 		query = query + group_method
 	if count:
 		query = query + ' limit ' + str(count)
+	time_zone = time_zone or 'Asia/Shanghai'
 	if time_zone:
 		query = query + " tz('" + time_zone + "')"
 
