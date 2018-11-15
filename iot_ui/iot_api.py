@@ -669,19 +669,18 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_conditon=None, value_method
 		filter = ' "iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\'' + ' AND "quality"=0 '
 	group_time_span = group_time_span or "1m"
 	# fill_method = "null/previous/none/linear"
+	time_conditon = time_conditon or 'time > now() - 10m'
 	fill_method = fill_method or "none"
 	group_method = ' GROUP BY time(' + group_time_span + ') FILL(' + fill_method + ')'
-	count = count_limit or 1000
+	count = count_limit or 200
 
 	query = 'SELECT'
 	get_method = method["raw"]
 	if value_method:
 		get_method = method[value_method]
-	query = query + ' ' + get_method + ' FROM "' + tag + '"' + ' WHERE '
+	query = query + ' ' + get_method + ' FROM "' + tag + '"' + ' WHERE ' + filter + ' AND '
 	if time_conditon:
-		query = query + time_conditon + ' AND'
-		# query = query + " tz(Asia/Shanghai) "
-	query = query + filter
+		query = query + time_conditon
 	if value_method != "raw":
 		query = query + group_method
 	if count:
@@ -690,7 +689,7 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_conditon=None, value_method
 	if time_zone:
 		query = query + " tz('" + time_zone + "')"
 
-	# print(query)
+	# print("+++++++++++++++++++++++++++++++++++++++++++++++++", query)
 	# ------------------------------------------------------------------------------------------------------------------
 	domain = frappe.get_value("Cloud Company", doc.company, "domain")
 	r = requests.session().get(inf_server + "/query", params={"q": query, "db": domain}, timeout=10)
