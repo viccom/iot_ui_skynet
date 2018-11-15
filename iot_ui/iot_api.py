@@ -644,8 +644,10 @@ def utc2local(utc_st):
 
 
 @frappe.whitelist(allow_guest=True)
-def taghisdata(sn, vsn=None, vt=None, tag=None, time_conditon=None, value_method=None, group_time_span=None, fill_method=None, count_limit=None, time_zone=None):
+def taghisdata(sn, vsn=None, vt=None, tag=None, time_condition=None, value_method=None, group_time_span=None, fill_method=None, count_limit=None, time_zone=None):
 	valid_auth_code()
+	import HTMLParser
+	html_parser = HTMLParser.HTMLParser()
 	vsn = vsn or sn
 	doc = frappe.get_doc('IOT Device', sn)
 	if not doc.has_permission("read"):
@@ -669,7 +671,8 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_conditon=None, value_method
 		filter = ' "iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\'' + ' AND "quality"=0 '
 	group_time_span = group_time_span or "1m"
 	# fill_method = "null/previous/none/linear"
-	time_conditon = time_conditon or 'time > now() - 10m'
+	time_condition = time_condition or 'time > now() - 10m'
+	time_condition = html_parser.unescape(time_condition)
 	fill_method = fill_method or "none"
 	group_method = ' GROUP BY time(' + group_time_span + ') FILL(' + fill_method + ')'
 	count = count_limit or 200
@@ -679,8 +682,8 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_conditon=None, value_method
 	if value_method:
 		get_method = method[value_method]
 	query = query + ' ' + get_method + ' FROM "' + tag + '"' + ' WHERE ' + filter + ' AND '
-	if time_conditon:
-		query = query + time_conditon
+	if time_condition:
+		query = query + time_condition
 	if value_method != "raw":
 		query = query + group_method
 	if count:
@@ -715,31 +718,11 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_conditon=None, value_method
 		# print('@@@@@@@@@@@@@@@@@', len(res))
 		if value_method == "raw":
 			for i in range(0, len(res)):
-				# try:
-				# 	utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
-				# except Exception as err:
-				# 	pass
-				# try:
-				# 	utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
-				# except Exception as err:
-				# 	pass
-				# local_time = utc2local(utc_time).strftime("%Y-%m-%d %H:%M:%S")
-				# local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
 				if res[i][1]:
 					hisvalue = {'name': tag, 'value': res[i][1], 'time': res[i][0], 'quality': res[i][2], 'vsn': vsn}
 					taghis.append(hisvalue)
 		else:
 			for i in range(0, len(res)):
-				# print(res[i][0])
-				# try:
-				# 	utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT1)
-				# except Exception as err:
-				# 	pass
-				# try:
-				# 	utc_time = datetime.datetime.strptime(res[i][0], UTC_FORMAT2)
-				# except Exception as err:
-				# 	pass
-				# local_time = str(convert_utc_to_user_timezone(utc_time).replace(tzinfo=None))
 				if res[i][1]:
 					hisvalue = {'name': tag, 'value': res[i][1], 'time': res[i][0], 'quality': 0, 'vsn': vsn}
 					taghis.append(hisvalue)
