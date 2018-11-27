@@ -50,8 +50,9 @@ def gate_device_tree(sn):
 	return subdevice
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def gate_device_cfg(sn, vsn=None):
+	valid_auth_code()
 	from iot.hdb import iot_device_cfg as _iot_device_cfg
 	return _iot_device_cfg(sn, vsn)
 
@@ -231,19 +232,41 @@ def devices_list(filter):
 	userdevices_offline = []
 	userdevices_offline_7d = []
 	company_devices = devices.get('company_devices')
+	client_6 = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+	client_11 = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11")
 	if company_devices:
 		for group in company_devices:
 			for dsn in group["devices"]:
 				devinfo = IOTDevice.get_device_doc(dsn)
+				appsnum = 0
+				devsnum = 0
+				try:
+					appsnum = len(json.loads(client_6.get(dsn)))
+					devsnum = client_11.llen(dsn)
+				except Exception as ex:
+					pass
 				# print(devinfo)
 				# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 				lasttime = get_datetime(devinfo.last_updated)
 				nowtime = now_datetime()
-				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company,  "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
+				userdevices.append({"device_name": devinfo.dev_name,
+				                    "device_sn": devinfo.name,
+				                    "device_desc": devinfo.description,
+				                    "device_status": devinfo.device_status,
+				                    "device_apps_num": appsnum,
+				                    "device_devs_num": devsnum,
+				                    "last_updated": str(devinfo.last_updated)[:-7],
+				                    "device_company": devinfo.company,
+				                    "longitude": devinfo.longitude,
+				                    "latitude": devinfo.latitude,
+				                    "beta": devinfo.use_beta,
+				                    "iot_beta": gate_is_beta(dsn)})
 				if devinfo.device_status == "ONLINE":
 					userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 											   "device_desc": devinfo.description,
 											   "device_status": devinfo.device_status,
+					                           "device_apps_num": appsnum,
+					                           "device_devs_num": devsnum,
 											   "last_updated": str(devinfo.last_updated)[:-7],
 											   "device_company": devinfo.company, "longitude": devinfo.longitude,
 											   "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
@@ -251,12 +274,16 @@ def devices_list(filter):
 					userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												   "device_desc": devinfo.description,
 												   "device_status": devinfo.device_status,
+												   "device_apps_num": appsnum,
+												   "device_devs_num": devsnum,
 												   "last_updated": str(devinfo.last_updated)[:-7],
 												   "device_company": devinfo.company,
 												   "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
 												"device_status": devinfo.device_status,
+												"device_apps_num": appsnum,
+												"device_devs_num": devsnum,
 												"last_updated": str(devinfo.last_updated)[:-7],
 												"device_company": devinfo.company, "longitude": devinfo.longitude,
 												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
@@ -264,6 +291,8 @@ def devices_list(filter):
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
 												"device_status": devinfo.device_status,
+												"device_apps_num": appsnum,
+												"device_devs_num": devsnum,
 												"last_updated": str(devinfo.last_updated)[:-7],
 												"device_company": devinfo.company, "longitude": devinfo.longitude,
 												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
@@ -273,15 +302,35 @@ def devices_list(filter):
 		for group in shared_devices:
 			for dsn in group["devices"]:
 				devinfo = IOTDevice.get_device_doc(dsn)
+				appsnum = 0
+				devsnum = 0
+				try:
+					appsnum = len(json.loads(client_6.get(dsn)))
+					devsnum = client_11.llen(dsn)
+				except Exception as ex:
+					pass
 				#print(dir(devinfo))
 				#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 				lasttime = get_datetime(devinfo.last_updated)
 				nowtime = now_datetime()
-				userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status,  "last_updated": str(devinfo.last_updated)[:-7], "device_company": devinfo.company, "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
+				userdevices.append({"device_name": devinfo.dev_name,
+				                    "device_sn": devinfo.name,
+				                    "device_desc": devinfo.description,
+				                    "device_status": devinfo.device_status,
+				                    "device_apps_num": appsnum,
+				                    "device_devs_num": devsnum,
+				                    "last_updated": str(devinfo.last_updated)[:-7],
+				                    "device_company": devinfo.company,
+				                    "longitude": devinfo.longitude,
+				                    "latitude": devinfo.latitude,
+				                    "beta": devinfo.use_beta,
+				                    "iot_beta": gate_is_beta(dsn)})
 				if devinfo.device_status == "ONLINE":
 					userdevices_online.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 											   "device_desc": devinfo.description,
 											   "device_status": devinfo.device_status,
+												"device_apps_num": appsnum,
+												"device_devs_num": devsnum,
 											   "last_updated": str(devinfo.last_updated)[:-7],
 											   "device_company": devinfo.company, "longitude": devinfo.longitude,
 											   "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
@@ -289,12 +338,16 @@ def devices_list(filter):
 					userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												   "device_desc": devinfo.description,
 												   "device_status": devinfo.device_status,
+												"device_apps_num": appsnum,
+												"device_devs_num": devsnum,
 												   "last_updated": str(devinfo.last_updated)[:-7],
 												   "device_company": devinfo.company,
 												   "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
 												"device_status": devinfo.device_status,
+												"device_apps_num": appsnum,
+												"device_devs_num": devsnum,
 												"last_updated": str(devinfo.last_updated)[:-7],
 												"device_company": devinfo.company, "longitude": devinfo.longitude,
 												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
@@ -302,6 +355,8 @@ def devices_list(filter):
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
 												"device_status": devinfo.device_status,
+												"device_apps_num": appsnum,
+												"device_devs_num": devsnum,
 												"last_updated": str(devinfo.last_updated)[:-7],
 												"device_company": devinfo.company, "longitude": devinfo.longitude,
 												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
@@ -310,21 +365,48 @@ def devices_list(filter):
 	if private_devices:
 		for dsn in private_devices:
 			devinfo = IOTDevice.get_device_doc(dsn)
+			appsnum = 0
+			devsnum = 0
+			try:
+				appsnum = len(json.loads(client_6.get(dsn)))
+				devsnum = client_11.llen(dsn)
+			except Exception as ex:
+				pass
 			# print(dir(devinfo))
 			# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
 			lasttime = get_datetime(devinfo.last_updated)
 			nowtime = now_datetime()
-			userdevices.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description, "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],  "device_company": curuser, "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
+			userdevices.append({"device_name": devinfo.dev_name,
+			                    "device_sn": devinfo.name,
+			                    "device_desc": devinfo.description,
+			                    "device_status": devinfo.device_status,
+			                    "device_apps_num": appsnum,
+			                    "device_devs_num": devsnum,
+			                    "last_updated": str(devinfo.last_updated)[:-7],
+			                    "device_company": curuser,
+			                    "longitude": devinfo.longitude,
+			                    "latitude": devinfo.latitude,
+			                    "beta": devinfo.use_beta,
+			                    "iot_beta": gate_is_beta(dsn)})
 			if devinfo.device_status == "ONLINE":
 				userdevices_online.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
-					 "device_company": curuser, "longitude": devinfo.longitude,
-					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
+					 "device_status": devinfo.device_status,
+					"device_apps_num": appsnum,
+					"device_devs_num": devsnum,
+					 "last_updated": str(devinfo.last_updated)[:-7],
+					 "device_company": curuser,
+					 "longitude": devinfo.longitude,
+					 "latitude": devinfo.latitude,
+					 "beta": devinfo.use_beta,
+					 "iot_beta": gate_is_beta(dsn)})
 			elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 				userdevices_offline_7d.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
+					 "device_status": devinfo.device_status,
+					"device_apps_num": appsnum,
+					"device_devs_num": devsnum,
+                     "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
 					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				userdevices_offline.append(
@@ -335,7 +417,10 @@ def devices_list(filter):
 			else:
 				userdevices_offline.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
+					 "device_status": devinfo.device_status,
+					"device_apps_num": appsnum,
+					"device_devs_num": devsnum,
+                     "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
 					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 
@@ -587,12 +672,6 @@ def gate_applist(sn):
 
 		except Exception as ex:
 			frappe.logger(__name__).error(ex)
-			iot_applist.append({
-				"cloud": None,
-				"info": applist[app],
-				"inst": app,
-			})
-
 	return iot_applist
 
 
@@ -622,6 +701,30 @@ def gate_app_dev_tree(sn):
 
 	return app_dev_tree
 
+
+@frappe.whitelist(allow_guest=True)
+def gate_devs_list(sn):
+	valid_auth_code()
+	from iot.hdb import iot_device_tree as _iot_device_tree
+	from iot.hdb import iot_device_cfg as _iot_device_cfg
+
+	device_tree = _iot_device_tree(sn)
+	app_devs_list = []
+
+	for devsn in device_tree:
+		cfg = _iot_device_cfg(sn, devsn)
+		if cfg.has_key('meta'):
+			devmeta = cfg['meta']
+			devmeta['sn'] = devsn
+			if cfg.has_key('inputs'):
+				devmeta['inputs'] = len(cfg['inputs'])
+			if cfg.has_key('outputs'):
+				devmeta['outputs'] = len(cfg['outputs'])
+			if cfg.has_key('commands'):
+				devmeta['commands'] = len(cfg['commands'])
+			app_devs_list.append(devmeta)
+
+	return app_devs_list
 
 @frappe.whitelist(allow_guest=True)
 def gate_device_data_array(sn=None, vsn=None):
@@ -661,9 +764,10 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_condition=None, value_metho
 	# ------------------------------------------------------------------------------------------------------------------
 	vtdict = {"float": "value", "int": "int_value", "string": "string_value"}
 	vt = vt or "float"
+	field = '"' + vtdict.get(vt) + '"'
 	fields = '"' + vtdict.get(vt) + '"' + ' , "quality"'
-	method = dict(raw=fields, mean='mean("value")', max='max("value")', min='min("value")', first='first("value")',
-	              last='last("value")', sum='sum("value")', count='count("value")')
+	method = dict(raw=fields, mean='mean("' + field + '")', max='max("' + field + '")', min='min("' + field + '")', first='first("' + field + '")',
+	              last='last("' + field + '")', sum='sum("' + field + '")', count='count("' + field + '")')
 	if value_method not in ["raw", "mean", "max", "min", "first", "last", "sum", "count"]:
 		value_method = "raw"
 	filter = ' "iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\''
@@ -676,22 +780,16 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_condition=None, value_metho
 	fill_method = fill_method or "none"
 	group_method = ' GROUP BY time(' + group_time_span + ') FILL(' + fill_method + ')'
 	count = count_limit or 200
+	time_zone = time_zone or 'Asia/Shanghai'
 
 	query = 'SELECT'
 	get_method = method["raw"]
 	if value_method:
 		get_method = method[value_method]
-	query = query + ' ' + get_method + ' FROM "' + tag + '"' + ' WHERE ' + filter + ' AND '
-	if time_condition:
-		query = query + time_condition
+	query = query + ' ' + get_method + ' FROM "' + tag + '"' + ' WHERE ' + filter + ' AND ' + time_condition
 	if value_method != "raw":
 		query = query + group_method
-	if count:
-		query = query + ' limit ' + str(count)
-	time_zone = time_zone or 'Asia/Shanghai'
-	if time_zone:
-		query = query + " tz('" + time_zone + "')"
-
+	query = query + ' limit ' + str(count) + " tz('" + time_zone + "')"
 	# print("+++++++++++++++++++++++++++++++++++++++++++++++++", query)
 	# ------------------------------------------------------------------------------------------------------------------
 	domain = frappe.get_value("Cloud Company", doc.company, "domain")
@@ -705,27 +803,22 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_condition=None, value_metho
 		results = ret['results']
 		if not results or len(results) < 1:
 			return
-
 		series = results[0].get('series')
 		if not series or len(series) < 1:
 			return
-
 		res = series[0].get('values')
 		if not res:
 			return
-
 		taghis = []
 		# print('@@@@@@@@@@@@@@@@@', len(res))
 		if value_method == "raw":
 			for i in range(0, len(res)):
-				if res[i][1]:
-					hisvalue = {'name': tag, 'value': res[i][1], 'time': res[i][0], 'quality': res[i][2], 'vsn': vsn}
-					taghis.append(hisvalue)
+				hisvalue = {'name': tag, 'value': res[i][1], 'time': res[i][0], 'quality': res[i][2], 'vsn': vsn}
+				taghis.append(hisvalue)
 		else:
 			for i in range(0, len(res)):
-				if res[i][1]:
-					hisvalue = {'name': tag, 'value': res[i][1], 'time': res[i][0], 'quality': 0, 'vsn': vsn}
-					taghis.append(hisvalue)
+				hisvalue = {'name': tag, 'value': res[i][1], 'time': res[i][0], 'quality': 0, 'vsn': vsn}
+				taghis.append(hisvalue)
 		return taghis
 
 
@@ -1004,3 +1097,64 @@ def apply_version_publish(appid, version):
 			appdoc.set("beta", 0)
 			appdoc.save(ignore_permissions=True)
 		return {"appid": appid, "version": version, "beta": appdoc.beta}
+
+
+@frappe.whitelist(allow_guest=True)
+def gate_applist_detail(sn):
+	valid_auth_code()
+	device = frappe.get_doc('IOT Device', sn)
+	if not device.has_permission("read"):
+		raise frappe.PermissionError
+
+	from iot.hdb import iot_device_tree as _iot_device_tree
+	from iot.hdb import iot_device_cfg as _iot_device_cfg
+	device_tree = _iot_device_tree(sn)
+
+
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+	applist = json.loads(client.get(sn) or "[]")
+
+	iot_applist = []
+	for app in applist:
+		app_obj = frappe._dict(applist[app])
+		try:
+			applist[app]['inst'] = app
+			devs = []
+			for devsn in device_tree:
+				cfg = _iot_device_cfg(sn, devsn)
+				if cfg['meta']['app'] == app:
+					devs.append(devsn)
+					pass
+			if not frappe.get_value("IOT Application", app_obj.name, "name"):
+				iot_applist.append({
+					"cloud": None,
+					"info": applist[app],
+					"inst": app,
+					"devs": len(devs)
+				})
+				continue
+			else:
+				doc = frappe.get_doc("IOT Application", app_obj.name)
+				if app_obj.auto is None:
+					applist[app]['auto'] = "1"
+
+				iot_applist.append({
+					"cloud": {
+						"name": doc.name,
+						"app_name": doc.app_name,
+						"owner": doc.owner,
+						"fullname": get_fullname(doc.owner),
+						"ver": get_latest_version(doc.name, device.use_beta),
+						"fork_app": doc.fork_from,
+						"fork_ver": doc.fork_version,
+						"icon_image": doc.icon_image,
+					},
+					"info": applist[app],
+					"inst": app,
+					"devs": len(devs)
+				})
+
+		except Exception as ex:
+			frappe.logger(__name__).error(ex)
+	return iot_applist
+
