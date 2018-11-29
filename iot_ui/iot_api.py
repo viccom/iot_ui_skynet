@@ -411,7 +411,9 @@ def devices_list(filter):
 					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				userdevices_offline.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
-					 "device_status": devinfo.device_status, "last_updated": str(devinfo.last_updated)[:-7],
+					 "device_status": devinfo.device_status,
+					"device_apps_num": appsnum,
+					"device_devs_num": devsnum,"last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser, "longitude": devinfo.longitude,
 					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 			else:
@@ -642,7 +644,6 @@ def gate_applist(sn):
 		app_obj = frappe._dict(applist[app])
 		try:
 			applist[app]['inst'] = app
-
 			if not frappe.get_value("IOT Application", app_obj.name, "name"):
 				iot_applist.append({
 					"cloud": None,
@@ -653,7 +654,7 @@ def gate_applist(sn):
 			else:
 				doc = frappe.get_doc("IOT Application", app_obj.name)
 				if app_obj.auto is None:
-					applist[app]['auto'] = "1"
+					applist[app]['auto'] = "0"
 
 				iot_applist.append({
 					"cloud": {
@@ -669,11 +670,48 @@ def gate_applist(sn):
 					"info": applist[app],
 					"inst": app,
 				})
-
 		except Exception as ex:
 			frappe.logger(__name__).error(ex)
 	return iot_applist
 
+
+@frappe.whitelist(allow_guest=True)
+def gate_app_detail(sn, inst=None):
+	valid_auth_code()
+	device = frappe.get_doc('IOT Device', sn)
+	if not device.has_permission("read"):
+		raise frappe.PermissionError
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+	applist = json.loads(client.get(sn) or "[]")
+	for app in applist:
+		if app==inst:
+			app_obj = frappe._dict(applist[app])
+			try:
+				applist[app]['inst'] = app
+				if not frappe.get_value("IOT Application", app_obj.name, "name"):
+					if app_obj.auto is None:
+						applist[app]['auto'] = "0"
+					return {"cloud": None, "info": applist[app], "inst": app}
+				else:
+					doc = frappe.get_doc("IOT Application", app_obj.name)
+					if app_obj.auto is None:
+						applist[app]['auto'] = "0"
+					return {"cloud": {
+							"name": doc.name,
+							"app_name": doc.app_name,
+							"owner": doc.owner,
+							"fullname": get_fullname(doc.owner),
+							"ver": get_latest_version(doc.name, device.use_beta),
+							"fork_app": doc.fork_from,
+							"fork_ver": doc.fork_version,
+							"icon_image": doc.icon_image,
+							},
+							"info": applist[app],
+							"inst": app,
+						}
+			except Exception as ex:
+				frappe.logger(__name__).error(ex)
+	return None
 
 @frappe.whitelist(allow_guest=True)
 def gate_app_dev_tree(sn):
