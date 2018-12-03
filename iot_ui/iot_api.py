@@ -113,9 +113,21 @@ def valid_company_admin(company):
 			or not frappe.get_value("Cloud Company", {"name": company, "admin": frappe.session.user, "enabled": 1}):
 		throw(_("You not the admin of company {0}").format(company))
 
-
+@frappe.whitelist(allow_guest=True)
 def get_company_default_group(company):
+	valid_auth_code()
+	valid_company_admin(company)
 	return frappe.get_value("Cloud Company Group", {"company": company, "group_name": "root"})
+
+
+@frappe.whitelist(allow_guest=True)
+def get_company_groups(company):
+	valid_auth_code()
+	valid_company_admin(company)
+	groups = frappe.get_all("Cloud Company Group", {"company": company}, ["name", "group_name"])
+	# groups = [d[0] for d in frappe.db.get_values("Cloud Company Group", {"company": company})]
+	return groups
+
 
 
 @frappe.whitelist()
@@ -583,6 +595,7 @@ def gate_info(sn):
 	}
 	config = {}
 	applist = {}
+	client_11 = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11")
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
 	if client.exists(sn):
 		info = client.hgetall(sn)
@@ -626,6 +639,8 @@ def gate_info(sn):
 		'basic': basic,
 		'config': config,
 		'applist': applist,
+		"devs_len": client_11.llen(sn),
+		"apps_len": len(applist)
 	}
 
 
@@ -644,6 +659,15 @@ def gate_applist(sn):
 		app_obj = frappe._dict(applist[app])
 		try:
 			applist[app]['inst'] = app
+			from iot.hdb import iot_device_tree as _iot_device_tree
+			from iot.hdb import iot_device_cfg as _iot_device_cfg
+			device_tree = _iot_device_tree(sn)
+			devs_len = 0
+			for devsn in device_tree:
+				cfg = _iot_device_cfg(sn, devsn)
+				if cfg['meta']['app'] == app:
+					devs_len = devs_len + 1
+			applist[app]['devs_len'] = devs_len
 			if not frappe.get_value("IOT Application", app_obj.name, "name"):
 				iot_applist.append({
 					"cloud": None,
