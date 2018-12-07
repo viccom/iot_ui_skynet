@@ -244,8 +244,8 @@ def devices_list(filter):
 	userdevices_offline = []
 	userdevices_offline_7d = []
 	company_devices = devices.get('company_devices')
-	client_6 = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
-	client_11 = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11")
+	client_6 = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6", decode_responses=True)
+	client_11 = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11", decode_responses=True)
 	if company_devices:
 		for group in company_devices:
 			for dsn in group["devices"]:
