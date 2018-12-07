@@ -249,13 +249,21 @@ def devices_list(filter):
 	if company_devices:
 		for group in company_devices:
 			for dsn in group["devices"]:
+				dsn = dsn.strip()
 				devinfo = IOTDevice.get_device_doc(dsn)
 				appsnum = 0
 				devsnum = 0
+
+
 				try:
 					appsnum = len(json.loads(client_6.get(dsn)))
+				except Exception as ex:
+					frappe.logger(__name__).error(ex)
+					pass
+				try:
 					devsnum = client_11.llen(dsn)
 				except Exception as ex:
+					frappe.logger(__name__).error(ex)
 					pass
 				# print(devinfo)
 				# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
@@ -313,13 +321,19 @@ def devices_list(filter):
 	if shared_devices:
 		for group in shared_devices:
 			for dsn in group["devices"]:
+				dsn = dsn.strip()
 				devinfo = IOTDevice.get_device_doc(dsn)
 				appsnum = 0
 				devsnum = 0
 				try:
 					appsnum = len(json.loads(client_6.get(dsn)))
+				except Exception as ex:
+					frappe.logger(__name__).error(ex)
+					pass
+				try:
 					devsnum = client_11.llen(dsn)
 				except Exception as ex:
+					frappe.logger(__name__).error(ex)
 					pass
 				#print(dir(devinfo))
 				#print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
@@ -376,13 +390,19 @@ def devices_list(filter):
 	private_devices = devices.get("private_devices")
 	if private_devices:
 		for dsn in private_devices:
+			dsn = dsn.strip()
 			devinfo = IOTDevice.get_device_doc(dsn)
 			appsnum = 0
 			devsnum = 0
 			try:
 				appsnum = len(json.loads(client_6.get(dsn)))
+			except Exception as ex:
+				frappe.logger(__name__).error(ex)
+				pass
+			try:
 				devsnum = client_11.llen(dsn)
 			except Exception as ex:
+				frappe.logger(__name__).error(ex)
 				pass
 			# print(dir(devinfo))
 			# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
