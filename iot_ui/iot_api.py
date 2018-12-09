@@ -223,6 +223,15 @@ def update_userinfo():
 	return { "userid": userid }
 
 
+
+@frappe.whitelist()
+def user_company():
+	company = frappe.get_value("Cloud Employee", frappe.session.user, "company")
+	if not company:
+		return False
+	else:
+		return {"company": company}
+
 @frappe.whitelist()
 def verify_password(password):
 	from frappe.utils.password import check_password
@@ -631,6 +640,9 @@ def gate_info(sn):
 			config['platform'] = eval(info.get("platform/value"))[1]
 			config['data_upload'] = eval(info.get("data_upload/value"))[1]
 			config['data_upload_period'] = eval(info.get("data_upload_period/value"))[1]
+			config['data_upload_cov'] = eval(info.get("data_upload/value"))[1]
+			config['data_upload_cov_ttl'] = eval(info.get("data_upload_period/value"))[1]
+			config['stat_upload'] = eval(info.get("data_upload/value"))[1]
 
 		try:
 			s = requests.Session()
