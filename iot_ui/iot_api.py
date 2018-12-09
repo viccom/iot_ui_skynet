@@ -1180,7 +1180,24 @@ def delete_AccessKey():
 def get_virtual_gates():
 	virtual_gates = [d[0] for d in frappe.db.get_values('IOT Virtual Device', {"user": frappe.session.user})]
 	# virtual_gates = [d.name for d in frappe.get_all('IOT Virtual Device', {"user": frappe.session.user})]
-	return virtual_gates
+	userdevices = []
+	for dsn in virtual_gates:
+		dsn = dsn.strip()
+		devinfo = IOTDevice.get_device_doc(dsn)
+		# print(devinfo)
+		# print(devinfo.name, devinfo.dev_name, devinfo.description, devinfo.device_status, devinfo.company)
+		userdevices.append(
+			{"device_name": devinfo.dev_name,
+			 "device_sn": devinfo.name,
+			 "device_desc": devinfo.description,
+			 "device_status": devinfo.device_status,
+			 "last_updated": str(devinfo.last_updated)[:-7],
+			 "device_company": devinfo.company,
+			 "longitude": devinfo.longitude,
+			 "latitude": devinfo.latitude,
+			 "beta": devinfo.use_beta,
+			 "iot_beta": gate_is_beta(dsn)})
+	return userdevices
 
 
 @frappe.whitelist()
