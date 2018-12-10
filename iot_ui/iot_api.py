@@ -616,8 +616,9 @@ def remove_gate():
 
 
 @frappe.whitelist()
-def update_gate(sn, name, desc, owner_id=None, owner_type=None):
+def update_gate():
 	postdata = get_post_json_data()
+	# print(postdata)
 	sn = postdata['sn']
 	name = postdata['name']
 	desc = postdata['desc']
