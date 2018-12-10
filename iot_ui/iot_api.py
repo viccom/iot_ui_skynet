@@ -616,12 +616,17 @@ def remove_gate():
 
 
 @frappe.whitelist()
-def update_gate(sn, name, desc):
+def update_gate(sn, name, desc, owner_id=None, owner_type=None):
 	doc = frappe.get_doc("IOT Device", sn)
-	doc.update({
-		"dev_name": name,
-		"description": desc
-	})
+	if owner_id==None or owner_type==None:
+		doc.update({"dev_name": name, "description": desc})
+	else:
+		doc.update({
+			"dev_name": name,
+			"description": desc,
+			"owner_type": owner_type,
+			"owner_id": owner_id
+		})
 	doc.save()
 	return True
 
