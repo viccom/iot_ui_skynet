@@ -286,6 +286,7 @@ def devices_list(filter):
 				                    "device_devs_num": devsnum,
 				                    "last_updated": str(devinfo.last_updated)[:-7],
 				                    "device_company": devinfo.company,
+				                    "group_id":devinfo.owner_id,
 				                    "longitude": devinfo.longitude,
 				                    "latitude": devinfo.latitude,
 				                    "beta": devinfo.use_beta,
@@ -297,7 +298,9 @@ def devices_list(filter):
 					                           "device_apps_num": appsnum,
 					                           "device_devs_num": devsnum,
 											   "last_updated": str(devinfo.last_updated)[:-7],
-											   "device_company": devinfo.company, "longitude": devinfo.longitude,
+											   "device_company": devinfo.company,
+											   "group_id": devinfo.owner_id,
+											   "longitude": devinfo.longitude,
 											   "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 					userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
@@ -306,7 +309,7 @@ def devices_list(filter):
 												   "device_apps_num": appsnum,
 												   "device_devs_num": devsnum,
 												   "last_updated": str(devinfo.last_updated)[:-7],
-												   "device_company": devinfo.company,
+												   "device_company": devinfo.company, "group_id": devinfo.owner_id,
 												   "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
@@ -314,7 +317,8 @@ def devices_list(filter):
 												"device_apps_num": appsnum,
 												"device_devs_num": devsnum,
 												"last_updated": str(devinfo.last_updated)[:-7],
-												"device_company": devinfo.company, "longitude": devinfo.longitude,
+												"device_company": devinfo.company,
+												"group_id":devinfo.owner_id,"longitude": devinfo.longitude,
 												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				else:
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
@@ -323,7 +327,8 @@ def devices_list(filter):
 												"device_apps_num": appsnum,
 												"device_devs_num": devsnum,
 												"last_updated": str(devinfo.last_updated)[:-7],
-												"device_company": devinfo.company, "longitude": devinfo.longitude,
+												"device_company": devinfo.company, "group_id":devinfo.owner_id,
+												"longitude": devinfo.longitude,
 												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 
 	shared_devices = devices.get("shared_devices")
@@ -356,6 +361,7 @@ def devices_list(filter):
 				                    "device_devs_num": devsnum,
 				                    "last_updated": str(devinfo.last_updated)[:-7],
 				                    "device_company": devinfo.company,
+				                    "group_id": devinfo.owner_id,
 				                    "longitude": devinfo.longitude,
 				                    "latitude": devinfo.latitude,
 				                    "beta": devinfo.use_beta,
@@ -367,7 +373,9 @@ def devices_list(filter):
 												"device_apps_num": appsnum,
 												"device_devs_num": devsnum,
 											   "last_updated": str(devinfo.last_updated)[:-7],
-											   "device_company": devinfo.company, "longitude": devinfo.longitude,
+											   "device_company": devinfo.company,
+											   "group_id":devinfo.owner_id,
+											   "longitude": devinfo.longitude,
 											   "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				elif devinfo.device_status == "OFFLINE" and (nowtime - lasttime).days >= 7:
 					userdevices_offline_7d.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
@@ -377,6 +385,7 @@ def devices_list(filter):
 												"device_devs_num": devsnum,
 												   "last_updated": str(devinfo.last_updated)[:-7],
 												   "device_company": devinfo.company,
+												   "group_id": devinfo.owner_id,
 												   "longitude": devinfo.longitude, "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
 												"device_desc": devinfo.description,
@@ -384,7 +393,9 @@ def devices_list(filter):
 												"device_apps_num": appsnum,
 												"device_devs_num": devsnum,
 												"last_updated": str(devinfo.last_updated)[:-7],
-												"device_company": devinfo.company, "longitude": devinfo.longitude,
+												"device_company": devinfo.company,
+												"group_id": devinfo.owner_id,
+												"longitude": devinfo.longitude,
 												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				else:
 					userdevices_offline.append({"device_name": devinfo.dev_name, "device_sn": devinfo.name,
@@ -393,7 +404,9 @@ def devices_list(filter):
 												"device_apps_num": appsnum,
 												"device_devs_num": devsnum,
 												"last_updated": str(devinfo.last_updated)[:-7],
-												"device_company": devinfo.company, "longitude": devinfo.longitude,
+												"device_company": devinfo.company,
+												"group_id": devinfo.owner_id,
+												"longitude": devinfo.longitude,
 												"latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 
 	private_devices = devices.get("private_devices")
@@ -425,6 +438,7 @@ def devices_list(filter):
 			                    "device_devs_num": devsnum,
 			                    "last_updated": str(devinfo.last_updated)[:-7],
 			                    "device_company": curuser,
+			                    "group_id": devinfo.owner_id,
 			                    "longitude": devinfo.longitude,
 			                    "latitude": devinfo.latitude,
 			                    "beta": devinfo.use_beta,
@@ -437,6 +451,7 @@ def devices_list(filter):
 					"device_devs_num": devsnum,
 					 "last_updated": str(devinfo.last_updated)[:-7],
 					 "device_company": curuser,
+					 "group_id": devinfo.owner_id,
 					 "longitude": devinfo.longitude,
 					 "latitude": devinfo.latitude,
 					 "beta": devinfo.use_beta,
@@ -448,14 +463,18 @@ def devices_list(filter):
 					"device_apps_num": appsnum,
 					"device_devs_num": devsnum,
                      "last_updated": str(devinfo.last_updated)[:-7],
-					 "device_company": curuser, "longitude": devinfo.longitude,
+					 "device_company": curuser,
+					 "group_id": devinfo.owner_id,
+					 "longitude": devinfo.longitude,
 					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 				userdevices_offline.append(
 					{"device_name": devinfo.dev_name, "device_sn": devinfo.name, "device_desc": devinfo.description,
 					 "device_status": devinfo.device_status,
 					"device_apps_num": appsnum,
 					"device_devs_num": devsnum,"last_updated": str(devinfo.last_updated)[:-7],
-					 "device_company": curuser, "longitude": devinfo.longitude,
+					 "device_company": curuser,
+					 "group_id": devinfo.owner_id,
+					 "longitude": devinfo.longitude,
 					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 			else:
 				userdevices_offline.append(
@@ -464,7 +483,9 @@ def devices_list(filter):
 					"device_apps_num": appsnum,
 					"device_devs_num": devsnum,
                      "last_updated": str(devinfo.last_updated)[:-7],
-					 "device_company": curuser, "longitude": devinfo.longitude,
+					 "device_company": curuser,
+					 "group_id": devinfo.owner_id,
+					 "longitude": devinfo.longitude,
 					 "latitude": devinfo.latitude, "beta": devinfo.use_beta, "iot_beta": gate_is_beta(dsn)})
 
 
