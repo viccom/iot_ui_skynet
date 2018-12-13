@@ -973,7 +973,7 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 def appslist_bypage(page=None,category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
 	filters = {"owner": ["!=", "Administrator"]}
 	if page:
-		page = page
+		page = int(page)
 	else:
 		page = 1
 	if user:
