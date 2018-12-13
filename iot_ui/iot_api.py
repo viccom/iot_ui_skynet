@@ -608,6 +608,7 @@ def Batch_entry_gates():
 @frappe.whitelist()
 def remove_gate():
 	postdata = get_post_json_data()
+	print(postdata)
 	sn = postdata['sn']
 	for s in sn:
 		doc = frappe.get_doc("IOT Device", s)
@@ -966,6 +967,34 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 		filters["app_name"] = app_name
 	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
 	return apps
+
+
+@frappe.whitelist()
+def appslist_bypage(page=None,category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
+	filters = {"owner": ["!=", "Administrator"]}
+	if page:
+		page = page
+	else:
+		page = 1
+	if user:
+		filters = {"owner": user}
+	if category:
+		filters["category"] = category
+	if protocol:
+		filters["protocol"] = protocol
+	if device_supplier:
+		filters["device_supplier"] = device_supplier
+	if name:
+		filters["name"] = name
+	if app_name:
+		filters["app_name"] = app_name
+	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
+	ret = {
+		"total": len(apps),
+		"page": page,
+		"result": apps[(0+(page-1)*16):(page*16-1)]
+	}
+	return ret
 
 
 @frappe.whitelist()
