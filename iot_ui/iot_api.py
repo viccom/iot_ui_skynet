@@ -970,7 +970,7 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 
 
 @frappe.whitelist()
-def appslist_bypage(page=None,category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
+def appslist_bypage(page=None, category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
 	filters = {"owner": ["!=", "Administrator"]}
 	if page:
 		page = int(page)
@@ -988,7 +988,7 @@ def appslist_bypage(page=None,category=None, protocol=None, device_supplier=None
 		filters["name"] = name
 	if app_name:
 		filters["app_name"] = app_name
-	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
+	apps = frappe.db.get_all("IOT Application", "", filters, order_by="modified desc")
 	ret = {
 		"total": len(apps),
 		"page": page,
