@@ -992,7 +992,7 @@ def appslist_bypage(page=None,category=None, protocol=None, device_supplier=None
 	ret = {
 		"total": len(apps),
 		"page": page,
-		"result": apps[(0+(page-1)*16):(page*16-1)]
+		"result": apps[(0+(page-1)*16):(page*16)]
 	}
 	return ret
 
