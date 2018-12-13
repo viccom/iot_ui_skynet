@@ -972,8 +972,8 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 @frappe.whitelist()
 def appslist_bypage(page=None, count=None, category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
 	filters = {"owner": ["!=", "Administrator"]}
-	page = int(page) or 1
-	count = int(count) or 12
+	page = int(page or 1)
+	count = int(count or 12)
 	if user:
 		filters = {"owner": user}
 	if category:
