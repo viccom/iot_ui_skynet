@@ -988,7 +988,7 @@ def appslist_bypage(page=None, category=None, protocol=None, device_supplier=Non
 		filters["name"] = name
 	if app_name:
 		filters["app_name"] = app_name
-	apps = frappe.db.get_all("IOT Application", "", filters, order_by="modified desc")
+	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
 	ret = {
 		"total": len(apps),
 		"page": page,
