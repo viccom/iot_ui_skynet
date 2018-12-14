@@ -894,8 +894,8 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_condition=None, value_metho
 	vt = vt or "float"
 	field = '"' + vtdict.get(vt) + '"'
 	fields = '"' + vtdict.get(vt) + '"' + ' , "quality"'
-	method = dict(raw=fields, mean='mean("' + field + '")', max='max("' + field + '")', min='min("' + field + '")', first='first("' + field + '")',
-	              last='last("' + field + '")', sum='sum("' + field + '")', count='count("' + field + '")')
+	method = dict(raw=fields, mean='mean(' + field + ')', max='max(' + field + ')', min='min(' + field + ')', first='first(' + field + ')',
+	              last='last(' + field + ')', sum='sum(' + field + ')', count='count(' + field + ')')
 	if value_method not in ["raw", "mean", "max", "min", "first", "last", "sum", "count"]:
 		value_method = "raw"
 	filter = ' "iot"=\'' + sn + '\' AND "device"=\'' + vsn + '\''
