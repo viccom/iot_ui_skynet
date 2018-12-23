@@ -87,6 +87,14 @@ def get_token():
 	frappe.db.commit()
 	return csrf_token
 
+@frappe.whitelist(allow_guest=True)
+def user_exists(userid):
+	user_exists = frappe.db.get_value("User", {"email": userid}, "email")
+	# print("RRRRRRR",user_exists)
+	if user_exists:
+		frappe.response['message'] = True
+	else:
+		frappe.response['message'] = False
 
 @frappe.whitelist()
 def list_company_user(company):
@@ -625,6 +633,8 @@ def update_gate():
 	desc = postdata['desc']
 	owner_id = postdata['owner_id']
 	owner_type = postdata['owner_type']
+	latitude = postdata['latitude']
+	longitude = postdata['longitude']
 	doc = frappe.get_doc("IOT Device", sn)
 	if owner_id == None or owner_type == None:
 		doc.update({"dev_name": name, "description": desc})
@@ -632,6 +642,8 @@ def update_gate():
 		doc.update({
 			"dev_name": name,
 			"description": desc,
+			"latitude": latitude,
+			"longitude": longitude,
 			"owner_type": owner_type,
 			"owner_id": owner_id
 		})
