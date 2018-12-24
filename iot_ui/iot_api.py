@@ -633,8 +633,8 @@ def update_gate():
 	desc = postdata['desc']
 	owner_id = postdata['owner_id']
 	owner_type = postdata['owner_type']
-	latitude = postdata['latitude']
-	longitude = postdata['longitude']
+	# latitude = postdata['latitude']
+	# longitude = postdata['longitude']
 	doc = frappe.get_doc("IOT Device", sn)
 	if owner_id == None or owner_type == None:
 		doc.update({"dev_name": name, "description": desc})
