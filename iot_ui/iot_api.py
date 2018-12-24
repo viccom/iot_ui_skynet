@@ -642,8 +642,8 @@ def update_gate():
 		doc.update({
 			"dev_name": name,
 			"description": desc,
-			"latitude": latitude,
-			"longitude": longitude,
+			# "latitude": latitude,
+			# "longitude": longitude,
 			"owner_type": owner_type,
 			"owner_id": owner_id
 		})
