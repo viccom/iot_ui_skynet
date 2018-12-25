@@ -999,13 +999,6 @@ def appslist_bypage(page=None, count=None, category=None, protocol=None, device_
 	if app_name:
 		filters["app_name"] = ("like", "%{0}%".format(app_name))
 	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
-	# if app_name:
-	# 	filt_apps = []
-	# 	for i, app in enumerate(apps):
-	# 		if app_name.upper() in str(app['app_name'].decode('utf-8').upper()):
-	# 			filt_apps.append(app)
-	# 	apps = filt_apps
-	# print(len(apps))
 	ret = {
 		"total": len(apps[(0+(page-1)*count):(page*count)]),
 		"page": page,
