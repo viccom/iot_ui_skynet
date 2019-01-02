@@ -622,7 +622,7 @@ def new_virtual_gate():
 	doc = frappe.get_doc({
 		"doctype": "IOT Virtual Device",
 		"user": frappe.session.user,
-		"sn": str(uuid.uuid1()).upper(),
+		"sn": str(frappe.generate_hash(frappe.session.user, 10)).upper(),
 	}).insert()
 	return doc.name
 
