@@ -132,16 +132,19 @@ def get_company_default_group(company):
 def get_company_groups(company):
 	valid_auth_code()
 	valid_company_admin(company)
-	groups = frappe.get_all("Cloud Company Group", {"company": company}, ["name", "group_name"])
+	groups = frappe.get_all("Cloud Company Group", {"company": company}, ["name", "group_name"], order_by="name asc")
 	# groups = [d[0] for d in frappe.db.get_values("Cloud Company Group", {"company": company})]
 	return groups
-
 
 
 @frappe.whitelist()
 def list_company_member(company):
 	valid_company_admin(company)
-	return [{"user": d[0], "fullname": get_user_fullname(d[0])} for d in frappe.db.get_values("Cloud Employee", {"company": company})]
+	users = []
+	for d in frappe.db.get_values("Cloud Employee", {"company": company}):
+		userinfo = userinfo_all(d[0])
+		users.append(userinfo)
+	return users
 
 
 @frappe.whitelist()
@@ -202,6 +205,81 @@ def del_userfromcompany():
 		except Exception as ex:
 			remained_users.append(user)
 	return {"deleted": deleted_users, "remained": remained_users}
+
+
+@frappe.whitelist()
+def add_company_group():
+	group = get_post_json_data()
+	group.update({"doctype": "Cloud Company Group"})
+	g = frappe.get_doc(group).insert()
+	# gg = frappe.get_doc("Cloud Company Group", group)
+	# print("newgroup", gg)
+	nameobj = frappe.get_value("Cloud Employee", frappe.session.user, "company")
+	company = frappe.get_doc('Cloud Company', nameobj).name
+	return get_company_groups(company)
+
+@frappe.whitelist()
+def mod_company_group():
+	group = get_post_json_data()
+	g = frappe.get_doc("Cloud Company Group", group.name)
+	g.set("group_name", group.group_name)
+	g.save()
+	return True
+
+@frappe.whitelist()
+def del_company_group(groupid):
+	try:
+		frappe.delete_doc("Cloud Company Group", groupid)
+		return True
+	except Exception as ex:
+		return {"result": False, "reason": ex.message}
+
+@frappe.whitelist()
+def list_group_member(groupid):
+	if 'Company Admin' not in frappe.get_roles(frappe.session.user):
+		pass
+	users = []
+	for d in frappe.db.get_values("Cloud Company GroupUser", {"parent": groupid}, ["user", "role", "modified", "creation"]):
+		userinfo = userinfo_all(d[0])
+		users.append(userinfo)
+	return users
+
+
+@frappe.whitelist()
+def list_member_group(user):
+	groups = []
+	appended_groups = []
+	for d in frappe.db.get_values("Cloud Company GroupUser", {"user": user}, ["parent", "role", "modified", "creation"]):
+		if frappe.get_value("Cloud Company Group", d[0], "enabled"):
+			groups.append(_dict({"name": d[0], "role": d[1], "modified": d[2], "creation": d[3], "user": user}))
+			appended_groups.append(d[0])
+	for comp in list_admin_companies(user):
+		for d in frappe.db.get_values("Cloud Company Group", {"company": comp, "enabled": 1}, "name"):
+			if d[0] not in appended_groups:
+				groups.append(_dict({"name": d[0], "role": "Admin", "user": user}))
+	return groups
+
+@frappe.whitelist()
+def add_group_members():
+	postdata = get_post_json_data()
+	# print(postdata)
+	group = postdata['group']
+	users = postdata['members']
+	role = postdata['role']
+	# print(group, users)
+	g = frappe.get_doc("Cloud Company Group", group)
+	g.add_users(role, *users)
+	return True
+
+@frappe.whitelist()
+def delete_group_members():
+	postdata = get_post_json_data()
+	# print(postdata)
+	group = postdata['group']
+	users = postdata['members']
+	g = frappe.get_doc("Cloud Company Group", group)
+	g.remove_users(*users)
+	return True
 
 
 @frappe.whitelist()
@@ -964,7 +1042,7 @@ def taghisdata(sn, vsn=None, vt=None, tag=None, time_condition=None, value_metho
 
 @frappe.whitelist()
 def appstore_applist(category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
-	filters = {"owner": ["!=", "Administrator"]}
+	filters = {"owner": ["!=", "Administrator"], "published": 1}
 	if user:
 		filters = {"owner": user}
 	if category:
@@ -983,7 +1061,7 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 
 @frappe.whitelist()
 def appslist_bypage(page=None, count=None, category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
-	filters = {"owner": ["!=", "Administrator"]}
+	filters = {"owner": ["!=", "Administrator"], "published": 1}
 	page = int(page or 1)
 	count = int(count or 12)
 	if user:
