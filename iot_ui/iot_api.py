@@ -760,8 +760,9 @@ def gate_info(sn):
 				convert_utc_to_user_timezone(datetime.datetime.utcfromtimestamp(int(_starttime))).replace(
 					tzinfo=None))
 			config['uptime'] = int(eval(info.get("uptime/value"))[1] / 1000)
-			print(info.get("skynet_platform/value"))
+			# print(info.get("skynet_platform/value"))
 			config['platform'] = eval(info.get("platform/value"))[1]
+			config['event_upload'] = eval(info.get("event_upload/value"))[1]
 			config['data_upload'] = eval(info.get("data_upload/value"))[1]
 			config['data_upload_period'] = eval(info.get("data_upload_period/value"))[1]
 			config['data_upload_cov'] = eval(info.get("data_upload/value"))[1]
@@ -1054,7 +1055,7 @@ def appstore_applist(category=None, protocol=None, device_supplier=None, user=No
 	if name:
 		filters["name"] = name
 	if app_name:
-		filters["app_name"] = app_name
+		filters["app_name"] = ("like", "%{0}%".format(app_name))
 	apps = frappe.db.get_all("IOT Application", "*", filters, order_by="modified desc")
 	return apps
 
