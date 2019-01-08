@@ -842,6 +842,8 @@ def gate_applist(sn):
 					"cloud": {
 						"name": doc.name,
 						"app_name": doc.app_name,
+						"code_name": doc.code_name,
+						"app_path": doc.app_path,
 						"owner": doc.owner,
 						"fullname": get_fullname(doc.owner),
 						"ver": get_latest_version(doc.name, device.use_beta),
@@ -881,6 +883,8 @@ def gate_app_detail(sn, inst=None):
 					return {"cloud": {
 							"name": doc.name,
 							"app_name": doc.app_name,
+							"code_name": doc.code_name,
+							"app_path": doc.app_path,
 							"owner": doc.owner,
 							"fullname": get_fullname(doc.owner),
 							"ver": get_latest_version(doc.name, device.use_beta),
@@ -1405,6 +1409,8 @@ def gate_applist_detail(sn):
 					"cloud": {
 						"name": doc.name,
 						"app_name": doc.app_name,
+						"app_path": doc.app_path,
+						"code_name": doc.code_name,
 						"owner": doc.owner,
 						"fullname": get_fullname(doc.owner),
 						"ver": get_latest_version(doc.name, device.use_beta),
