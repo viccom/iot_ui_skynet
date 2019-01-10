@@ -867,6 +867,7 @@ def gate_app_detail(sn, inst=None):
 		raise frappe.PermissionError
 	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
 	applist = json.loads(client.get(sn) or "[]")
+	isbeta = gate_is_beta(sn)
 	for app in applist:
 		if app==inst:
 			app_obj = frappe._dict(applist[app])
@@ -887,7 +888,7 @@ def gate_app_detail(sn, inst=None):
 							"app_path": doc.app_path,
 							"owner": doc.owner,
 							"fullname": get_fullname(doc.owner),
-							"ver": get_latest_version(doc.name, device.use_beta),
+							"ver": get_latest_version(doc.name, isbeta),
 							"fork_app": doc.fork_from,
 							"fork_ver": doc.fork_version,
 							"icon_image": doc.icon_image,
