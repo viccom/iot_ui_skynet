@@ -728,6 +728,20 @@ def update_gate():
 	doc.save()
 	return True
 
+@frappe.whitelist()
+def set_gate_position():
+	postdata = get_post_json_data()
+	# print(postdata)
+	sn = postdata['sn']
+	latitude = postdata['latitude']
+	longitude = postdata['longitude']
+	doc = frappe.get_doc("IOT Device", sn)
+	doc.update({
+		"latitude": latitude,
+		"longitude": longitude
+	})
+	doc.save()
+	return True
 
 @frappe.whitelist(allow_guest=True)
 def gate_info(sn):
