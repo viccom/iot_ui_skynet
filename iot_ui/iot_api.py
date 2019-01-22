@@ -837,7 +837,7 @@ def gate_applist(sn):
 			devs_len = 0
 			for devsn in device_tree:
 				cfg = _iot_device_cfg(sn, devsn)
-				if cfg['meta']['app'] == app:
+				if cfg['meta']['app_inst'] == app:
 					devs_len = devs_len + 1
 			applist[app]['devs_len'] = devs_len
 			if not frappe.get_value("IOT Application", app_obj.name, "name"):
