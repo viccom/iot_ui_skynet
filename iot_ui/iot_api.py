@@ -1442,3 +1442,8 @@ def gate_applist_detail(sn):
 			frappe.logger(__name__).error(ex)
 	return iot_applist
 
+
+@frappe.whitelist(allow_guest=True)
+def wechat_users(wechat_app):
+	valid_auth_code()
+	return frappe.db.get_values("Wechat Binding", {"app": wechat_app}, as_dict=True, fieldname=["user", "openid"])
