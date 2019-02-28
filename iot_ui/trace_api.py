@@ -76,5 +76,5 @@ def gate_wanip_his(sn, time_condition=None, count_limit=None, time_zone=None):
 			for i in range(0, len(res)):
 				hisvalue = {'value': res[i][1], 'time': res[i][0], 'sn': sn}
 				his[tag].append(hisvalue)
-			taghis.append(his)
+		taghis.append(his)
 	return taghis
