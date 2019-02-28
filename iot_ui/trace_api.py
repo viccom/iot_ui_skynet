@@ -62,15 +62,19 @@ def gate_wanip_his(sn, time_condition=None, count_limit=None, time_zone=None):
 			ret = r.json()
 			# print(ret)
 			if not ret:
+				taghis.append(his)
 				continue
 			results = ret['results']
 			if not results or len(results) < 1:
+				taghis.append(his)
 				continue
 			series = results[0].get('series')
 			if not series or len(series) < 1:
+				taghis.append(his)
 				continue
 			res = series[0].get('values')
 			if not res:
+				taghis.append(his)
 				continue
 			# print('@@@@@@@@@@@@@@@@@', len(res))
 			for i in range(0, len(res)):
