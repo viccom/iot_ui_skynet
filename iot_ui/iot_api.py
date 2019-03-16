@@ -300,9 +300,9 @@ def update_userinfo():
 		"phone": postdata["phone"],
 		"mobile_no": postdata["mobile_no"],
 	})
-	if postdata.has_key('enable'):
+	if 'enable' in postdata:
 		user.update({"enable": postdata.get('enabled')})
-	if postdata.has_key('new_password'):
+	if 'new_password' in postdata:
 		user.update({"new_password": postdata["new_password"]})
 
 	user.save(ignore_permissions=True)
@@ -952,14 +952,14 @@ def gate_devs_list(sn):
 
 	for devsn in device_tree:
 		cfg = _iot_device_cfg(sn, devsn)
-		if cfg.has_key('meta'):
+		if 'meta' in cfg:
 			devmeta = cfg['meta']
 			devmeta['sn'] = devsn
-			if cfg.has_key('inputs'):
+			if 'inputs' in cfg:
 				devmeta['inputs'] = len(cfg['inputs'])
-			if cfg.has_key('outputs'):
+			if 'inputs' in cfg:
 				devmeta['outputs'] = len(cfg['outputs'])
-			if cfg.has_key('commands'):
+			if 'commands' in cfg:
 				devmeta['commands'] = len(cfg['commands'])
 			app_devs_list.append(devmeta)
 
