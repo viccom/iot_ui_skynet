@@ -957,7 +957,7 @@ def gate_devs_list(sn):
 			devmeta['sn'] = devsn
 			if 'inputs' in cfg:
 				devmeta['inputs'] = len(cfg['inputs'])
-			if 'inputs' in cfg:
+			if 'outputs' in cfg:
 				devmeta['outputs'] = len(cfg['outputs'])
 			if 'commands' in cfg:
 				devmeta['commands'] = len(cfg['commands'])
