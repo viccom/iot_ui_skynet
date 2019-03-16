@@ -988,7 +988,7 @@ def utc2local(utc_st):
 @frappe.whitelist(allow_guest=True)
 def taghisdata(sn, vsn=None, vt=None, tag=None, time_condition=None, value_method=None, group_time_span=None, fill_method=None, count_limit=None, time_zone=None):
 	valid_auth_code()
-	import HTMLParser
+	from html.parser import HTMLParser
 	html_parser = HTMLParser.HTMLParser()
 	vsn = vsn or sn
 	doc = frappe.get_doc('IOT Device', sn)
