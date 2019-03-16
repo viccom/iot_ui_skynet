@@ -98,7 +98,7 @@ def iot_device_tree(sn=None):
 	sn = sn or frappe.form_dict.get('sn')
 	doc = frappe.get_doc('IOT Device', sn)
 	doc.has_permission("read")
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11", decode_responses=True)
 	subdevice = client.lrange(sn, 0, -1)
 	return subdevice
 
@@ -108,7 +108,7 @@ def iot_device_cfg(sn=None, vsn=None):
 	sn = sn or frappe.form_dict.get('sn')
 	doc = frappe.get_doc('IOT Device', sn)
 	doc.has_permission("read")
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/10")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/10", decode_responses=True)
 	cfg = client.get(vsn or sn)
 	if cfg:
 		return json.loads(cfg)
@@ -118,7 +118,7 @@ def iot_device_cfg(sn=None, vsn=None):
 @frappe.whitelist()
 def iot_is_beta(sn=None):
 	iot_beta_flag = 0
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12", decode_responses=True)
 	try:
 		betainfo = client.hget(sn, 'enable_beta/value')
 	except Exception as ex:
@@ -316,7 +316,7 @@ def devices_list_array(filter):
 @frappe.whitelist()
 def iot_devices_array(sn=None):
 	sn = sn or frappe.form_dict.get('sn')
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/1")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/1", decode_responses=True)
 	devices = []
 	for d in client.lrange(sn, 0, -1):
 		dev = {
@@ -889,7 +889,7 @@ def iot_info(sn=None):
 	device = frappe.get_doc('IOT Device', sn)
 	device.has_permission('read')
 	data = device.as_dict()
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12", decode_responses=True)
 	if client.hget(sn, "version/value"):
 		data.iot_version = eval(client.hget(sn, "version/value"))[1]
 	# print("@@@@@@@@@@@@@@@@",context.iot_version)
@@ -908,7 +908,7 @@ def iot_info(sn=None):
 @frappe.whitelist()
 def iot_applist(sn=None):
 	if sn:
-		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6", decode_responses=True)
 		applist = json.loads(client.get(sn))
 		iot_applist = []
 		for app in applist:

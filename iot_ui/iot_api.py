@@ -60,7 +60,7 @@ def gate_device_cfg(sn, vsn=None):
 @frappe.whitelist()
 def gate_is_beta(sn):
 	iot_beta_flag = 0
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12", decode_responses=True)
 	try:
 		betainfo = client.hget(sn, 'enable_beta/value')
 	except Exception as ex:
@@ -762,8 +762,8 @@ def gate_info(sn):
 	}
 	config = {}
 	applist = {}
-	client_11 = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11")
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	client_11 = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11", decode_responses=True)
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12", decode_responses=True)
 	if client.exists(sn):
 		info = client.hgetall(sn)
 		if info:
@@ -802,7 +802,7 @@ def gate_info(sn):
 		config['rom'] = "4 GB"
 		config['os'] = "openwrt"
 	try:
-		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6", decode_responses=True)
 		applist = json.loads(client.get(sn))
 	except Exception as ex:
 		applist = {}
@@ -823,7 +823,7 @@ def gate_applist(sn):
 	if not device.has_permission("read"):
 		raise frappe.PermissionError
 
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6", decode_responses=True)
 	applist = json.loads(client.get(sn) or "[]")
 
 	iot_applist = []
@@ -879,7 +879,7 @@ def gate_app_detail(sn, inst=None):
 	device = frappe.get_doc('IOT Device', sn)
 	if not device.has_permission("read"):
 		raise frappe.PermissionError
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6", decode_responses=True)
 	applist = json.loads(client.get(sn) or "[]")
 	isbeta = gate_is_beta(sn)
 	for app in applist:
@@ -1149,7 +1149,7 @@ def query_device_activity_by_company():
 
 @frappe.whitelist()
 def query_firmware_lastver(sn, beta):
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12", decode_responses=True)
 	if client.exists(sn):
 		info = client.hgetall(sn)
 		if info:
@@ -1271,7 +1271,7 @@ def device_event_count_statistics():
 	if not company:
 		return
 
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/15")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/15", decode_responses=True)
 
 	from iot.hdb_api import list_iot_devices as _list_iot_devices
 	devices = _list_iot_devices(frappe.session.user)
@@ -1304,7 +1304,7 @@ def device_type_statistics():
 	if not company:
 		return
 
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/15")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/15", decode_responses=True)
 	try:
 		return client.hgetall('device_type.' + company)
 	except Exception as ex:
@@ -1393,7 +1393,7 @@ def gate_applist_detail(sn):
 	device_tree = _iot_device_tree(sn)
 
 
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6", decode_responses=True)
 	applist = json.loads(client.get(sn) or "[]")
 
 	iot_applist = []
