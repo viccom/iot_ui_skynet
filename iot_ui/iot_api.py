@@ -351,7 +351,7 @@ def devices_list(filter):
 
 
 				try:
-					appsnum = len(json.loads(client_6.get(dsn)))
+					appsnum = len(json.loads(client_6.get(dsn) or '[]'))
 				except Exception as ex:
 					frappe.logger(__name__).error(ex)
 					pass
@@ -426,7 +426,7 @@ def devices_list(filter):
 				appsnum = 0
 				devsnum = 0
 				try:
-					appsnum = len(json.loads(client_6.get(dsn)))
+					appsnum = len(json.loads(client_6.get(dsn) or '[]'))
 				except Exception as ex:
 					frappe.logger(__name__).error(ex)
 					pass
@@ -503,7 +503,7 @@ def devices_list(filter):
 			appsnum = 0
 			devsnum = 0
 			try:
-				appsnum = len(json.loads(client_6.get(dsn)))
+				appsnum = len(json.loads(client_6.get(dsn) or '[]'))
 			except Exception as ex:
 				frappe.logger(__name__).error(ex)
 				pass
