@@ -47,7 +47,7 @@ def get_context(context):
 	device = frappe.get_doc('IOT Device', name)
 	device.has_permission('read')
 	context.doc = device
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/12", decode_responses=True)
 	context.iot_version = None
 	context.skynet_version = None
 	context.iot_lastver = None
@@ -88,6 +88,6 @@ def get_context(context):
 		context.public_ip = rdict['result']['objects'][0]['ipaddress']
 		print(rdict)
 		context.public_port = rdict['result']['objects'][0]['port']
-		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6")
+		client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/6", decode_responses=True)
 		context.applist = json.loads(client.get(name))
 

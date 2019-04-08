@@ -51,7 +51,7 @@ def get_context(context):
 	device.has_permission('read')
 	context.doc = device
 
-	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11")
+	client = redis.Redis.from_url(IOTHDBSettings.get_redis_server() + "/11", decode_responses=True)
 	context.devices = []
 	for d in client.lrange(name, 0, -1):
 		dev = {
