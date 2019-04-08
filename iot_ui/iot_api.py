@@ -78,7 +78,7 @@ def get_post_json_data():
 		throw(_("Incorrect HTTP Content-Type found {0}").format(ctype))
 	if not frappe.form_dict.data:
 		throw(_("JSON Data not found!"))
-	return frappe._dict(json.loads(frappe.form_dict.data))
+	return frappe._dict(json.loads(frappe.form_dict.data.decode('utf-8')))
 
 
 @frappe.whitelist()
