@@ -29,8 +29,8 @@ def ping():
 @frappe.whitelist(allow_guest=True)
 def gate_wanip_his(sn, time_condition=None, count_limit=None, time_zone=None):
 	valid_auth_code()
-	import HTMLParser
-	html_parser = HTMLParser.HTMLParser()
+	# import HTMLParser
+	# html_parser = HTMLParser.HTMLParser()
 	doc = frappe.get_doc('IOT Device', sn)
 	if not doc.has_permission("read"):
 		raise frappe.PermissionError
@@ -46,7 +46,7 @@ def gate_wanip_his(sn, time_condition=None, count_limit=None, time_zone=None):
 	fields = '"ipaddr"'
 	filter = ' "iot"=\'' + sn + '\''
 	time_condition = time_condition or 'time > now() - 7d'
-	time_condition = html_parser.unescape(time_condition)
+	# time_condition = html_parser.unescape(time_condition)
 	count = count_limit or 200
 	time_zone = time_zone or 'Asia/Shanghai'
 	for tag in tags:
