@@ -5,3 +5,4 @@
 tags
 iot_ui/docs/current
 .idea
+__pycache__
