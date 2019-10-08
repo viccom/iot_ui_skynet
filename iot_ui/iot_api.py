@@ -69,17 +69,16 @@ def gate_is_beta(sn):
 		iot_beta_flag = eval(betainfo)[1]
 	return iot_beta_flag
 
-
 def get_post_json_data():
 	if frappe.request.method != "POST":
 		throw(_("Request Method Must be POST!"))
 	ctype = frappe.get_request_header("Content-Type")
 	if "json" not in ctype.lower():
 		throw(_("Incorrect HTTP Content-Type found {0}").format(ctype))
-	if not frappe.form_dict.data:
+	data = frappe.request.get_data()
+	if not data:
 		throw(_("JSON Data not found!"))
-	return frappe._dict(json.loads(frappe.form_dict.data.decode('utf-8')))
-
+	return json.loads(data.decode('utf-8'))
 
 @frappe.whitelist()
 def get_token():
