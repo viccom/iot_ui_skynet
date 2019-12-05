@@ -948,9 +948,9 @@ def iot_applist(sn=None):
 
 @frappe.whitelist()
 def appstore_applist(category=None, protocol=None, device_supplier=None, user=None, name=None, app_name=None):
-	filters = {"owner": ["!=", "Administrator"]}
+	filters = {"developer": ["!=", "Administrator"]}
 	if user:
-		filters = {"owner": user}
+		filters = {"developer": user}
 	if category:
 		filters["category"] = category
 	if protocol:
